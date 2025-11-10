@@ -127,7 +127,7 @@ Each layer can define:
 
 ---
 
-## Architecture
+## Processing Steps
 
 The system is designed as a **modular pipeline**:
 
