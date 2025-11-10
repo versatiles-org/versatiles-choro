@@ -145,20 +145,60 @@ flowchart TD
 ```
 
 
-### Key Components
+## Architecture
 
-- **Backend (Docker):**  
-	- Geometry ingestion and tile generation  
-	- Data merging with existing geometries  
-	- Local map server  
-	- Local web server for the IDE  
-	- NodeJS scripts for server control and data management  
-- **`versatiles-choro.js`:** JavaScript frontend library that generates a MapLibre map, applies color gradients, adds layers, legends, tooltips, etc.  
-- **Config Editor (Svelte):** Simple IDE for map styling  
+This project runs entirely inside a single Docker container that serves the WebUI and executes tiling jobs. The Express.js server provides the static UI and a JSON API that orchestrates `tippecanoe` and `versatiles-rs`. Results are written to `/work` (bind‑mountable) and can be previewed and exported as a static bundle.
 
-### Design Principles
+```mermaid
+flowchart TD
+	%% Clients
+	B[Browser]:::client
 
-- Modular: Each part can run independently or as part of the full stack  
-- Deterministic: Every visualization is reproducible from source data  
-- Open & transparent: All formats are open and documented  
-- Note that in the long run the project might be developed further to run as a self hosted web service.
+	%% Server
+	SER["Express.js Server<br/>:8080"]:::server
+	UI["Static WebUI<br/>(Svelte build)"]:::frontend
+
+	%% Services / CLIs
+	TIP["tippecanoe CLI"]:::service
+	VER["versatiles-rs CLI"]:::service
+
+	%% Artifacts & FS
+	LIB["versatiles-choro.js<br/>(TypeScript build)"]:::frontend
+	
+	%% Flows
+	B -->|GET /| SER
+	B -->|POST /api/*| SER
+
+	SER -->|serve| UI
+	SER -->|spawn| TIP
+	SER <-->|spawn & proxy| VER
+
+	LIB -->|included in| UI
+
+	TIP -->|read| SRC
+	TIP -->|write| PKG
+	VER <-->|read & write| PKG
+
+	PKG --> BND
+	LIB --> BND
+
+	classDef client fill:#eef8ff,stroke:#6aa9ff,color:#0b3d91;
+	classDef server fill:#fff7e6,stroke:#f0a500,color:#503c00;
+	classDef frontend fill:#eaffea,stroke:#3fbf3f,color:#0a4f0a;
+	classDef service fill:#f0e6ff,stroke:#8f66ff,color:#3a1f8f;
+	classDef storage fill:#f5f5f5,stroke:#999,color:#333;
+	classDef data fill:#ffeaea,stroke:#ff7f7f,color:#5a0000;
+
+	subgraph FS[Filesystem]
+		SRC["Sources<br/>(.geojson, .shp, .csv)"]:::data
+		BND["(Export Bundle)<br/>index.html + versatiles-choro.js + config.json + .versatiles"]:::data
+		PKG["(.versatiles packages)"]:::data
+	end
+```
+
+### Runtime Summary
+
+- **Express.js** serves the built Svelte WebUI and exposes a JSON API (`/api/*`) for ingestion, matching, tiling, stats, validation, and export.
+- **tippecanoe** turns geometry into vector tiles
+- **versatiles-rs** converts and inspects `.versatiles`.
+- **Export Bundle** is static and can be hosted on any CDN. It includes `index.html`, `versatiles-choro.js`, `config.json`, and the `.versatiles` package.
