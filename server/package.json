@@ -1,17 +1,18 @@
 {
   "name": "versatiles-choro-server",
   "version": "0.1.0",
-  "main": "dist/index.js",
+  "main": "dist/server.js",
   "type": "module",
   "private": true,
   "scripts": {
     "check": "npm run build",
     "build": "tsc",
-    "start": "node dist/index.js",
-    "dev": "ts-node src/index.ts",
+    "start": "node dist/server.js",
+    "dev": "ts-node src/server.ts",
     "upgrade": "ncu -u && npm install"
   },
   "dependencies": {
+    "commander": "^14.0.2",
     "express": "^5.1.0",
     "npm-check-updates": "^19.1.2"
   },
