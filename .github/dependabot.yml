@@ -1,0 +1,21 @@
+version: 2
+updates:
+  - package-ecosystem: docker
+    directories:
+      - /docker
+    schedule: { interval: monthly }
+    groups: { docker: { patterns: ['*'] } }
+    
+  - package-ecosystem: npm
+    directories:
+      - /server
+      - /ui
+      - /versatiles-choro-js
+    schedule: { interval: monthly }
+    groups: { npm: { patterns: ['*'] } }
+    versioning-strategy: increase-if-necessary
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: monthly }
+    groups: { github-action: { patterns: ['*'] } }
