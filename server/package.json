@@ -1,0 +1,21 @@
+{
+  "name": "versatiles-choro-server",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "check": "npm run build",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "upgrade": "ncu -u && npm install"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "npm-check-updates": "^19.1.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}
