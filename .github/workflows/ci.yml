@@ -11,8 +11,8 @@ on:
 
 
 jobs:
-  server-test:
-    name: Test server
+  test:
+    name: Test
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -27,49 +27,8 @@ jobs:
           node-version: '24'
 
       - name: Install dependencies
-        working-directory: ./server
-        run:
-          npm install
-          npm check
+        run: npm install
+        
+      - name: Run checks
+        run: npm run check
   
-  ui-test:
-    name: Test UI
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '24'
-
-      - name: Install dependencies
-        working-directory: ./ui
-        run:
-          npm install
-          npm check
-
-  library-test:
-    name: Test library
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '24'
-
-      - name: Install dependencies
-        working-directory: ./versatiles-choro-js
-        run:
-          npm install
-          npm check
