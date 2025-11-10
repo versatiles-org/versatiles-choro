@@ -1,0 +1,15 @@
+{
+  "name": "versatiles-choro",
+  "private": true,
+  "workspaces": [
+    "server",
+    "ui",
+    "versatiles-choro-js"
+  ],
+  "scripts": {
+    "build": "npm run build -ws",
+    "check": "npm run check -ws",
+    "upgrade": "npm run upgrade -ws"
+  },
+  "engines": { "node": ">=24" }
+}
