@@ -75,7 +75,7 @@ export function logProgress(progress: Progress) {
 		log();
 	});
 	function log() {
-		let color = hasErrors ? '\x1b[31m' : '\x1b[32m';
+		const color = hasErrors ? '\x1b[31m' : '\x1b[32m';
 		let line = `${color}${message}`;
 		if (position > 0) line += `: ${position} %`;
 		process.stdout.write(`\x1b[2K\r${line}\x1b[0m\x1b[?25l`);

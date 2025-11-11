@@ -1,7 +1,7 @@
 import { spawn } from 'child_process';
 import { Progress, SpawnProgress } from './progress.js';
 
-function optionsToArgs(options: Record<string, any>): string[] {
+function optionsToArgs(options: Record<string, unknown>): string[] {
 	const args: string[] = [];
 	for (const [key, value] of Object.entries(options)) {
 		if (typeof value === 'boolean') {
@@ -18,7 +18,7 @@ function optionsToArgs(options: Record<string, any>): string[] {
 export async function runTippecanoe(
 	inputFile: string,
 	outputFile: string,
-	options?: Record<string, any>
+	options?: Record<string, unknown>
 ): Promise<Progress> {
 	const child = spawn('tippecanoe', ['-o', outputFile, ...optionsToArgs(options || {}), inputFile]);
 
@@ -31,7 +31,6 @@ export async function runTippecanoe(
 		matches = /^\s+(\d+\.\d+)%\s+\d+\/\d+\/\d+/.exec(line);
 		if (matches) return { progress: Number(matches[1]), message: 'Building tiles' };
 
-		//console.log(line);
 		return {};
 	});
 }
@@ -39,7 +38,7 @@ export async function runTippecanoe(
 export async function runVersaTilesConvert(
 	inputFile: string,
 	outputFile: string,
-	options?: Record<string, any>
+	options?: Record<string, unknown>
 ): Promise<Progress> {
 	const child = spawn(
 		'versatiles',
@@ -48,10 +47,9 @@ export async function runVersaTilesConvert(
 	);
 
 	return new SpawnProgress(child, 'versatiles convert', (line) => {
-		let matches;
-		matches = /\(\s*(\d+)%\)/.exec(line);
+		const matches = /\(\s*(\d+)%\)/.exec(line);
 		if (matches) return { progress: Number(matches[1]), message: 'Converting tiles' };
-		//console.log(line);
+
 		return {};
 	});
 }
