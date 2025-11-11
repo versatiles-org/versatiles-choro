@@ -7,6 +7,7 @@
   "scripts": {
     "check": "npm run build",
     "build": "tsc",
+    "test": "",
     "upgrade": "ncu -u && npm install"
   },
   "devDependencies": {

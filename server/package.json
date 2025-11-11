@@ -9,6 +9,7 @@
     "cli": "tsx src/cli.ts",
     "build": "tsc",
     "server": "tsx src/server.ts",
+    "test": "",
     "upgrade": "ncu -u && npm install"
   },
   "dependencies": {
