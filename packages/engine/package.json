@@ -1,5 +1,5 @@
 {
-	"name": "versatiles-choro-server",
+	"name": "@versatiles-choro/engine",
 	"version": "0.1.0",
 	"main": "dist/lib.js",
 	"type": "module",

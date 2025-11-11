@@ -1,5 +1,5 @@
 {
-	"name": "versatiles-choro-js",
+	"name": "@versatiles-choro/map",
 	"version": "0.1.0",
 	"main": "dist/index.js",
 	"type": "module",
