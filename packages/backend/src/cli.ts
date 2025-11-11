@@ -12,10 +12,13 @@ program
 	.showHelpAfterError()
 	.version('1.0.0');
 
-program.command('polygons2tiles')
+program
+	.command('polygons2tiles')
 	.description('Convert polygon geometries into tiles')
 	.argument('<input>', 'Input file path')
 	.argument('<output>', 'Output file path')
-	.action((input, output) => convertPolygonsToVersatiles(resolve(cwd, input), resolve(cwd, output)).then(logProgress));
+	.action((input, output) =>
+		convertPolygonsToVersatiles(resolve(cwd, input), resolve(cwd, output)).then(logProgress)
+	);
 
 program.parse();

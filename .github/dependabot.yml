@@ -5,7 +5,7 @@ updates:
       - /docker
     schedule: { interval: monthly }
     groups: { docker: { patterns: ['*'] } }
-    
+
   - package-ecosystem: npm
     directories:
       - /server

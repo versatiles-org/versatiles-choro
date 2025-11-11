@@ -9,7 +9,6 @@ on:
       - main
   workflow_dispatch:
 
-
 jobs:
   test:
     name: Test
@@ -28,7 +27,6 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-        
+
       - name: Run checks
         run: npm run check
-  

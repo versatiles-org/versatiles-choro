@@ -1,3 +1,4 @@
+<!--
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { page } from '$app/stores';
@@ -171,7 +172,6 @@
   </div>
 
   {#if !currentSrcParam()}
-    <!-- No src selected: list available sources -->
     <div class="grid">
       {#if tileSources && tileSources.length}
         {#each tileSources as t}
@@ -187,7 +187,7 @@
       {/if}
     </div>
   {:else}
-    <!-- Source selected: render map -->
     <div bind:this={mapContainer} class="map"></div>
   {/if}
 </div>
+-->

@@ -10,6 +10,7 @@
 It is designed for newsrooms, data journalists, and developers who need an editorially controlled, reproducible way to visualize spatial data.
 
 The system combines:
+
 - a **Docker-based backend** for preparing and merging geometries,
 - a **lightweight frontend** for displaying interactive maps, and
 - a **Svelte-based configuration editor** for styling, tooltips, and behavior.
@@ -28,10 +29,11 @@ Import and build base geometries using tools such as tippecanoe.
 Supported formats: **GeoJSON** and **Shapefiles**.
 
 You can:
-- Define **minimum and maximum zoom levels**  
-- Specify which fields and IDs to keep or rename  
-- Automatically generate layers (`fill`, `stroke`, `center`). These layers represent polygon fill, outline strokes, and a single-point center used for labels or markers.  
-- Attach metadata such as source, year, and zoom levels  
+
+- Define **minimum and maximum zoom levels**
+- Specify which fields and IDs to keep or rename
+- Automatically generate layers (`fill`, `stroke`, `center`). These layers represent polygon fill, outline strokes, and a single-point center used for labels or markers.
+- Attach metadata such as source, year, and zoom levels
 - Export standardized `.versatiles` containers ready for rendering
 
 This step can run standalone or inside the same Docker environment as Step 2.
@@ -43,6 +45,7 @@ This step can run standalone or inside the same Docker environment as Step 2.
 A **Docker container with a small GUI** lets users add their data to `.versatiles` containers.
 
 Core features:
+
 - Load geometries as `.versatiles` containers
 - Load data as CSVs
 - Match CSV data to geometry IDs
@@ -68,14 +71,16 @@ versatiles-choro.js
 `index.html` loads `versatiles-choro.js` and `config.json`, and runs the `buildMap` function to generate a map.
 
 A **Svelte-based IDE** running in the Docker container provides a live editing interface:
-- **Left panel:** config editor  
-- **Right panel:** Live map preview  
+
+- **Left panel:** config editor
+- **Right panel:** Live map preview
 - The IDE can include shared settings like fonts or color gradients, using a `default.json` configuration file.
 
 Utilities:
-- Gradient preview and color pickers  
-- OSM background toggle  
-- Tooltip configuration  
+
+- Gradient preview and color pickers
+- OSM background toggle
+- Tooltip configuration
 - Built-in console for validation and errors
 
 The frontend is fully **responsive**, **lightweight**, and **embeddable** in any web page.
@@ -85,6 +90,7 @@ The frontend is fully **responsive**, **lightweight**, and **embeddable** in any
 ### 4. Hacking the Frontend
 
 Developers can extend the resulting `index.html` to support custom:
+
 - Arrows, markers, icons, and labels
 - Hover effects and animations
 - Color palettes
@@ -96,17 +102,18 @@ Developers can extend the resulting `index.html` to support custom:
 
 VersaTiles Choro provides ready-to-use geometry packages for common use cases:
 
-- **Administrative units (NUTS levels)**  
-  - Country → State → District → Municipality → Sub-district  
-- **Election boundaries**  
-  - Constituencies and polling districts  
-- **Regular grids**  
-  - 1 km × 1 km and 100 m × 100 m cells  
+- **Administrative units (NUTS levels)**
+  - Country → State → District → Municipality → Sub-district
+- **Election boundaries**
+  - Constituencies and polling districts
+- **Regular grids**
+  - 1 km × 1 km and 100 m × 100 m cells
 
 Each geometry package contains:
-- Unique IDs  
-- `label_short`, `label_long`  
-- Population data  
+
+- Unique IDs
+- `label_short`, `label_long`
+- Population data
 - Metadata including `source`, `year`, `fields`, and zoom levels
 
 ---
@@ -115,14 +122,15 @@ Each geometry package contains:
 
 Rendering order is predefined for consistent visuals:
 
-1. Tooltips or other Hover elements  
-2. Visualization strokes  
-3. Visualization fills  
-4. Background map layers  
+1. Tooltips or other Hover elements
+2. Visualization strokes
+3. Visualization fills
+4. Background map layers
 
 Each layer can define:
-- Active zoom range  
-- Opacity per zoom level  
+
+- Active zoom range
+- Opacity per zoom level
 - Conditional styling rules
 
 ---
@@ -144,7 +152,6 @@ flowchart TD
 	C -- Step 3. Frontend Configuration --> D
 ```
 
-
 ## Architecture
 
 This project runs entirely inside a single Docker container that serves the WebUI and executes tiling jobs. The Express.js server provides the static UI and a JSON API that orchestrates `tippecanoe` and `versatiles-rs`. Results are written to `/work` (bind‑mountable) and can be previewed and exported as a static bundle.
@@ -164,7 +171,7 @@ flowchart TD
 
 	%% Artifacts & FS
 	LIB["versatiles-choro.js<br/>(TypeScript build)"]:::frontend
-	
+
 	%% Flows
 	B -->|GET /| SER
 	B -->|POST /api/*| SER

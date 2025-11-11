@@ -87,12 +87,20 @@ export class SpawnProgress implements Progress {
 	private name: string;
 	private lastMessage: string = '';
 	private lastProgress: number = -1;
-	private messageFilter: (line: string) => { progress?: number, message?: string, isError?: boolean };
+	private messageFilter: (line: string) => {
+		progress?: number;
+		message?: string;
+		isError?: boolean;
+	};
 	private onProgressCb: null | ProgressCb = null;
 	private onMessageCb: null | MessageCb = null;
 	private onCompleteCb: null | CompleteCb = null;
 
-	constructor(childProcess: ChildProcess, name: string, messageFilter: (line: string) => { progress?: number, message?: string, isError?: boolean }) {
+	constructor(
+		childProcess: ChildProcess,
+		name: string,
+		messageFilter: (line: string) => { progress?: number; message?: string; isError?: boolean }
+	) {
 		this.childProcess = childProcess;
 		this.name = name;
 		this.messageFilter = messageFilter;
