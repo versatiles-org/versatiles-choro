@@ -1,0 +1,20 @@
+{
+  "include": [
+    "src/**/*"
+  ],
+  "compilerOptions": {
+    "target": "es2021",
+    "module": "esnext",
+    "sourceMap": true,
+    "moduleResolution": "bundler",
+    "outDir": "dist",
+    "rootDir": "src",
+    "declaration": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "lib": [
+      "es2021",
+      "dom"
+    ],
+  },
+}

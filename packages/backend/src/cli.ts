@@ -14,6 +14,10 @@ program.command('server')
 	.description('Start the VersaTiles Choro server')
 	.action(startServer);
 
+program.command('server-dev')
+	.description('Start the VersaTiles Choro server in development mode with auto-reload')
+	.action(() => startServer(true));
+
 program.command('polygons2tiles')
 	.description('Convert polygon geometries into tiles')
 	.argument('<input>', 'Input file path')

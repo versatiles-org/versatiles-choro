@@ -8,16 +8,18 @@
     "check": "npm run build",
     "cli": "tsx src/cli.ts",
     "build": "tsc",
-    "server": "tsx src/server.ts",
+    "dev": "tsx src/cli.ts server-dev",
     "test": "",
     "upgrade": "ncu -u && npm install"
   },
   "dependencies": {
     "commander": "^14.0.2",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "express-http-proxy": "^2.1.2"
   },
   "devDependencies": {
     "@types/express": "^5.0.5",
+    "@types/express-http-proxy": "^1.6.7",
     "npm-check-updates": "^19.1.2",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"
