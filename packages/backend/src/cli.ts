@@ -1,8 +1,10 @@
 import { Command } from 'commander';
 import { convertPolygonsToVersatiles } from './lib/1_geometry.js';
-import { startServer } from './lib/server.js';
+import { logProgress } from './lib.js';
+import { resolve } from 'node:path';
 
 const program = new Command();
+const cwd = process.env.INIT_CWD ?? process.cwd();
 
 program
 	.name('versatiles-choro')
@@ -10,18 +12,10 @@ program
 	.showHelpAfterError()
 	.version('1.0.0');
 
-program.command('server')
-	.description('Start the VersaTiles Choro server')
-	.action(startServer);
-
-program.command('server-dev')
-	.description('Start the VersaTiles Choro server in development mode with auto-reload')
-	.action(() => startServer(true));
-
 program.command('polygons2tiles')
 	.description('Convert polygon geometries into tiles')
 	.argument('<input>', 'Input file path')
 	.argument('<output>', 'Output file path')
-	.action(convertPolygonsToVersatiles);
+	.action((input, output) => convertPolygonsToVersatiles(resolve(cwd, input), resolve(cwd, output)).then(logProgress));
 
 program.parse();

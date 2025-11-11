@@ -1,7 +1,7 @@
 {
   "name": "versatiles-choro-server",
   "version": "0.1.0",
-  "main": "dist/server.js",
+  "main": "dist/lib.js",
   "type": "module",
   "private": true,
   "scripts": {

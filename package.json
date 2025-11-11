@@ -2,13 +2,12 @@
   "name": "versatiles-choro",
   "private": true,
   "workspaces": [
-    "packages/api",
-    "packages/frontend",
-    "packages/server",
-    "packages/versatiles-choro-js"
+    "./packages/*"
   ],
   "scripts": {
     "check": "npm run check -ws",
+    "cli": "npm run cli -w packages/backend",
+    "dev": "npm run dev -w packages/webapp",
     "upgrade": "ncu --workspaces"
   },
   "engines": {

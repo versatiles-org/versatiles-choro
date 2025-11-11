@@ -1,5 +1,6 @@
 
 import { spawn } from 'child_process';
+import { Progress, SpawnProgress } from './progress.js';
 
 function optionsToArgs(options: Record<string, any>): string[] {
 	const args: string[] = [];
@@ -15,39 +16,40 @@ function optionsToArgs(options: Record<string, any>): string[] {
 	return args;
 }
 
-export async function runTippecanoe(inputFile: string, outputFile: string, options?: Record<string, any>): Promise<void> {
+export async function runTippecanoe(inputFile: string, outputFile: string, options?: Record<string, any>): Promise<Progress> {
 	const child = spawn('tippecanoe', [
 		'-o', outputFile,
 		...optionsToArgs(options || {}),
 		inputFile
-	], { stdio: 'inherit' });
+	]);
 
-	return new Promise((resolve, reject) => {
-		child.on('close', (code) => {
-			if (code === 0) {
-				resolve();
-			} else {
-				reject(new Error(`tippecanoe exited with code ${code}`));
-			}
-		});
+	return new SpawnProgress(child, 'tippecanoe', (line) => {
+		let matches;
+
+		matches = /^Reordering geometry: (\d+)%/.exec(line);
+		if (matches) return { progress: Number(matches[1]), message: 'Reordering geometry' };
+
+		matches = /^\s+(\d+\.\d+)%\s+\d+\/\d+\/\d+/.exec(line);
+		if (matches) return { progress: Number(matches[1]), message: 'Building tiles' };
+
+		//console.log(line);
+		return {};
 	});
 }
 
-export async function runVersaTilesConvert(inputFile: string, outputFile: string, options?: Record<string, any>): Promise<void> {
+export async function runVersaTilesConvert(inputFile: string, outputFile: string, options?: Record<string, any>): Promise<Progress> {
 	const child = spawn('versatiles', [
 		'convert',
 		...optionsToArgs(options || {}),
 		inputFile,
 		outputFile,
-	], { stdio: 'inherit' });
+	], { stdio: 'pipe' });
 
-	return new Promise((resolve, reject) => {
-		child.on('close', (code) => {
-			if (code === 0) {
-				resolve();
-			} else {
-				reject(new Error(`versatiles exited with code ${code}`));
-			}
-		});
+	return new SpawnProgress(child, 'versatiles convert', (line) => {
+		let matches;
+		matches = /\(\s*(\d+)%\)/.exec(line);
+		if (matches) return { progress: Number(matches[1]), message: 'Converting tiles' };
+		//console.log(line);
+		return {};
 	});
 }
