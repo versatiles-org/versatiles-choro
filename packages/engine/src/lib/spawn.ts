@@ -1,5 +1,5 @@
 import { spawn } from 'child_process';
-import { Progress, SpawnProgress } from './progress.js';
+import { Progress, SpawnProgress } from '../progress/index.js';
 
 function optionsToArgs(options: Record<string, unknown>): string[] {
 	const args: string[] = [];

@@ -1,5 +1,5 @@
-import { ConcatenatedProgress, Progress } from '../lib.js';
-import { runTippecanoe, runVersaTilesConvert } from './spawn.js';
+import { ConcatenatedProgress, Progress } from '../progress/index.js';
+import { runTippecanoe, runVersaTilesConvert } from '../lib/spawn.js';
 
 export async function convertPolygonsToVersatiles(
 	input: string,

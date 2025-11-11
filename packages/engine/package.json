@@ -2,6 +2,7 @@
 	"name": "@versatiles-choro/engine",
 	"version": "0.1.0",
 	"main": "dist/lib.js",
+	"declaration": "dist/lib.d.ts",
 	"type": "module",
 	"private": true,
 	"scripts": {

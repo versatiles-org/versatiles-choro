@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { convertPolygonsToVersatiles } from './lib/1_geometry.js';
+import { convertPolygonsToVersatiles } from './geometry/convert.js';
 import { logProgress } from './lib.js';
 import { resolve } from 'node:path';
 
