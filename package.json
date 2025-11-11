@@ -9,7 +9,8 @@
   "scripts": {
     "build": "npm run build -ws",
     "check": "npm run check -ws",
-    "upgrade": "npm run upgrade -ws"
+    "upgrade": "npm run upgrade -ws",
+    "server-dev": "tsx server/src/cli.ts server"
   },
   "engines": { "node": ">=24" }
 }
