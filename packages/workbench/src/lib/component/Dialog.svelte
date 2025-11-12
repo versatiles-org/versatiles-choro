@@ -11,7 +11,7 @@
 
 	let dialog: HTMLDialogElement | null = $state(null);
 	$effect(() => {
-		if (showModal) dialog?.showModal();
+		if (showModal) dialog?.showModal(); else dialog?.close();
 	});
 </script>
 
