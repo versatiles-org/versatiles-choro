@@ -45,6 +45,7 @@
 	}
 	button {
 		all: unset;
+		font-family: monospace;
 		cursor: pointer;
 		border: none;
 		background: none;
