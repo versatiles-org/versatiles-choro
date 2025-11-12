@@ -5,4 +5,4 @@
 	let file: FsFile | null = $state(null);
 </script>
 
-<FileSelector bind:showModal bind:file />
+<FileSelector bind:showModal bind:file fileFilter={(name) => /\.(versa|mb|pm)tiles$/.test(name)} />

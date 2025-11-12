@@ -1,15 +1,18 @@
 <script lang="ts">
 	import Dialog from './Dialog.svelte';
 	import { FsDirectory, FsFile, getRootDirectory } from '$lib/filesystem/filesystem.svelte';
+	import type { filterItems } from 'valibot';
 
 	let {
 		initialDirectory,
 		showModal = $bindable(),
-		file = $bindable()
+		file = $bindable(),
+		fileFilter
 	}: {
 		initialDirectory?: FsDirectory;
 		showModal: boolean;
 		file: FsFile | null;
+		fileFilter?: (name: string) => boolean;
 	} = $props();
 
 	let dir = $state(initialDirectory || getRootDirectory());
@@ -26,7 +29,10 @@
 				{#if child instanceof FsDirectory}
 					<button class="directory" onclick={() => (dir = child)}>{child.getName()}/</button>
 				{:else}
-					<button class="file" onclick={() => (file = child)}>{child.getName()}</button>
+					<button
+						class={{ file, disabled: fileFilter && !fileFilter(child.getName()) }}
+						onclick={() => (file = child)}>{child.getName()}</button
+					>
 				{/if}
 			{/each}
 		</div>
@@ -48,5 +54,9 @@
 	}
 	button:hover {
 		background-color: #f0f0f0;
+	}
+	button.disabled {
+		opacity: 0.3;
+		pointer-events: none;
 	}
 </style>

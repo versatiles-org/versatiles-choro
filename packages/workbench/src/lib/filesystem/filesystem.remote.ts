@@ -3,7 +3,7 @@ import * as v from 'valibot';
 import { readdirSync, statSync } from 'fs';
 import { resolve } from 'path';
 
-const DATA_PATH = process.env.DATA_PATH || process.cwd();
+const DATA_PATH = resolve(process.cwd(), process.env.DATA_PATH || '.');
 
 export const getChildren = query(v.string(), async (path) => {
 	path = resolve(DATA_PATH, path.replace(/^\/+/, ''));
