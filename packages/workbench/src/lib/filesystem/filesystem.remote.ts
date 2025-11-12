@@ -5,6 +5,10 @@ import { resolve } from 'path';
 
 const DATA_PATH = resolve(process.cwd(), process.env.DATA_PATH || '.');
 
+export const getDataPath = query(() => {
+	return DATA_PATH;
+});
+
 export const getChildren = query(v.string(), async (path) => {
 	path = resolve(DATA_PATH, path.replace(/^\/+/, ''));
 	return readdirSync(path)
