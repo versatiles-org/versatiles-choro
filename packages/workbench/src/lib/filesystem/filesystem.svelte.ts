@@ -1,4 +1,4 @@
-import {getChildren} from './filesystem.remote';
+import { getChildren } from './filesystem.remote';
 
 
 export class FsDirectory {
@@ -9,11 +9,9 @@ export class FsDirectory {
 		this.parent = parent;
 	}
 	fullPath(): string {
-		if (this.parent) {
-			return this.parent.fullPath() + '/' + this.name;
-		} else {
-			return '/' + this.name;
-		}
+		let path = '';
+		if (this.parent) path += this.parent.fullPath();
+		return cleanPath(path + '/' + this.name);
 	}
 	async getChildren(): Promise<(FsDirectory | FsFile)[]> {
 		const children = await getChildren(this.fullPath());
@@ -44,7 +42,7 @@ export class FsFile {
 		this.size = size;
 	}
 	fullPath(): string {
-		return this.directory.fullPath() + '/' + this.name;
+		return cleanPath(this.directory.fullPath() + '/' + this.name);
 	}
 	getName(): string {
 		return this.name;
@@ -52,3 +50,7 @@ export class FsFile {
 }
 
 export function getRootDirectory() { return new FsDirectory('', null); }
+
+function cleanPath(path: string): string {
+	return path.replace(/\/+/g, '/').replace(/\/$/g, '');
+}
