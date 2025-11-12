@@ -16,10 +16,11 @@
 	},
 	"dependencies": {
 		"@versatiles-choro/engine": "*",
-		"@versatiles-choro/map": "*"
+		"@versatiles-choro/map": "*",
+		"valibot": "^1.1.0"
 	},
 	"devDependencies": {
-		"@sveltejs/adapter-auto": "^7.0.0",
+		"@sveltejs/adapter-node": "^5.4.0",
 		"@sveltejs/kit": "^2.47.1",
 		"@sveltejs/vite-plugin-svelte": "^6.2.1",
 		"@types/node": "^24",

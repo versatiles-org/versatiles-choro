@@ -3,12 +3,8 @@ testdata
 
 # Output
 dist
-.output
-.vercel
-.netlify
-.wrangler
-.svelte-kit
-/build
+packages/workbench/.svelte-kit
+packages/workbench/build
 
 # OS
 .DS_Store
