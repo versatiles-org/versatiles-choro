@@ -1,6 +1,5 @@
 import { getChildren } from './filesystem.remote';
 
-
 export class FsDirectory {
 	private name: string;
 	private parent: FsDirectory | null;
@@ -31,7 +30,6 @@ export class FsDirectory {
 	}
 }
 
-
 export class FsFile {
 	private name: string;
 	private directory: FsDirectory;
@@ -49,7 +47,9 @@ export class FsFile {
 	}
 }
 
-export function getRootDirectory() { return new FsDirectory('', null); }
+export function getRootDirectory() {
+	return new FsDirectory('', null);
+}
 
 function cleanPath(path: string): string {
 	return path.replace(/\/+/g, '/').replace(/\/$/g, '');

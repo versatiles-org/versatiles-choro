@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Dialog from './Dialog.svelte';
 	import { FsDirectory, FsFile, getRootDirectory } from '$lib/filesystem/filesystem.svelte';
-	import type { filterItems } from 'valibot';
 
 	let {
 		initialDirectory,
@@ -31,7 +30,10 @@
 				{:else}
 					<button
 						class={{ file, disabled: fileFilter && !fileFilter(child.getName()) }}
-						onclick={() => {file = child; showModal = false; }}>{child.getName()}</button
+						onclick={() => {
+							file = child;
+							showModal = false;
+						}}>{child.getName()}</button
 					>
 				{/if}
 			{/each}

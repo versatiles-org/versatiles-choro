@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Snippet } from "svelte";
+	import type { Snippet } from 'svelte';
 
 	let {
 		children,
@@ -11,7 +11,8 @@
 
 	let dialog: HTMLDialogElement | null = $state(null);
 	$effect(() => {
-		if (showModal) dialog?.showModal(); else dialog?.close();
+		if (showModal) dialog?.showModal();
+		else dialog?.close();
 	});
 </script>
 

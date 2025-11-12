@@ -7,13 +7,15 @@ const DATA_PATH = resolve(process.cwd(), process.env.DATA_PATH || '.');
 
 export const getChildren = query(v.string(), async (path) => {
 	path = resolve(DATA_PATH, path.replace(/^\/+/, ''));
-	return readdirSync(path).filter(name => !name.startsWith('.')).map((name) => {
-		const childPath = resolve(path, name);
-		const stats = statSync(childPath);
-		return {
-			name,
-			isDirectory: stats.isDirectory(),
-			size: stats.size,
-		}
-	});
+	return readdirSync(path)
+		.filter((name) => !name.startsWith('.'))
+		.map((name) => {
+			const childPath = resolve(path, name);
+			const stats = statSync(childPath);
+			return {
+				name,
+				isDirectory: stats.isDirectory(),
+				size: stats.size
+			};
+		});
 });
