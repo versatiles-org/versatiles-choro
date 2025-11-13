@@ -29,7 +29,6 @@ export class SpawnProgress extends Progress {
 
 	private setupListeners() {
 		this.childProcess.on('close', (code) => {
-			console.log(`${this.name} process closed with code ${code}`);
 			if (code === 0) {
 				if (this.onCompleteCb) this.onCompleteCb();
 			} else {
@@ -37,11 +36,9 @@ export class SpawnProgress extends Progress {
 			}
 		});
 		this.childProcess.stderr?.on('data', (data) => {
-			console.log(`${this.name} process stderr: ${data.toString()}`);
 			this.handleLine(data.toString());
 		});
 		this.childProcess.stdout?.on('data', (data) => {
-			console.log(`${this.name} process stdout: ${data.toString()}`);
 			this.handleLine(data.toString());
 		});
 	}

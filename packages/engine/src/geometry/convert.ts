@@ -11,7 +11,7 @@ export function convertPolygonsToVersatiles(input: string, output: string): Prog
 		() =>
 			runTippecanoe(input, mbtilesFile, {
 				force: true,
-				'maximum-zoom': 14
+				'maximum-zoom': 'g',
 			}),
 		() =>
 			runVersaTilesConvert(mbtilesFile, output, {
