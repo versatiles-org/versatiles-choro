@@ -19,7 +19,8 @@
 
 <Dialog bind:showModal>
 	<div class="file-selector">
-		<h3>Current Directory: {dir.fullPath()}</h3>
+		<h3>Select File:</h3>
+		<p>{dir.fullPath()}</p>
 		<div>
 			{#if dir.getParent()}
 				<button class="directory" onclick={() => (dir = dir.getParent()!)}>..</button>
@@ -63,5 +64,8 @@
 	button.file.disabled {
 		opacity: 0.3;
 		pointer-events: none;
+	}
+	h3 {
+		margin: 0;
 	}
 </style>
