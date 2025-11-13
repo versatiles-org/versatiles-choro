@@ -84,7 +84,7 @@
 
 	.progress-bar {
 		height: 100%;
-		background-color:hsl(220, 100%, 40%);
+		background-color: hsl(220, 100%, 40%);
 		transition: width 0.2s ease-in-out;
 	}
 

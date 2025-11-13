@@ -1,7 +1,6 @@
 import type { Progress } from '@versatiles-choro/engine';
 export * as engine from '@versatiles-choro/engine';
 
-
 export function progressToStream(progress: Progress, signal: AbortSignal): Response {
 	const encoder = new TextEncoder();
 	let finished = false;
@@ -16,7 +15,8 @@ export function progressToStream(progress: Progress, signal: AbortSignal): Respo
 			}
 			progress.onProgress((data) => send({ event: 'progress', data }));
 			progress.onMessage((data) => send({ event: 'message', data }));
-			progress.done()
+			progress
+				.done()
 				.then(() => {
 					send({ event: 'done' });
 					finished = true;
@@ -35,4 +35,4 @@ export function progressToStream(progress: Progress, signal: AbortSignal): Respo
 			'Cache-Control': 'no-cache'
 		}
 	});
-};
+}

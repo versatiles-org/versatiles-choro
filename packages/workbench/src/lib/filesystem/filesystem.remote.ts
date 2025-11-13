@@ -4,7 +4,6 @@ import { readdirSync, statSync } from 'fs';
 import { resolve } from 'path';
 import { DATA_PATH } from './filesystem.server';
 
-
 export const getDataPath = query(() => {
 	return DATA_PATH;
 });
