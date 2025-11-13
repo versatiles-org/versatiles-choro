@@ -1,11 +1,8 @@
-import { CompleteCb, MessageCb, Progress, ProgressCb } from './types.js';
+import { Progress } from './types.js';
 
 export class ConcatenatedProgress extends Progress {
 	private todos: (() => Progress | Promise<Progress>)[];
 	private currentProgress: null | Progress = null;
-	private onProgressCb: null | ProgressCb = null;
-	private onMessageCb: null | MessageCb = null;
-	private onCompleteCb: null | CompleteCb = null;
 
 	constructor(progresses: (() => Progress | Promise<Progress>)[]) {
 		super();
@@ -15,37 +12,24 @@ export class ConcatenatedProgress extends Progress {
 
 	private async runNext() {
 		if (this.todos.length === 0) {
-			if (this.onCompleteCb) this.onCompleteCb();
+			this.setComplete();
 			return;
 		}
 		const nextTodo = this.todos.shift()!;
 		this.currentProgress = await nextTodo();
 		this.currentProgress.onProgress((progress) => {
-			if (this.onProgressCb) this.onProgressCb(progress);
+			this.setProgress(progress);
 		});
 		this.currentProgress.onMessage((message, isError) => {
-			if (this.onMessageCb) this.onMessageCb(message, isError);
+			this.setMessage(message, isError);
 		});
 		this.currentProgress.onComplete(() => {
 			this.runNext();
 		});
 	}
 
-	onProgress(cb: ProgressCb): void {
-		this.onProgressCb = cb;
-	}
-
-	onMessage(cb: MessageCb): void {
-		this.onMessageCb = cb;
-	}
-
-	onComplete(cb: CompleteCb): void {
-		this.onCompleteCb = cb;
-	}
-
-	abort(): void {
+	aborting(): void {
 		this.currentProgress?.abort();
 		this.todos = [];
-		if (this.onCompleteCb) this.onCompleteCb();
 	}
 }

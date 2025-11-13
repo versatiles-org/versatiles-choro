@@ -1,19 +1,14 @@
 import { ChildProcess } from 'child_process';
-import { CompleteCb, MessageCb, Progress, ProgressCb } from './types.js';
+import { Progress } from './types.js';
 
 export class SpawnProgress extends Progress {
 	private childProcess: ChildProcess;
 	private name: string;
-	private lastMessage: string = '';
-	private lastProgress: number = -1;
 	private messageFilter: (line: string) => {
 		progress?: number;
 		message?: string;
 		isError?: boolean;
 	};
-	private onProgressCb: null | ProgressCb = null;
-	private onMessageCb: null | MessageCb = null;
-	private onCompleteCb: null | CompleteCb = null;
 
 	constructor(
 		childProcess: ChildProcess,
@@ -30,9 +25,9 @@ export class SpawnProgress extends Progress {
 	private setupListeners() {
 		this.childProcess.on('close', (code) => {
 			if (code === 0) {
-				if (this.onCompleteCb) this.onCompleteCb();
+				this.setComplete();
 			} else {
-				if (this.onMessageCb) this.onMessageCb(`${this.name} exited with code ${code}`, true);
+				this.setMessage(`${this.name} exited with code ${code}`, true);
 			}
 		});
 		this.childProcess.stderr?.on('data', (data) => {
@@ -44,34 +39,16 @@ export class SpawnProgress extends Progress {
 	}
 
 	private handleLine(line: string) {
-		const filteredMessage = this.messageFilter(line);
-		if (filteredMessage.message !== undefined && this.onMessageCb) {
-			if (filteredMessage.message !== this.lastMessage) {
-				this.lastMessage = filteredMessage.message;
-				this.onMessageCb(filteredMessage.message, filteredMessage.isError ?? false);
-			}
+		const res = this.messageFilter(line);
+		if (res.message !== undefined) {
+			this.setMessage(res.message, res.isError ?? false);
 		}
-		if (filteredMessage.progress !== undefined && this.onProgressCb) {
-			if (filteredMessage.progress !== this.lastProgress) {
-				this.lastProgress = filteredMessage.progress;
-				this.onProgressCb(filteredMessage.progress);
-			}
+		if (res.progress !== undefined) {
+			this.setProgress(res.progress);
 		}
 	}
 
-	onProgress(cb: ProgressCb): void {
-		this.onProgressCb = cb;
-	}
-
-	onMessage(cb: MessageCb): void {
-		this.onMessageCb = cb;
-	}
-
-	onComplete(cb: CompleteCb): void {
-		this.onCompleteCb = cb;
-	}
-
-	abort(): void {
+	aborting(): void {
 		this.childProcess.kill();
 	}
 }
