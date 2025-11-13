@@ -13,14 +13,12 @@ export function convertPolygonsToVersatiles(input: string, output: string): Prog
 		() =>
 			runTippecanoe(input, mbtilesFile, {
 				force: true,
-				'maximum-zoom': 'g',
+				'maximum-zoom': 'g'
 			}),
 		() =>
 			runVersaTilesConvert(mbtilesFile, output, {
 				compress: 'brotli'
 			}),
-		() => new SimpleProgress('Cleaning up temporary files', [
-			() => unlink(mbtilesFile)
-		])
+		() => new SimpleProgress('Cleaning up temporary files', [() => unlink(mbtilesFile)])
 	]);
 }
