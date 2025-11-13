@@ -1,19 +1,10 @@
-import { CompleteCb, MessageCb, Progress, ProgressCb } from './types.js';
+import { Progress } from './types.js';
 
 export class SimpleProgress extends Progress {
-	private message: string = '';
-	private progress: number = 0;
 	private callbacks: (() => void | Promise<void>)[];
-	private onProgressCb: null | ProgressCb = null;
-	private onMessageCb: null | MessageCb = null;
-	private onCompleteCb: null | CompleteCb = null;
 
-	constructor(
-		message: string,
-		callbacks: (() => void | Promise<void>)[],
-	) {
-		super();
-		this.message = message;
+	constructor(message: string, callbacks: (() => void | Promise<void>)[]) {
+		super(message);
 		this.callbacks = callbacks.slice();
 		this.runNext();
 	}
@@ -32,21 +23,7 @@ export class SimpleProgress extends Progress {
 		}, 1);
 	}
 
-	onProgress(cb: ProgressCb): void {
-		this.onProgressCb = cb;
-		cb(this.progress);
-	}
-
-	onMessage(cb: MessageCb): void {
-		this.onMessageCb = cb;
-		cb(this.message, false);
-	}
-
-	onComplete(cb: CompleteCb): void {
-		this.onCompleteCb = cb;
-	}
-
-	abort(): void {
+	aborting(): void {
 		this.callbacks = [];
 	}
 }
