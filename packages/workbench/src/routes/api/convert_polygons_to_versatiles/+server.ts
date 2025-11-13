@@ -5,8 +5,8 @@ import { resolve } from '$lib/filesystem/filesystem.server';
 
 export const POST: RequestHandler = async ({ request }) => {
   const params = await request.json();
-  let input = params.input;
-  let output = params.output;
+  const input = params.input;
+  const output = params.output;
 
   if (typeof input !== 'string' || typeof output !== 'string') {
     return new Response('Invalid input or output parameter', { status: 400 });

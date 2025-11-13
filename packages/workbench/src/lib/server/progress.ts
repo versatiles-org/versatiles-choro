@@ -5,7 +5,6 @@ export * as engine from '@versatiles-choro/engine';
 export function progressToStream(progress: Progress, signal: AbortSignal): Response {
 	const encoder = new TextEncoder();
 	let finished = false;
-	let lastProgress: number = -1;
 	signal.addEventListener('abort', () => {
 		finished = true;
 	});
@@ -15,13 +14,7 @@ export function progressToStream(progress: Progress, signal: AbortSignal): Respo
 				if (finished) return;
 				controller.enqueue(encoder.encode(JSON.stringify(obj) + '\n'));
 			}
-			progress.onProgress((data) => {
-				let progress = Math.round(Number(data));
-				if (progress !== lastProgress) {
-					lastProgress = progress;
-					send({ event: 'progress', data: progress });
-				}
-			});
+			progress.onProgress((data) => send({ event: 'progress', data }));
 			progress.onMessage((data) => send({ event: 'message', data }));
 			progress.done()
 				.then(() => {
