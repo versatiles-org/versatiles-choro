@@ -1,7 +1,7 @@
 import { ChildProcess } from 'child_process';
 import { CompleteCb, MessageCb, Progress, ProgressCb } from './types.js';
 
-export class SpawnProgress implements Progress {
+export class SpawnProgress extends Progress {
 	private childProcess: ChildProcess;
 	private name: string;
 	private lastMessage: string = '';
@@ -20,6 +20,7 @@ export class SpawnProgress implements Progress {
 		name: string,
 		messageFilter: (line: string) => { progress?: number; message?: string; isError?: boolean }
 	) {
+		super();
 		this.childProcess = childProcess;
 		this.name = name;
 		this.messageFilter = messageFilter;
@@ -28,6 +29,7 @@ export class SpawnProgress implements Progress {
 
 	private setupListeners() {
 		this.childProcess.on('close', (code) => {
+			console.log(`${this.name} process closed with code ${code}`);
 			if (code === 0) {
 				if (this.onCompleteCb) this.onCompleteCb();
 			} else {
@@ -35,9 +37,11 @@ export class SpawnProgress implements Progress {
 			}
 		});
 		this.childProcess.stderr?.on('data', (data) => {
+			console.log(`${this.name} process stderr: ${data.toString()}`);
 			this.handleLine(data.toString());
 		});
 		this.childProcess.stdout?.on('data', (data) => {
+			console.log(`${this.name} process stdout: ${data.toString()}`);
 			this.handleLine(data.toString());
 		});
 	}

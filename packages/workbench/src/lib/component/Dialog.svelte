@@ -2,9 +2,11 @@
 	import type { Snippet } from 'svelte';
 
 	let {
+		title,
 		children,
 		showModal = $bindable()
 	}: {
+		title?: string;
 		children: Snippet;
 		showModal: boolean;
 	} = $props();
@@ -23,6 +25,9 @@
 		if (e.target === dialog) dialog?.close();
 	}}
 >
+	{#if title}
+		<h2>{title}</h2>
+	{/if}
 	{@render children?.()}
 </dialog>
 

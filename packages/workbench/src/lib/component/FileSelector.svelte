@@ -29,7 +29,7 @@
 					<button class="directory" onclick={() => (dir = child)}>{child.getName()}/</button>
 				{:else}
 					<button
-						class={{ file, disabled: fileFilter && !fileFilter(child.getName()) }}
+						class={{ file: true, disabled: fileFilter && !fileFilter(child.getName()) }}
 						onclick={() => {
 							file = child.fullPath();
 							showModal = false;
@@ -45,7 +45,8 @@
 	:global(dialog) {
 		min-width: 80vw;
 	}
-	button {
+	button.directory,
+	button.file {
 		all: unset;
 		font-family: monospace;
 		cursor: pointer;
@@ -55,10 +56,11 @@
 		text-align: left;
 		width: 100%;
 	}
-	button:hover {
+	button.directory:hover,
+	button.file:hover {
 		background-color: #f0f0f0;
 	}
-	button.disabled {
+	button.file.disabled {
 		opacity: 0.3;
 		pointer-events: none;
 	}

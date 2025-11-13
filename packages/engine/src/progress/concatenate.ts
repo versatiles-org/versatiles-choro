@@ -1,6 +1,6 @@
 import { CompleteCb, MessageCb, Progress, ProgressCb } from './types.js';
 
-export class ConcatenatedProgress implements Progress {
+export class ConcatenatedProgress extends Progress {
 	private todos: (() => Promise<Progress>)[];
 	private currentProgress: null | Progress = null;
 	private onProgressCb: null | ProgressCb = null;
@@ -8,6 +8,7 @@ export class ConcatenatedProgress implements Progress {
 	private onCompleteCb: null | CompleteCb = null;
 
 	constructor(progresses: (() => Promise<Progress>)[]) {
+		super();
 		this.todos = progresses;
 		this.runNext();
 	}

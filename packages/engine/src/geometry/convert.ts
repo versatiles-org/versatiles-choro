@@ -1,10 +1,7 @@
 import { ConcatenatedProgress, Progress } from '../progress/index.js';
 import { runTippecanoe, runVersaTilesConvert } from '../lib/spawn.js';
 
-export async function convertPolygonsToVersatiles(
-	input: string,
-	output: string
-): Promise<Progress> {
+export function convertPolygonsToVersatiles(input: string, output: string): Progress {
 	if (!output.endsWith('.versatiles')) {
 		throw new Error('Output file must have a .versatiles extension');
 	}

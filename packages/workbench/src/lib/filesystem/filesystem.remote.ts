@@ -2,8 +2,8 @@ import { query } from '$app/server';
 import * as v from 'valibot';
 import { readdirSync, statSync } from 'fs';
 import { resolve } from 'path';
+import { DATA_PATH } from './filesystem.server';
 
-const DATA_PATH = resolve(process.cwd(), process.env.DATA_PATH || '.');
 
 export const getDataPath = query(() => {
 	return DATA_PATH;

@@ -1,6 +1,6 @@
 import { Progress } from './types.js';
 
-export function logProgress(progress: Progress) {
+export async function logProgress(progress: Progress) {
 	let message = '';
 	let hasErrors = false;
 	let position = 0;
@@ -20,4 +20,8 @@ export function logProgress(progress: Progress) {
 		if (position > 0) line += `: ${position} %`;
 		process.stdout.write(`\x1b[2K\r${line}\x1b[0m\x1b[?25l`);
 	}
+
+	return new Promise<void>((resolve) => {
+		progress.onComplete(() => resolve());
+	});
 }

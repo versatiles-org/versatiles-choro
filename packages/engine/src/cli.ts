@@ -17,8 +17,10 @@ program
 	.description('Convert polygon geometries into tiles')
 	.argument('<input>', 'Input file path')
 	.argument('<output>', 'Output file path')
-	.action((input, output) =>
-		convertPolygonsToVersatiles(resolve(cwd, input), resolve(cwd, output)).then(logProgress)
-	);
+	.action((input, output) => {
+		logProgress(
+			convertPolygonsToVersatiles(resolve(cwd, String(input)), resolve(cwd, String(output)))
+		);
+	});
 
 program.parse();
