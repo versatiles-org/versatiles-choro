@@ -21,7 +21,7 @@
 
 {#if file}
 	<Progress
-		url="/api/convert_polygons_to_versatiles"
+		url="/api/convert/polygons"
 		params={{ input: file, output: file + '.versatiles' }}
 	/>
 {/if}
