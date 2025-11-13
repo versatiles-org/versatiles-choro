@@ -6,12 +6,14 @@
 	"type": "module",
 	"private": true,
 	"scripts": {
-		"check": "npm run build",
-		"cli": "tsx src/cli.ts",
 		"build": "tsc",
+		"check": "npm run lint && npm run build && npm run test",
+		"cli": "tsx src/cli.ts",
 		"dev": "tsx src/cli.ts server-dev",
+		"format": "prettier --write .",
+		"lint": "eslint . && prettier --check .",
 		"test": "",
-		"upgrade": "ncu -u && npm install"
+		"upgrade": "ncu -u"
 	},
 	"dependencies": {
 		"commander": "^14.0.2",
