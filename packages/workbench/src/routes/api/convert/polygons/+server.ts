@@ -1,4 +1,3 @@
-// src/routes/api/convert-polygons/+server.ts
 import type { RequestHandler } from './$types';
 import { engine, progressToStream } from '$lib/server/progress';
 import { resolve } from '$lib/filesystem/filesystem.server';

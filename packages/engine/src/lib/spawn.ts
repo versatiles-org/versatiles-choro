@@ -1,4 +1,4 @@
-import { spawn } from 'child_process';
+import { ChildProcess, spawn } from 'child_process';
 import { Progress, SpawnProgress } from '../progress/index.js';
 
 function optionsToArgs(options: Record<string, unknown>): string[] {
@@ -52,4 +52,16 @@ export async function runVersaTilesConvert(
 
 		return {};
 	});
+}
+
+export function runVersaTilesServer(
+	inputFile: string,
+	port: number,
+): ChildProcess {
+	console.log(`Starting VersaTiles server on port ${port} with input file ${inputFile}`);
+	return spawn(
+		'versatiles',
+		['server', '--port', String(port), `[${port}]${inputFile}`],
+		{ stdio: 'inherit' }
+	);
 }

@@ -8,7 +8,7 @@
 	"scripts": {
 		"check": "npm run lint && npm run check --workspaces",
 		"cli": "npm run cli --workspace packages/engine",
-		"dev": "npm run dev --workspace packages/workbench",
+		"dev": "npm run build --workspace packages/engine && npm run dev --workspace packages/workbench",
 		"format": "prettier --write .",
 		"lint": "eslint . && npm run lint --workspace packages/workbench && prettier --check .",
 		"upgrade": "ncu --workspaces"
