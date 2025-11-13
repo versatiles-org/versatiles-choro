@@ -1,5 +1,7 @@
 import { ConcatenatedProgress, Progress } from '../progress/index.js';
 import { runTippecanoe, runVersaTilesConvert } from '../lib/spawn.js';
+import { SimpleProgress } from '../progress/simple.js';
+import { unlink } from 'fs/promises';
 
 export function convertPolygonsToVersatiles(input: string, output: string): Progress {
 	if (!output.endsWith('.versatiles')) {
@@ -16,6 +18,9 @@ export function convertPolygonsToVersatiles(input: string, output: string): Prog
 		() =>
 			runVersaTilesConvert(mbtilesFile, output, {
 				compress: 'brotli'
-			})
+			}),
+		() => new SimpleProgress('Cleaning up temporary files', [
+			() => unlink(mbtilesFile)
+		])
 	]);
 }
