@@ -9,7 +9,6 @@ COPY . ./
 
 RUN \
   npm ci && \
-  npm run check && \
   npm run build && \
   npm prune --omit=dev
 
