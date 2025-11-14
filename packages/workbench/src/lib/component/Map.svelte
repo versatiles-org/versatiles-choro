@@ -1,7 +1,7 @@
 <script lang="ts">
-	import maplibregl, { type Map } from 'maplibre-gl';
+	import maplibregl, { type LngLatBoundsLike, type Map } from 'maplibre-gl';
 	import 'maplibre-gl/dist/maplibre-gl.css';
-	import {  createStyle, getOverlayStyle, overlayStyles, type BackgroundMap } from './map';
+	import { createStyle, getTileSource, overlayStyles, type BackgroundMap } from './map';
 
 	// --- Props  --------------------------------------------------------------
 	let {
@@ -28,19 +28,20 @@
 	$effect(() => {
 		(async () => {
 			if (!container) return;
+			let bounds: LngLatBoundsLike = [-23.895, 34.9, 45.806, 71.352];
 
 			const style = createStyle(backgroundMap);
 
 			if (overlayFile) {
-				const overlayStyle = await getOverlayStyle(overlayFile);
-				console.log(overlayStyle);
-				overlayStyles(style, overlayStyle);
+				const source = await getTileSource(overlayFile);
+				overlayStyles(style, source.getStyle());
+				bounds = source.getBounds() ?? bounds;
 			}
 
 			map = new maplibregl.Map({
 				container,
 				style,
-				bounds: [-23.895, 34.9, 45.806, 71.352]
+				bounds
 			});
 
 			map.on('load', () => onload?.(map!));

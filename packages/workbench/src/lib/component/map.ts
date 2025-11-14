@@ -1,8 +1,41 @@
 
-import { colorful, guessStyle, type StyleBuilderOptions } from "@versatiles/style";
+import { colorful, guessStyle, type StyleBuilderOptions, type TileJSONSpecification } from "@versatiles/style";
 import type { StyleSpecification } from "maplibre-gl";
 
 export type BackgroundMap = 'Colorful' | 'Gray' | 'GrayBright' | 'GrayDark' | 'None';
+
+class TileSource {
+	prefix: string;
+	tileJson: TileJSONSpecification | null = null;
+	constructor(prefix: string) {
+		this.prefix = prefix;
+	}
+	async init(): Promise<void> {
+		let tileJson = await (await fetch(`${this.resolve('meta.json')}`)).json() as TileJSONSpecification;
+		tileJson.tiles = [this.resolve('{z}/{x}/{y}')];
+		this.tileJson = tileJson;
+	}
+	resolve(path: string): string {
+		return `${this.prefix}${path}`;
+	}
+	getTileJson(): TileJSONSpecification {
+		if (!this.tileJson) {
+			throw new Error('TileSource not initialized');
+		}
+		return this.tileJson!;
+	}
+	getStyle(): StyleSpecification {
+		if (!this.tileJson) {
+			throw new Error('TileSource not initialized');
+		}
+		const style = guessStyle(this.getTileJson());
+		style.layers = style.layers?.filter(layer => layer.type !== 'background');
+		return style;
+	}
+	getBounds(): [number, number, number, number] | undefined {
+		return this.tileJson?.bounds;
+	}
+}
 
 export function createStyle(backgroundMap: BackgroundMap | undefined): StyleSpecification {
 	const base: StyleBuilderOptions = {
@@ -33,15 +66,6 @@ export function createStyle(backgroundMap: BackgroundMap | undefined): StyleSpec
 	}
 }
 
-export async function getOverlayStyle(overlayFile: string): Promise<StyleSpecification> {
-	const resolver = await getTileSourceUrlResolver(overlayFile);
-	const tileJson = await (await fetch(`${resolver('meta.json')}`)).json();
-	tileJson.tiles = [resolver('{z}/{x}/{y}')];
-	const style = await guessStyle(tileJson);
-	style.layers = style.layers?.filter(layer => layer.type !== 'background');
-	return style;
-}
-
 export function overlayStyles(style: StyleSpecification, overlayStyle: StyleSpecification): void {
 	if (!overlayStyle.layers) return;
 	console.log(overlayStyle.layers);
@@ -55,12 +79,14 @@ export function overlayStyles(style: StyleSpecification, overlayStyle: StyleSpec
 }
 
 
-async function getTileSourceUrlResolver(file: string): Promise<(url: string) => string> {
+export async function getTileSource(file: string): Promise<TileSource> {
 	const res = await fetch(`/api/tiles/init?file=${encodeURIComponent(file)}`);
 	if (!res.ok) {
 		throw new Error(`Failed to initialize tile server: ${await res.text()}`);
 	}
 	const data = await res.json() as { id: number };
 	const origin = window.location.origin;
-	return path => `${origin}/api/tiles/load?id=${data.id}&path=${path}`;
+	let source = new TileSource(`${origin}/api/tiles/load?id=${data.id}&path=`);
+	await source.init();
+	return source;
 }
