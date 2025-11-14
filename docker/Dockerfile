@@ -5,7 +5,11 @@ FROM node:24-alpine AS build
 WORKDIR /app
 COPY . ./
 
-RUN npm ci && npm run check && npm run build && npm prune --omit=dev
+RUN \
+  npm ci && \
+  npm run check && \
+  npm run build && \
+  npm prune --omit=dev
 
 # ---------- Runtime stage ----------
 FROM node:24-alpine
@@ -23,7 +27,9 @@ COPY --from=build /app/packages ./packages
 COPY testdata/1_bundeslaender.geojson testdata/3_kreise.geojson ./data/
 
 # kill npm cache + root npm dir in the final stage
-RUN npm cache clean --force && rm -rf /root/.npm
+RUN \
+  npm cache clean --force && \
+  rm -rf /root/.npm
 
 EXPOSE 8080
 ENV NODE_ENV=production
