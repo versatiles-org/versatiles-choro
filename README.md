@@ -1,4 +1,8 @@
+
 # VersaTiles Choro
+
+> [!CAUTION]
+> This project is under heavy development! Please do not use it in production.
 
 **An open-source toolkit for creating, editing, and publishing choropleth maps — from raw geometries to fully interactive web visualizations.**
 
@@ -16,6 +20,35 @@ The system combines:
 - a **Svelte-based configuration editor** for styling, tooltips, and behavior.
 
 It enables anyone to create polished, data-driven maps with minimal technical overhead, while keeping all data local and reproducible.
+
+## Running the Docker Container
+
+A prebuilt Docker image is available on GitHub Container Registry:
+
+https://github.com/versatiles-org/versatiles-choro/pkgs/container/versatiles-choro
+
+To start the WebUI locally, run:
+
+```
+docker run -it -p 3000:3000 ghcr.io/versatiles-org/versatiles-choro:latest
+```
+
+The interface will be available at:
+
+```
+http://localhost:3000
+```
+
+You can mount a local directory to persist outputs such as `.versatiles` packages or exported bundles:
+
+```
+docker run -it \
+  -p 3000:3000 \
+  -v $(pwd):/app/data \
+  ghcr.io/versatiles-org/versatiles-choro:latest
+```
+
+The directory is shared with the container and used for reading input files and writing results.
 
 ---
 
