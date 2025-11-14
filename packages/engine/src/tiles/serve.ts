@@ -12,7 +12,7 @@ export async function startTileServer(filename: string): Promise<{ port: number;
 		if (port > MAX_PORT) port = MIN_PORT;
 	}
 	ports.add(port);
-	const child = runVersaTilesServer(filename, port);
+	runVersaTilesServer(filename, port);
 
 	// wait until the there is a response at `http://localhost:${port}/tiles/index.json`
 	await new Promise<void>((resolve) => {
