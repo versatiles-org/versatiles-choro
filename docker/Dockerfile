@@ -11,7 +11,7 @@ RUN npm ci && npm run check && npm run build && npm prune --omit=dev
 # ---------- Runtime stage ----------
 FROM node:24-alpine
 
-RUN apk add --no-cache tini
+RUN apk add --no-cache tini sqlite-libs
 
 COPY --from=tippecanoe /app/versatiles /usr/local/bin/
 COPY --from=tippecanoe /usr/local/bin/tippecanoe /usr/local/bin/
