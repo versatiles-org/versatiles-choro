@@ -24,7 +24,7 @@ export async function startTileServer(filename: string): Promise<{ port: number 
 					clearInterval(interval);
 					resolve();
 				}
-			} catch (err) {
+			} catch (_) {
 				// Ignore connection errors (ECONNREFUSED, timeouts, etc.) and retry
 			}
 		}, 100);
