@@ -4,7 +4,6 @@ FROM versatiles/versatiles-tippecanoe:latest AS tippecanoe
 FROM node:24-alpine AS build
 WORKDIR /app
 COPY . ./
-RUN ls -lah
 
 RUN npm ci && npm run check && npm run build && npm prune --omit=dev
 
