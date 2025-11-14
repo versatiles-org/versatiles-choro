@@ -1,38 +1,7 @@
 <script lang="ts">
-	import maplibregl, { type Map, type StyleSpecification } from 'maplibre-gl';
+	import maplibregl, { type Map } from 'maplibre-gl';
 	import 'maplibre-gl/dist/maplibre-gl.css';
-	import * as VersatilesStyle from '@versatiles/style';
-
-	type BackgroundMap = 'Colorful' | 'Gray' | 'GrayBright' | 'GrayDark' | 'None';
-
-	function createStyle(backgroundMap: BackgroundMap | undefined): StyleSpecification {
-		const base: VersatilesStyle.StyleBuilderOptions = {
-			baseUrl: 'https://tiles.versatiles.org',
-			language: 'de'
-		};
-
-		switch (backgroundMap) {
-			case 'Colorful':
-				return VersatilesStyle.colorful(base);
-			case 'Gray':
-				return VersatilesStyle.colorful({ ...base, recolor: { saturate: -1 } });
-			case 'GrayBright':
-				return VersatilesStyle.colorful({
-					...base,
-					recolor: { saturate: -1, blendColor: '#ffffff', blend: 0.5 }
-				});
-			case 'GrayDark':
-				return VersatilesStyle.colorful({
-					...base,
-					recolor: { saturate: -1, invertBrightness: true, blendColor: '#000000', blend: 0.5 }
-				});
-			case undefined:
-			case 'None':
-				return { version: 8, sources: {}, layers: [] };
-			default:
-				throw new Error(`Unknown background map: ${backgroundMap}`);
-		}
-	}
+	import { createStyle, type BackgroundMap } from './map';
 
 	// --- Props  --------------------------------------------------------------
 	let {
