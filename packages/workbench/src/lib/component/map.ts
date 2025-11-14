@@ -1,6 +1,10 @@
-
-import { colorful, guessStyle, type StyleBuilderOptions, type TileJSONSpecification } from "@versatiles/style";
-import type { StyleSpecification } from "maplibre-gl";
+import {
+	colorful,
+	guessStyle,
+	type StyleBuilderOptions,
+	type TileJSONSpecification
+} from '@versatiles/style';
+import type { StyleSpecification } from 'maplibre-gl';
 
 export type BackgroundMap = 'Colorful' | 'Gray' | 'GrayBright' | 'GrayDark' | 'None';
 
@@ -11,7 +15,9 @@ class TileSource {
 		this.prefix = prefix;
 	}
 	async init(): Promise<void> {
-		let tileJson = await (await fetch(`${this.resolve('meta.json')}`)).json() as TileJSONSpecification;
+		const tileJson = (await (
+			await fetch(`${this.resolve('meta.json')}`)
+		).json()) as TileJSONSpecification;
 		tileJson.tiles = [this.resolve('{z}/{x}/{y}')];
 		this.tileJson = tileJson;
 	}
@@ -29,7 +35,7 @@ class TileSource {
 			throw new Error('TileSource not initialized');
 		}
 		const style = guessStyle(this.getTileJson());
-		style.layers = style.layers?.filter(layer => layer.type !== 'background');
+		style.layers = style.layers?.filter((layer) => layer.type !== 'background');
 		return style;
 	}
 	getBounds(): [number, number, number, number] | undefined {
@@ -71,7 +77,7 @@ export function createStyle(backgroundMap: BackgroundMap | undefined): StyleSpec
 			throw new Error(`Unknown background map: ${backgroundMap}`);
 	}
 
-	style.layers = style.layers?.filter(layer => {
+	style.layers = style.layers?.filter((layer) => {
 		switch (layer.id.split(/[-:]/)[0]) {
 			case 'street':
 			case 'transport':
@@ -111,15 +117,14 @@ export function overlayStyles(style: StyleSpecification, overlayStyle: StyleSpec
 	};
 }
 
-
 export async function getTileSource(file: string): Promise<TileSource> {
 	const res = await fetch(`/api/tiles/init?file=${encodeURIComponent(file)}`);
 	if (!res.ok) {
 		throw new Error(`Failed to initialize tile server: ${await res.text()}`);
 	}
-	const data = await res.json() as { id: number };
+	const data = (await res.json()) as { id: number };
 	const origin = window.location.origin;
-	let source = new TileSource(`${origin}/api/tiles/load?id=${data.id}&path=`);
+	const source = new TileSource(`${origin}/api/tiles/load?id=${data.id}&path=`);
 	await source.init();
 	return source;
 }
