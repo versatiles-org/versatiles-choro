@@ -6,9 +6,9 @@ export const GET: RequestHandler = async ({ request }) => {
 	const file = new URL(request.url).searchParams.get('file');
 
 	if (typeof file !== 'string') {
-		return new Response('Invalid file parameter', { status: 400 });
+		return new Response(`Invalid file parameter "${file}"`, { status: 400 });
 	}
 
 	const { port } = await engine.startTileServer(resolve(file));
-	return new Response(JSON.stringify({ port }), { status: 200 });
+	return new Response(JSON.stringify({ id: port }), { status: 200 });
 };

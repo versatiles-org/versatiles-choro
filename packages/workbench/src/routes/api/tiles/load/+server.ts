@@ -2,14 +2,18 @@ import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ request }) => {
 	const params = new URL(request.url).searchParams;
-	const port = params.get('port');
+	const id = params.get('id');
 	const path = params.get('path');
 
-	if (typeof port !== 'string' || typeof path !== 'string') {
-		return new Response('Invalid port or path parameter', { status: 400 });
+	if (typeof id !== 'string' || !/^\d+$/.test(id)) {
+		return new Response(`Invalid or missing id parameter "${id}"`, { status: 400 });
 	}
 
-	const url = `http://localhost:${port}/tiles/${port}/${path}`;
+	if (typeof path !== 'string') {
+		return new Response(`Invalid or missing path parameter "${path}"`, { status: 400 });
+	}
+
+	const url = `http://localhost:${id}/tiles/${id}/${path}`;
 	const newRequest = new Request(url, {
 		method: 'GET'
 	});

@@ -1,17 +1,19 @@
 <script lang="ts">
 	import maplibregl, { type Map } from 'maplibre-gl';
 	import 'maplibre-gl/dist/maplibre-gl.css';
-	import { createStyle, type BackgroundMap } from './map';
+	import {  createStyle, getOverlayStyle, overlayStyles, type BackgroundMap } from './map';
 
 	// --- Props  --------------------------------------------------------------
 	let {
 		backgroundMap,
+		overlayFile,
 		onload,
 		onclick,
 		onmove,
 		onerror
 	}: {
 		backgroundMap?: BackgroundMap;
+		overlayFile?: string;
 		onload?: (map: Map) => void;
 		onclick?: (payload: { lngLat: maplibregl.LngLat; originalEvent: MouseEvent }) => void;
 		onmove?: (map: Map) => void;
@@ -24,29 +26,37 @@
 
 	// --- Lifecycle: onMount that auto-cleans ---------------------------------
 	$effect(() => {
-		if (!container) return;
+		(async () => {
+			if (!container) return;
 
-		const style = createStyle(backgroundMap);
+			const style = createStyle(backgroundMap);
 
-		map = new maplibregl.Map({
-			container,
-			style,
-			bounds: [-23.895, 34.9, 45.806, 71.352]
-		});
+			if (overlayFile) {
+				const overlayStyle = await getOverlayStyle(overlayFile);
+				console.log(overlayStyle);
+				overlayStyles(style, overlayStyle);
+			}
 
-		map.on('load', () => onload?.(map!));
-		map.on('click', (e) =>
-			onclick?.({
-				lngLat: e.lngLat,
-				originalEvent: e.originalEvent as MouseEvent
-			})
-		);
-		map.on('moveend', () => onmove?.(map!));
+			map = new maplibregl.Map({
+				container,
+				style,
+				bounds: [-23.895, 34.9, 45.806, 71.352]
+			});
 
-		map.on('error', (e) => {
-			const err = (e as ErrorEvent)?.error ?? e;
-			onerror?.(err instanceof Error ? err : new Error(String(err)));
-		});
+			map.on('load', () => onload?.(map!));
+			map.on('click', (e) =>
+				onclick?.({
+					lngLat: e.lngLat,
+					originalEvent: e.originalEvent as MouseEvent
+				})
+			);
+			map.on('moveend', () => onmove?.(map!));
+
+			map.on('error', (e) => {
+				const err = (e as ErrorEvent)?.error ?? e;
+				onerror?.(err instanceof Error ? err : new Error(String(err)));
+			});
+		})();
 
 		// cleanup (runs automatically when dependencies change or component unmounts)
 		return () => {

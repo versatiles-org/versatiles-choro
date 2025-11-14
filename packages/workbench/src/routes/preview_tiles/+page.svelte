@@ -1,7 +1,6 @@
 <script lang="ts">
 	import FileSelector from '$lib/component/FileSelector.svelte';
 	import Map from '$lib/component/Map.svelte';
-	import { getTileUrl } from '$lib/engine/engine.svelte';
 
 	let showModal = $state(true);
 	let file: string | null = $state(null);
@@ -10,16 +9,6 @@
 		if (file) {
 			console.log('Selected file:', file);
 			showModal = false;
-		}
-	});
-
-	let tileUrl: string | null = $state(null);
-
-	$effect(() => {
-		if (file) {
-			getTileUrl(file).then((url) => (tileUrl = url));
-		} else {
-			tileUrl = null;
 		}
 	});
 </script>
@@ -32,8 +21,6 @@
 		bind:file
 		fileFilter={(name) => /\.(versa|mb|pm)tiles$/.test(name)}
 	/>
-{/if}
-
-{#if tileUrl}
-	<Map backgroundMap="Gray"></Map>
+{:else}
+	<Map backgroundMap="GrayBright" overlayFile={file}></Map>
 {/if}
