@@ -1,5 +1,6 @@
 <script lang="ts">
 	import FileSelector from '$lib/component/FileSelector.svelte';
+	import Map from '$lib/component/Map.svelte';
 	import { getTileUrl } from '$lib/engine/engine.svelte';
 
 	let showModal = $state(true);
@@ -34,6 +35,5 @@
 {/if}
 
 {#if tileUrl}
-	<h3>Preview of selected tiles:</h3>
-	<p>Tiles Preview: "{tileUrl}"</p>
+	<Map backgroundMap="Gray"></Map>
 {/if}
