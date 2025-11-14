@@ -9,6 +9,6 @@ export const GET: RequestHandler = async ({ request }) => {
 		return new Response('Invalid file parameter', { status: 400 });
 	}
 
-	const { port } = engine.startTileServer(resolve(file));
+	const { port } = await engine.startTileServer(resolve(file));
 	return new Response(JSON.stringify({ port }), { status: 200 });
 };
