@@ -11,5 +11,11 @@ for file in testdata/*.br; do
   fi
 done
 
-# Build the Docker image for VersaTiles Choro
-docker build -t versatiles/versatiles-choro:latest . -f docker/Dockerfile
+# Use Buildx with GHA-compatible cache
+docker buildx build \
+  --tag versatiles/versatiles-choro:latest \
+  --file docker/Dockerfile \
+  --cache-from type=gha \
+  --cache-to type=gha,mode=max \
+  --load \
+  .
