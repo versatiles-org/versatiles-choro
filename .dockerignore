@@ -4,6 +4,4 @@ node_modules
 .git
 .github
 *.log
-runtime/work
-runtime/cache
 **/.svelte-kit
