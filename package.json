@@ -11,7 +11,7 @@
 		"dev": "npm run build --workspace packages/engine && npm run dev --workspace packages/workbench",
 		"format": "prettier --write .",
 		"lint": "eslint . && npm run lint --workspace packages/workbench && prettier --check .",
-		"upgrade": "ncu --workspaces"
+		"upgrade": "ncu -u --workspaces"
 	},
 	"engines": {
 		"node": ">=24"
