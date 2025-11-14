@@ -1,10 +1,15 @@
 # Multi-stage Dockerfile for VersaTiles Choro
 
-FROM versatiles/versatiles-tippecanoe AS versatiles-tippecanoe
+FROM versatiles/versatiles-tippecanoe:latest AS tippecanoe
 
-
-FROM 24-alpine
+FROM node:24-alpine
+COPY --from=tippecanoe /app/versatiles /usr/local/bin/
+COPY --from=tippecanoe /usr/local/bin/tippecanoe /usr/local/bin/
 WORKDIR /app
-COPY --from=versatiles-tippecanoe /app .
+COPY package-lock.json package.json ./
+COPY packages ./packages
+COPY testdata/*.geojson ./data/
+RUN npm install && npm run build
 EXPOSE 8080
-CMD ["node", "server/dist/cli.js"]
+ENV DATA_PATH=/app/data
+CMD ["node", "packages/workbench/build/index.js"]
