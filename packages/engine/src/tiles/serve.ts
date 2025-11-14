@@ -14,18 +14,20 @@ export async function startTileServer(filename: string): Promise<{ port: number 
 	ports.add(port);
 	runVersaTilesServer(filename, port);
 
-	// wait until the there is a response at `http://localhost:${port}/tiles/index.json`
+	// wait until there is a response at `http://localhost:${port}/tiles/index.json`
 	await new Promise<void>((resolve) => {
 		const url = `http://localhost:${port}/tiles/index.json`;
 		const interval = setInterval(async () => {
-			await Promise.race([
-				fetch(url).then(() => {
+			try {
+				const res = await fetch(url);
+				if (res.ok) {
 					clearInterval(interval);
 					resolve();
-				}),
-				new Promise<void>((r) => setTimeout(() => r(), 300))
-			]);
-		}, 500);
+				}
+			} catch (err) {
+				// Ignore connection errors (ECONNREFUSED, timeouts, etc.) and retry
+			}
+		}, 100);
 	});
 
 	return { port };
