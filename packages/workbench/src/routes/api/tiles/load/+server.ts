@@ -20,8 +20,8 @@ export const GET: RequestHandler = async ({ request }) => {
 		newRequest.headers.set(key, value);
 	});
 
-	let response = await fetch(newRequest);
-	let buffer = await response.bytes();
+	const response = await fetch(newRequest);
+	const buffer = await response.bytes();
 
 	return new Response(buffer, {
 		status: response.status,
