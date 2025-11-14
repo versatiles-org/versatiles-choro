@@ -1,5 +1,6 @@
 .svelte-kit/
-static/
+node_modules/
 package-lock.json
 package.json
-node_modules/
+README.md
+static/
