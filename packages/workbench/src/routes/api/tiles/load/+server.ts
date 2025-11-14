@@ -1,4 +1,4 @@
-import type { RequestHandler } from "../$types";
+import type { RequestHandler } from '../$types';
 
 export const GET: RequestHandler = async ({ request }) => {
 	const params = new URL(request.url).searchParams;
@@ -11,8 +11,7 @@ export const GET: RequestHandler = async ({ request }) => {
 
 	const url = `http://localhost:${port}/tiles/${port}/${path}`;
 	const newRequest = new Request(url, {
-		method: 'GET',
-
+		method: 'GET'
 	});
 
 	request.headers.forEach((value, key) => {
@@ -28,7 +27,7 @@ export const GET: RequestHandler = async ({ request }) => {
 		headers: {
 			'content-type': response.headers.get('content-type') || 'application/octet-stream',
 			'cache-control': 'no-cache',
-			'content-length': String(buffer.length),
+			'content-length': String(buffer.length)
 		}
 	});
 };

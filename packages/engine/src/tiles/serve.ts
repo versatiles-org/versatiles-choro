@@ -1,11 +1,11 @@
-import { runVersaTilesServer } from "../lib/spawn.js";
+import { runVersaTilesServer } from '../lib/spawn.js';
 
 const ports = new Set<number>();
 const MIN_PORT = 51001;
 const MAX_PORT = 52000;
 let port = MIN_PORT;
 
-export async function startTileServer(filename: string): Promise<{ port: number; }> {
+export async function startTileServer(filename: string): Promise<{ port: number }> {
 	console.log(`Starting tile server for file ${filename}`);
 	while (ports.has(port)) {
 		port++;
@@ -23,13 +23,10 @@ export async function startTileServer(filename: string): Promise<{ port: number;
 					clearInterval(interval);
 					resolve();
 				}),
-				new Promise<void>((r) =>
-					setTimeout(() => r(), 300)
-				)
+				new Promise<void>((r) => setTimeout(() => r(), 300))
 			]);
-		}, 500)
+		}, 500);
 	});
-
 
 	return { port };
 }
