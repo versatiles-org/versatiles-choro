@@ -107,7 +107,6 @@ export function createStyle(backgroundMap: BackgroundMap | undefined): StyleSpec
 
 export function overlayStyles(style: StyleSpecification, overlayStyle: StyleSpecification): void {
 	if (!overlayStyle.layers) return;
-	console.log(overlayStyle.layers);
 	for (const layer of overlayStyle.layers) {
 		style.layers?.push(layer);
 	}
