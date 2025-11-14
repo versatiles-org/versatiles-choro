@@ -9,6 +9,7 @@ on:
 
 jobs:
   build:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     env:
       GIT_SHA: ${{ github.sha }}
