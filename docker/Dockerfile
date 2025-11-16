@@ -50,4 +50,4 @@ ENV DATA_PATH=/app/data
 ENV PATH="/app/build-cli/:${PATH}"
 	
 ENTRYPOINT ["/sbin/tini", "--"]
-CMD ["node", "packages/workbench/build/index.js"]
+CMD ["node", "build/index.js"]
