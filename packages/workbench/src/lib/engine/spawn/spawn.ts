@@ -1,4 +1,4 @@
-import { ChildProcess, spawn } from 'child_process';
+import { type ChildProcess, spawn } from 'child_process';
 import { Progress, SpawnProgress } from '../progress/index.js';
 
 function optionsToArgs(options: Record<string, unknown>): string[] {

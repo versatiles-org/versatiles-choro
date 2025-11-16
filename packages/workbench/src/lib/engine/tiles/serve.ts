@@ -1,4 +1,4 @@
-import { runVersaTilesServer } from '../lib/spawn.js';
+import { runVersaTilesServer } from '../spawn/spawn.js';
 
 const ports = new Set<number>();
 const MIN_PORT = 51001;

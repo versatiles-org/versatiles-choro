@@ -1,5 +1,5 @@
 import { ConcatenatedProgress, Progress } from '../progress/index.js';
-import { runTippecanoe, runVersaTilesConvert } from '../lib/spawn.js';
+import { runTippecanoe, runVersaTilesConvert } from '../spawn/spawn.js';
 import { SimpleProgress } from '../progress/simple.js';
 import { unlink } from 'fs/promises';
 

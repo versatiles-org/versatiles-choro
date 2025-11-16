@@ -1,4 +1,4 @@
-import { ChildProcess } from 'child_process';
+import { type ChildProcess } from 'child_process';
 import { Progress } from './types.js';
 
 export class SpawnProgress extends Progress {

@@ -8,6 +8,7 @@
 		"check-svelte": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"check": "npm run lint && npm run check-svelte && npm run test",
+		"cli": "tsx ./src/lib/engine/cli.ts",
 		"dev": "DATA_PATH=../../testdata vite dev",
 		"lint": "eslint .",
 		"prepare": "svelte-kit sync || echo ''",
@@ -18,18 +19,23 @@
 	"dependencies": {
 		"@versatiles-choro/engine": "*",
 		"@versatiles-choro/map": "*",
-		"@versatiles/style": "^5.7.0"
+		"@versatiles/style": "^5.7.0",
+		"commander": "^14.0.2"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-node": "^5.4.0",
 		"@sveltejs/kit": "^2.48.5",
 		"@sveltejs/vite-plugin-svelte": "^6.2.1",
+		"@types/express-http-proxy": "^1.6.7",
+		"@types/express": "^5.0.5",
 		"@types/node": "^24",
 		"eslint-plugin-svelte": "^3.13.0",
 		"globals": "^16.5.0",
 		"maplibre-gl": "^5.12.0",
-		"svelte": "^5.43.6",
+		"npm-check-updates": "^19.1.2",
 		"svelte-check": "^4.3.4",
+		"svelte": "^5.43.6",
+		"tsx": "^4.20.6",
 		"typescript": "^5.9.3",
 		"valibot": "^1.1.0",
 		"vite": "^7.2.2",

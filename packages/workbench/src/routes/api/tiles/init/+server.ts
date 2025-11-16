@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
-import { engine } from '$lib/server/progress';
 import { resolve } from '$lib/filesystem/filesystem.server';
+import { startTileServer } from '$lib/engine/tiles/serve';
 
 export const GET: RequestHandler = async ({ request }) => {
 	const file = new URL(request.url).searchParams.get('file');
@@ -9,6 +9,6 @@ export const GET: RequestHandler = async ({ request }) => {
 		return new Response(`Invalid file parameter "${file}"`, { status: 400 });
 	}
 
-	const { port } = await engine.startTileServer(resolve(file));
+	const { port } = await startTileServer(resolve(file));
 	return new Response(JSON.stringify({ id: port }), { status: 200 });
 };

@@ -1,6 +1,7 @@
 import type { RequestHandler } from './$types';
-import { engine, progressToStream } from '$lib/server/progress';
+import { progressToStream } from '$lib/server/progress';
 import { resolve } from '$lib/filesystem/filesystem.server';
+import { convertPolygonsToVersatiles } from '$lib/engine/geometry/convert';
 
 export const POST: RequestHandler = async ({ request }) => {
 	const params = await request.json();
@@ -11,6 +12,6 @@ export const POST: RequestHandler = async ({ request }) => {
 		return new Response('Invalid input or output parameter', { status: 400 });
 	}
 
-	const progress = engine.convertPolygonsToVersatiles(resolve(input), resolve(output));
+	const progress = convertPolygonsToVersatiles(resolve(input), resolve(output));
 	return progressToStream(progress, request.signal);
 };

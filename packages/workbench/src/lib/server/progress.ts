@@ -1,5 +1,4 @@
-import type { Progress } from '@versatiles-choro/engine';
-export * as engine from '@versatiles-choro/engine';
+import type { Progress } from '../engine/progress';
 
 export function progressToStream(progress: Progress, signal: AbortSignal): Response {
 	const encoder = new TextEncoder();
