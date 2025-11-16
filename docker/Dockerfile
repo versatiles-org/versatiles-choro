@@ -27,14 +27,16 @@ LABEL com.versatiles.warning="This project is under heavy development. Not for p
 
 RUN apk add --no-cache tini sqlite-libs
 
-COPY --from=tippecanoe /app/versatiles /usr/local/bin/
-COPY --from=tippecanoe /usr/local/bin/tippecanoe /usr/local/bin/
-
 WORKDIR /app
 
 COPY package-lock.json package.json ./
+
+COPY --from=tippecanoe /app/versatiles /usr/local/bin/
+COPY --from=tippecanoe /usr/local/bin/tippecanoe /usr/local/bin/
+
 COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/packages ./packages
+COPY --from=build /app/build ./build
+COPY --from=build --chmod=755 /app/build-cli/cli.mjs /app/build-cli/cli
 COPY testdata/1_bundeslaender.geojson testdata/3_kreise.geojson ./data/
 
 # kill npm cache + root npm dir in the final stage
@@ -45,6 +47,7 @@ RUN \
 EXPOSE 8080
 ENV NODE_ENV=production
 ENV DATA_PATH=/app/data
+ENV PATH="/app/build-cli/:${PATH}"
 	
 ENTRYPOINT ["/sbin/tini", "--"]
 CMD ["node", "packages/workbench/build/index.js"]
