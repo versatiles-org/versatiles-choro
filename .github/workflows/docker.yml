@@ -7,12 +7,13 @@ on:
     types:
       - completed
 
+env:
+  TAGS: ghcr.io/versatiles-org/versatiles-choro:latest
+
 jobs:
   build:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ ( github.event_name != 'workflow_run' && github.ref == 'refs/heads/main' ) || ( github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' ) }}
     runs-on: ubuntu-latest
-    env:
-      GIT_SHA: ${{ github.sha }}
     permissions:
       contents: read
       packages: write
@@ -46,24 +47,26 @@ jobs:
       - name: Prepare Docker build context
         run: ./docker/prepare.sh
 
-      - name: Build Docker image
+      - name: Build Docker image for testing
         uses: docker/build-push-action@v6
         with:
           file: docker/Dockerfile
+          pull: true
           load: true
-          tags: versatiles-choro
+          tags: ${{ env.TAGS }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name : Test Docker image
-        run: ./docker/test.sh versatiles-choro
+      - name: Test Docker image
+        run: ./docker/test.sh ${{ env.TAGS }}
 
-      - name: Build multi-arch Docker image
+      - name: Build & Push multi-arch Docker image
         uses: docker/build-push-action@v6
         with:
           file: docker/Dockerfile
           platforms: linux/amd64,linux/arm64
+          pull: true
           push: true
-          tags: ghcr.io/versatiles-org/versatiles-choro:latest
+          tags: ${{ env.TAGS }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
