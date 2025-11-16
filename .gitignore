@@ -3,9 +3,9 @@ testdata/*
 !testdata/*.br
 
 # Output
-dist
 .svelte-kit
 build
+build-cli
 
 # OS
 .DS_Store

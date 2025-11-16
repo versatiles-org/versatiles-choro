@@ -1,7 +1,5 @@
-node_modules
-**/node_modules
-**/dist
 .git
 .github
+.svelte-kit
 *.log
-**/.svelte-kit
+node_modules

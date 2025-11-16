@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import { convertPolygonsToVersatiles } from './lib/server/geometry/convert';
 import { logProgress } from './lib/server/progress/log';
-import { resolve } from 'node:path';
+import { resolve } from 'path';
 
 const program = new Command();
 const cwd = process.env.INIT_CWD ?? process.cwd();

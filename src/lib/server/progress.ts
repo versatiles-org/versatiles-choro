@@ -1,4 +1,4 @@
-import type { Progress } from '../engine/progress';
+import type { Progress } from './progress/index';
 
 export function progressToStream(progress: Progress, signal: AbortSignal): Response {
 	const encoder = new TextEncoder();
