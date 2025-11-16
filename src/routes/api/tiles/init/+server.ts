@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 import { resolve } from '$lib/filesystem/filesystem.server';
-import { startTileServer } from '$lib/engine/tiles/serve';
+import { startTileServer } from '$lib/server/tiles/serve';
 
 export const GET: RequestHandler = async ({ request }) => {
 	const file = new URL(request.url).searchParams.get('file');

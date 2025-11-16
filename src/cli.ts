@@ -1,6 +1,6 @@
 import { Command } from 'commander';
-import { convertPolygonsToVersatiles } from './geometry/convert.js';
-import { logProgress } from './progress/log.js';
+import { convertPolygonsToVersatiles } from './lib/server/geometry/convert';
+import { logProgress } from './lib/server/progress/log';
 import { resolve } from 'node:path';
 
 const program = new Command();

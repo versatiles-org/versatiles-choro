@@ -1,7 +1,7 @@
 import type { RequestHandler } from './$types';
 import { progressToStream } from '$lib/server/progress';
 import { resolve } from '$lib/filesystem/filesystem.server';
-import { convertPolygonsToVersatiles } from '$lib/engine/geometry/convert';
+import { convertPolygonsToVersatiles } from '$lib/server/geometry/convert';
 
 export const POST: RequestHandler = async ({ request }) => {
 	const params = await request.json();
