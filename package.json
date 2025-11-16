@@ -1,31 +1,51 @@
 {
 	"name": "versatiles-choro",
 	"private": true,
-	"workspaces": [
-		"./packages/*"
-	],
 	"type": "module",
 	"scripts": {
-		"build": "npm run build --workspace packages/map && npm run build --workspace packages/workbench",
-		"check": "npm run lint && npm run check --workspaces",
-		"cli": "npm run cli --workspace packages/workbench",
-		"dev": "npm run dev --workspace packages/workbench",
+		"build": "svelte-kit sync && vite build",
+		"check-svelte:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"check-svelte": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check": "npm run lint && npm run check-svelte && npm run test",
+		"cli": "tsx ./src/lib/engine/cli.ts",
+		"dev": "DATA_PATH=../../testdata vite dev",
 		"format": "prettier --write .",
-		"lint": "eslint . && npm run lint --workspace packages/workbench && prettier --check .",
-		"test": "npm run test --workspaces",
-		"upgrade": "ncu -u --workspaces && npm install"
+		"lint": "eslint . && prettier --check .",
+		"prepare": "svelte-kit sync",
+		"preview": "vite preview",
+		"test:unit": "vitest",
+		"test": "npm run test:unit -- --run",
+		"upgrade": "ncu -u && rm -r node_modules && rm -f package-lock.json && npm install"
 	},
 	"engines": {
 		"node": ">=24"
 	},
+	"dependencies": {
+		"@versatiles/style": "^5.7.0",
+		"commander": "^14.0.2"
+	},
 	"devDependencies": {
 		"@eslint/compat": "^2.0.0",
 		"@eslint/js": "^9.39.1",
-		"eslint": "^9.39.1",
+		"@sveltejs/adapter-node": "^5.4.0",
+		"@sveltejs/kit": "^2.48.5",
+		"@sveltejs/vite-plugin-svelte": "^6.2.1",
+		"@types/node": "^24",
 		"eslint-config-prettier": "^10.1.8",
-		"prettier": "^3.6.2",
-		"prettier-plugin-svelte": "^3.4.0",
+		"eslint-plugin-svelte": "^3.13.0",
+		"eslint": "^9.39.1",
+		"globals": "^16.5.0",
+		"maplibre-gl": "^5.13.0",
 		"npm-check-updates": "^19.1.2",
-		"typescript-eslint": "^8.46.4"
+		"prettier-plugin-svelte": "^3.4.0",
+		"prettier": "^3.6.2",
+		"svelte-check": "^4.3.4",
+		"svelte": "^5.43.7",
+		"tsx": "^4.20.6",
+		"typescript-eslint": "^8.46.4",
+		"typescript": "^5.9.3",
+		"valibot": "^1.1.0",
+		"vite": "^7.2.2",
+		"vitest": "^4.0.9"
 	}
 }

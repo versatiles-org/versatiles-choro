@@ -4,8 +4,8 @@ testdata/*
 
 # Output
 dist
-packages/workbench/.svelte-kit
-packages/workbench/build
+.svelte-kit
+build
 
 # OS
 .DS_Store
