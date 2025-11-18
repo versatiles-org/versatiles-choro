@@ -44,9 +44,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Prepare Docker build context
-        run: ./docker/prepare.sh
-
       - name: Build Docker image for testing
         uses: docker/build-push-action@v6
         with:

@@ -37,7 +37,6 @@ COPY --from=tippecanoe /usr/local/bin/tippecanoe /usr/local/bin/
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/build ./build
 COPY --from=build --chmod=755 /app/build-cli/cli.mjs /app/build-cli/cli
-COPY testdata/1_bundeslaender.geojson testdata/3_kreise.geojson ./data/
 
 # kill npm cache + root npm dir in the final stage
 RUN \
