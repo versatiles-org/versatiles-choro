@@ -23,45 +23,45 @@ export function downloadTestData(outputDir: string) {
 		{ url: urlVerwaltungsgebiete + '5_gemeinden.geojson.br', name: '5_gemeinden.geojson' }
 	];
 
-	return new SimpleProgress(
-		'downloading test data',
-		files.flatMap((file) => {
-			const outputPath = path.join(outputDir, file.name);
-			if (existsSync(outputPath)) return [];
-			return [
-				async () => {
-					const tempFilePath = outputPath + '.part';
-					let fileStream: Writable = createWriteStream(tempFilePath);
+	const downloadTasks = files.flatMap((file) => {
+		const outputPath = path.join(outputDir, file.name);
+		if (existsSync(outputPath)) return [];
+		return [
+			async () => {
+				const tempFilePath = outputPath + '.part';
+				let fileStream: Writable = createWriteStream(tempFilePath);
 
-					if (file.url.endsWith('.br')) {
-						const unzip = zlib.createBrotliDecompress();
-						unzip.pipe(fileStream);
-						fileStream = unzip;
-					}
-
-					await new Promise<void>((resolve, reject) => {
-						https
-							.get(file.url, (response) => {
-								if (response.statusCode !== 200) {
-									console.error(`Failed to download ${file.url}: ${response.statusCode}`);
-									return reject(
-										new Error(`Failed to download ${file.url}: ${response.statusCode}`)
-									);
-								}
-								response.pipe(fileStream);
-								fileStream.on('finish', async () => {
-									await rename(tempFilePath, outputPath);
-									resolve();
-								});
-							})
-							.on('error', (err) => {
-								console.error(`Error downloading ${file.url}: ${err.message}`);
-								unlinkSync(outputPath);
-								reject(err);
-							});
-					});
+				if (file.url.endsWith('.br')) {
+					const unzip = zlib.createBrotliDecompress();
+					unzip.pipe(fileStream);
+					fileStream = unzip;
 				}
-			];
-		})
-	);
+
+				await downloadFile(file.url, fileStream);
+				await rename(tempFilePath, outputPath);
+			}
+		];
+	});
+
+	return new SimpleProgress('downloading test data', downloadTasks);
+}
+
+function downloadFile(url: string, stream: Writable): Promise<void> {
+	return new Promise<void>((resolve, reject) => {
+		https
+			.get(url, (response) => {
+				if (response.statusCode !== 200) {
+					console.error(`Failed to download ${url}: ${response.statusCode}`);
+					return reject(new Error(`Failed to download ${url}: ${response.statusCode}`));
+				}
+				response.pipe(stream);
+				stream.on('finish', async () => {
+					resolve();
+				});
+			})
+			.on('error', (err) => {
+				console.error(`Error downloading ${url}: ${err.message}`);
+				reject(err);
+			});
+	});
 }
