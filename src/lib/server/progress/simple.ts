@@ -22,7 +22,7 @@ export class SimpleProgress extends Progress {
 			await nextCallback();
 
 			this.position++;
-			this.setProgress(100 * this.position / this.total);
+			this.setProgress((100 * this.position) / this.total);
 
 			this.runNext();
 		}, 1);

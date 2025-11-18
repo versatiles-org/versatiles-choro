@@ -9,7 +9,7 @@ export async function logProgress(progress: Progress) {
 		position = p;
 		log();
 	});
-	
+
 	progress.onMessage((m, isError) => {
 		if (isError) hasErrors = true;
 		message = m;
