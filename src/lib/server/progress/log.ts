@@ -9,11 +9,13 @@ export async function logProgress(progress: Progress) {
 		position = p;
 		log();
 	});
+	
 	progress.onMessage((m, isError) => {
 		if (isError) hasErrors = true;
 		message = m;
 		log();
 	});
+
 	function log() {
 		const color = hasErrors ? '\x1b[31m' : '\x1b[32m';
 		let line = `${color}${message}`;

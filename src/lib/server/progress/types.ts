@@ -21,13 +21,16 @@ export abstract class Progress {
 		this.progress = progress;
 		if (this.onProgressCb) this.onProgressCb(progress);
 	}
+
 	setMessage(message: string, isError: boolean = false) {
 		if (message === this.message && isError === this.isError) return;
 		this.message = message;
 		this.isError = this.isError || isError;
 		if (this.onMessageCb) this.onMessageCb(message, this.isError);
 	}
+
 	setComplete() {
+		this.setProgress(100);
 		if (this.onCompleteCb) this.onCompleteCb();
 	}
 

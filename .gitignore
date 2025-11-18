@@ -1,6 +1,5 @@
+data
 node_modules
-testdata/*
-!testdata/*.br
 
 # Output
 .svelte-kit
