@@ -1,69 +1,71 @@
 <script lang="ts">
 	import maplibregl, { type LngLatBoundsLike, type Map } from 'maplibre-gl';
 	import 'maplibre-gl/dist/maplibre-gl.css';
+	import { onMount, onDestroy } from 'svelte';
 	import { createStyle, getTileSource, overlayStyles, type BackgroundMap } from './map';
 
 	// --- Props  --------------------------------------------------------------
 	let {
 		backgroundMap,
-		overlayFile,
-		onload,
+		inspectOverlay = false,
 		onclick,
+		onerror,
+		onload,
 		onmove,
-		onerror
+		overlayFile
 	}: {
 		backgroundMap?: BackgroundMap;
-		overlayFile?: string;
-		onload?: (map: Map) => void;
+		inspectOverlay?: boolean;
 		onclick?: (payload: { lngLat: maplibregl.LngLat; originalEvent: MouseEvent }) => void;
-		onmove?: (map: Map) => void;
 		onerror?: (error: Error) => void;
+		onload?: (map: Map) => void;
+		onmove?: (map: Map) => void;
+		overlayFile?: string;
 	} = $props();
 
 	// --- State ---------------------------------------------------------------
 	let container: HTMLDivElement | null = null;
 	let map: Map | null = null;
 
+	const backgroundStyle = createStyle(backgroundMap);
+
 	// --- Lifecycle: onMount that auto-cleans ---------------------------------
-	$effect(() => {
-		(async () => {
-			if (!container) return;
-			let bounds: LngLatBoundsLike = [-23.895, 34.9, 45.806, 71.352];
+	onMount(async () => {
+		if (!container) return;
+		let bounds: LngLatBoundsLike = [-23.895, 34.9, 45.806, 71.352];
+		let style = backgroundStyle;
 
-			const style = createStyle(backgroundMap);
+		if (overlayFile) {
+			const source = await getTileSource(overlayFile);
+			style = overlayStyles(style, source.getStyle());
+			bounds = source.getBounds() ?? bounds;
+		}
 
-			if (overlayFile) {
-				const source = await getTileSource(overlayFile);
-				overlayStyles(style, source.getStyle());
-				bounds = source.getBounds() ?? bounds;
-			}
+		map = new maplibregl.Map({
+			container,
+			style,
+			bounds
+		});
 
-			map = new maplibregl.Map({
-				container,
-				style,
-				bounds
-			});
+		map.on('load', () => onload?.(map!));
+		map.on('click', (e) =>
+			onclick?.({
+				lngLat: e.lngLat,
+				originalEvent: e.originalEvent as MouseEvent
+			})
+		);
+		map.on('moveend', () => onmove?.(map!));
 
-			map.on('load', () => onload?.(map!));
-			map.on('click', (e) =>
-				onclick?.({
-					lngLat: e.lngLat,
-					originalEvent: e.originalEvent as MouseEvent
-				})
-			);
-			map.on('moveend', () => onmove?.(map!));
+		map.on('error', (e) => {
+			const err = (e as ErrorEvent)?.error ?? e;
+			onerror?.(err instanceof Error ? err : new Error(String(err)));
+		});
+	});
 
-			map.on('error', (e) => {
-				const err = (e as ErrorEvent)?.error ?? e;
-				onerror?.(err instanceof Error ? err : new Error(String(err)));
-			});
-		})();
-
-		// cleanup (runs automatically when dependencies change or component unmounts)
-		return () => {
-			map?.remove();
-			map = null;
-		};
+	// cleanup (runs automatically when dependencies change or component unmounts)
+	onDestroy(() => {
+		map?.remove();
+		map = null;
 	});
 </script>
 

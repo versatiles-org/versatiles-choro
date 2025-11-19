@@ -105,15 +105,15 @@ export function createStyle(backgroundMap: BackgroundMap | undefined): StyleSpec
 	return style;
 }
 
-export function overlayStyles(style: StyleSpecification, overlayStyle: StyleSpecification): void {
-	if (!overlayStyle.layers) return;
-	for (const layer of overlayStyle.layers) {
-		style.layers?.push(layer);
+export function overlayStyles(style1: StyleSpecification, style2: StyleSpecification): StyleSpecification {
+	return {
+		sources: {
+			...style1.sources,
+			...style2.sources
+		},
+		layers: [...(style1.layers ?? []), ...(style2.layers ?? [])],
+		version: 8
 	}
-	style.sources = {
-		...style.sources,
-		...overlayStyle.sources
-	};
 }
 
 export async function getTileSource(file: string): Promise<TileSource> {
