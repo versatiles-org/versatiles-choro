@@ -1,6 +1,6 @@
 import { SimpleProgress } from '../progress/simple';
 import https from 'https';
-import { createWriteStream, existsSync, unlinkSync } from 'fs';
+import { createWriteStream, existsSync } from 'fs';
 import path from 'path';
 import zlib from 'zlib';
 import { rename } from 'fs/promises';

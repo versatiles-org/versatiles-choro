@@ -1,5 +1,6 @@
 <script lang="ts">
 	import favicon from '$lib/assets/favicon.svg';
+	import { resolve } from '$app/paths';
 
 	let { children } = $props();
 </script>
@@ -9,7 +10,7 @@
 </svelte:head>
 
 <div class="app-container">
-	<nav><a href="/">Home</a></nav>
+	<nav><a href={resolve('/')}>Home</a></nav>
 	<main>
 		{@render children()}
 	</main>

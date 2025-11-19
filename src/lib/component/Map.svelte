@@ -2,7 +2,7 @@
 	import maplibregl, { type LngLatBoundsLike, type Map } from 'maplibre-gl';
 	import 'maplibre-gl/dist/maplibre-gl.css';
 	import { onMount, onDestroy } from 'svelte';
-	import { createStyle, getTileSource, overlayStyles, type BackgroundMap } from './map';
+	import { createStyle, getTileSource, overlayStyles, type BackgroundMap } from './map/map';
 
 	// --- Props  --------------------------------------------------------------
 	let {
@@ -65,7 +65,6 @@
 		});
 
 		if (inspectOverlay && overlayLayerIds.length > 0) {
-			console.log('Inspecting overlay layers:', overlayLayerIds);
 			map.on('mousemove', overlayLayerIds, (e) => {
 				const properties = e.features?.map((f) => f.properties);
 				const info = document.getElementById('info');
