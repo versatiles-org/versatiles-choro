@@ -6,10 +6,7 @@
 	let file: string | null = $state(null);
 
 	$effect(() => {
-		if (file) {
-			console.log('Selected file:', file);
-			showModal = false;
-		}
+		if (file) showModal = false;
 	});
 </script>
 

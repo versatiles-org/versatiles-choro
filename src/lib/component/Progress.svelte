@@ -39,7 +39,6 @@
 				if (!line) continue;
 
 				const evt = JSON.parse(line);
-				console.log('Progress event:', evt);
 				switch (evt.event) {
 					case 'progress':
 						percentage = Number(evt.data);
