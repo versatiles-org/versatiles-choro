@@ -19,5 +19,5 @@
 		fileFilter={(name) => /\.(versa|mb|pm)tiles$/.test(name)}
 	/>
 {:else}
-	<Map backgroundMap="GrayBright" overlayFile={file}></Map>
+	<Map backgroundMap="GrayBright" overlayFile={file} inspectOverlay={true}></Map>
 {/if}
