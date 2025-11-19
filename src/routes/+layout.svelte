@@ -9,6 +9,7 @@
 </svelte:head>
 
 <main>
+	<nav><a href="/">Home</a></nav>
 	{@render children()}
 </main>
 
