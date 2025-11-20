@@ -20,7 +20,44 @@ export const ConvertPolygonsRequest = v.object({
 });
 
 export const TilesInitRequest = v.object({
-	input: Path
+	input: Path,
+	filter: v.optional(
+		v.object({
+			minZoom: v.optional(v.number()),
+			maxZoom: v.optional(v.number()),
+			bounds: v.optional(v.tuple([v.number(), v.number(), v.number(), v.number()]))
+		})
+	),
+	meta_update: v.optional(
+		v.object({
+			attribution: v.optional(v.string()),
+			name: v.optional(v.string()),
+			description: v.optional(v.string())
+		})
+	),
+	filter_layers: v.optional(
+		v.object({
+			layer_names: v.array(v.string()),
+			invert: v.optional(v.boolean())
+		})
+	),
+	filter_properties: v.optional(
+		v.object({
+			regex: v.string(),
+			invert: v.optional(v.boolean())
+		})
+	),
+	update_properties: v.optional(
+		v.object({
+			data_source_path: v.string(),
+			layer_name: v.string(),
+			id_field_tiles: v.string(),
+			id_field_data: v.string(),
+			replace_properties: v.optional(v.boolean()),
+			remove_non_matching: v.optional(v.boolean()),
+			include_id: v.optional(v.boolean())
+		})
+	)
 });
 
 export const TilesInitResponse = v.object({

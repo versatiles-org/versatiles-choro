@@ -1,6 +1,9 @@
-import type { TilesInitResponse } from '$lib/api/types.js';
-import { runVersaTilesServer } from '../spawn/spawn.js';
+import type { TilesInitRequest, TilesInitResponse } from '$lib/api/types.js';
+import { writeFileSync } from 'fs';
+import { runVersaTilesServer } from '$lib/server/spawn/spawn.js';
 import * as v from 'valibot';
+import { resolve } from 'path';
+import { TEMP_PATH } from '$lib/filesystem/filesystem.server.js';
 
 const ports = new Set<number>();
 const MIN_PORT = 51001;
@@ -8,15 +11,20 @@ const MAX_PORT = 52000;
 let port = MIN_PORT;
 
 export async function startTileServer(
-	filename: string
+	params: v.InferOutput<typeof TilesInitRequest>
 ): Promise<v.InferOutput<typeof TilesInitResponse>> {
-	console.log(`Starting tile server for file ${filename}`);
 	while (ports.has(port)) {
 		port++;
 		if (port > MAX_PORT) port = MIN_PORT;
 	}
 	ports.add(port);
-	runVersaTilesServer(filename, port);
+
+	const vpl = [`from_container="${params.input}"`].join('\n   | ');
+
+	const tempFile = resolve(TEMP_PATH, `${port}.vpl`);
+	writeFileSync(tempFile, vpl);
+
+	runVersaTilesServer(tempFile, port);
 
 	// wait until there is a response at `http://localhost:${port}/tiles/index.json`
 	await new Promise<void>((resolve) => {
