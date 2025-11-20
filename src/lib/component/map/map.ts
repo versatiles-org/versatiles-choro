@@ -22,14 +22,14 @@ export type BackgroundMap = 'Colorful' | 'Gray' | 'GrayBright' | 'GrayDark' | 'N
 
 class TileSource {
 	prefix: string;
-	tileJson: TileJSONSpecification | null = null;
+	tileJson: TileJSONSpecificationVector | null = null;
 	constructor(prefix: string) {
 		this.prefix = prefix;
 	}
 	async init(): Promise<void> {
 		const tileJson = (await (
 			await fetch(`${this.resolve('meta.json')}`)
-		).json()) as TileJSONSpecification;
+		).json()) as TileJSONSpecificationVector;
 		tileJson.tiles = [this.resolve('{z}/{x}/{y}')];
 		this.tileJson = tileJson;
 	}
@@ -46,7 +46,7 @@ class TileSource {
 		if (!this.tileJson) {
 			throw new Error('TileSource not initialized');
 		}
-		const style = guessStyle(this.getTileJson());
+		const style = getInspectorStyle(this.tileJson);
 		style.layers = style.layers?.filter((layer) => layer.type !== 'background');
 		return style;
 	}
