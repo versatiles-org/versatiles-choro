@@ -130,7 +130,7 @@ describe('buildVPL', () => {
 			filter: undefined,
 			meta_update: undefined
 		};
-		expect(buildVPL(params)).toBe('from_container="input.versatiles"');
+		expect(buildVPL(params)).toBe('from_container filename="input.versatiles"');
 	});
 	it('returns correct string for fully populated parameter object', () => {
 		const params = {
@@ -164,7 +164,7 @@ describe('buildVPL', () => {
 			}
 		} as v.InferOutput<typeof TilesInitRequest>;
 		const expected = [
-			'from_container="input.versatiles"',
+			'from_container filename="input.versatiles"',
 			'   | vector_update_properties data_source_path="data.csv" layer_name="mylayer" id_field_tiles="tile_id" id_field_data="data_id" replace_properties="true" remove_non_matching="true" include_id="true"',
 			'   | vector_filter_layers filter="a,b" invert="true"',
 			'   | vector_filter_properties regex="^foo"',
