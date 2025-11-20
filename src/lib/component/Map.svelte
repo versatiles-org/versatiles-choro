@@ -104,10 +104,10 @@
 <div bind:this={container} class="map-container"></div>
 {#if inspectOverlay}
 	<div id="info">
-		{#each selectedProperties as properties}
+		{#each selectedProperties as properties, index (index)}
 			<table>
 				<tbody>
-					{#each properties as prop}
+					{#each properties as prop, index (index)}
 						<tr>
 							<td>{prop.name}:</td>
 							<td>{prop.value}</td>
