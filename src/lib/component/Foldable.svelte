@@ -1,0 +1,105 @@
+<script lang="ts">
+	import { type Snippet } from 'svelte';
+	import { slide } from 'svelte/transition';
+
+	let {
+		title,
+		children,
+		open,
+		disabled
+	}: {
+		title: string;
+		children?: Snippet;
+		open?: boolean;
+		disabled?: boolean;
+	} = $props();
+	const iconOpen: string = '▾';
+	const iconClosed: string = '▸';
+
+	const contentId = `foldable-${crypto.getRandomValues(new Uint32Array(1))[0].toString(36)}`;
+
+	function toggle() {
+		if (disabled) return;
+		open = !open;
+	}
+</script>
+
+<div class="foldable">
+	<button
+		type="button"
+		class="foldable__header"
+		aria-expanded={open}
+		aria-controls={contentId}
+		onclick={toggle}
+		{disabled}
+	>
+		<span class="foldable__icon" aria-hidden="true">{open ? iconOpen : iconClosed}</span>
+		<span class="foldable__title">{title}</span>
+	</button>
+
+	{#if open}
+		<div class="foldable__content" id={contentId} role="region" aria-label={title} transition:slide>
+			{@render children?.()}
+		</div>
+	{/if}
+</div>
+
+<style>
+	.foldable {
+		--foldable-border: var(--color-border, #ddd);
+		--foldable-bg: var(--color-bg, #f8f9fa);
+		--foldable-header-bg: var(--color-header-bg, #eee);
+		--foldable-radius: 4px;
+		margin: 0.5rem 0.5rem 1rem 0.5rem;
+		box-sizing: border-box;
+	}
+
+	.foldable__header {
+		all: unset;
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+		width: 100%;
+		padding: 0.3rem 0.3rem;
+		cursor: pointer;
+		background: var(--foldable-header-bg);
+		border: 1px solid var(--foldable-border);
+		border-radius: var(--foldable-radius);
+		font-size: 0.9rem;
+		line-height: 1.2;
+		user-select: none;
+		box-sizing: border-box;
+	}
+	.foldable__header:focus-visible {
+		outline: 2px solid #2684ff;
+		outline-offset: 2px;
+	}
+	.foldable__header:disabled {
+		opacity: 0.5;
+		cursor: default;
+	}
+
+	.foldable__icon {
+		width: 1em;
+		display: inline-flex;
+		justify-content: center;
+		transition: transform 0.2s;
+	}
+
+	.foldable__title {
+		flex: 1;
+		font-weight: 500;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.foldable__content {
+		padding: 0.5rem 0.75rem 0.75rem;
+		border: 1px solid var(--foldable-border);
+		border-top: none;
+		border-radius: 0 0 var(--foldable-radius) var(--foldable-radius);
+		background: var(--foldable-bg);
+		font-size: 0.85rem;
+	}
+</style>

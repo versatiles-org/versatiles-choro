@@ -44,14 +44,6 @@
 		let style = backgroundStyle;
 		let overlayLayerIds: string[] = [];
 
-		if (overlay) {
-			const source = await getTileSource(overlay);
-			const overlayStyle = source.getStyle();
-			overlayLayerIds = overlayStyle.layers?.map((layer) => layer.id) ?? [];
-			style = overlayStyles(style, overlayStyle);
-			bounds = source.getBounds() ?? bounds;
-		}
-
 		map = new maplibre.Map({
 			container,
 			style,
@@ -73,33 +65,50 @@
 		});
 
 		canvas = map.getCanvas();
-
-		if (inspectOverlay && overlayLayerIds.length > 0) {
-			map.on('mousemove', overlayLayerIds, (e) => {
-				const properties = (e.features ?? []).map((feature) => {
-					const props: PropertyEntry[] = [];
-					for (const key in feature.properties) {
-						props.push({ name: key, value: String(feature.properties[key]) });
-					}
-					props.sort((a, b) => a.name.localeCompare(b.name));
-					return props;
-				});
-				if (JSON.stringify(properties) !== JSON.stringify(selectedProperties)) {
-					selectedProperties = properties;
-				}
-				canvas!.style.cursor = 'pointer';
-			});
-			map.on('mouseleave', overlayLayerIds, () => {
-				selectedProperties = [];
-				canvas!.style.cursor = '';
-			});
-		}
 	});
 
 	// cleanup (runs automatically when dependencies change or component unmounts)
 	onDestroy(() => {
 		map?.remove();
 		map = null;
+	});
+
+	$effect(() => {
+		if (!map) return;
+		let style = backgroundStyle;
+		let overlayLayerIds: string[] = [];
+
+		if (overlay) {
+			getTileSource(overlay).then((source) => {
+				const overlayStyle = source.getStyle();
+				overlayLayerIds = overlayStyle.layers?.map((layer) => layer.id) ?? [];
+				style = overlayStyles(backgroundStyle, overlayStyle);
+				map!.setStyle(style);
+
+				if (inspectOverlay && overlayLayerIds.length > 0) {
+					map!.on('mousemove', overlayLayerIds, (e) => {
+						const properties = (e.features ?? []).map((feature) => {
+							const props: PropertyEntry[] = [];
+							for (const key in feature.properties) {
+								props.push({ name: key, value: String(feature.properties[key]) });
+							}
+							props.sort((a, b) => a.name.localeCompare(b.name));
+							return props;
+						});
+						if (JSON.stringify(properties) !== JSON.stringify(selectedProperties)) {
+							selectedProperties = properties;
+						}
+						canvas!.style.cursor = 'pointer';
+					});
+					map!.on('mouseleave', overlayLayerIds, () => {
+						selectedProperties = [];
+						canvas!.style.cursor = '';
+					});
+				}
+			});
+		} else {
+			map.setStyle(style);
+		}
 	});
 </script>
 
