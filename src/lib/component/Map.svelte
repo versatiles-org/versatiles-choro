@@ -25,6 +25,7 @@
 
 	// --- State ---------------------------------------------------------------
 	let container: HTMLDivElement | null = null;
+	let canvas: HTMLCanvasElement | null = null;
 	let map: Map | null = null;
 
 	const backgroundStyle = createStyle(backgroundMap);
@@ -64,14 +65,31 @@
 			onerror?.(err instanceof Error ? err : new Error(String(err)));
 		});
 
+		canvas = map.getCanvas();
+
 		if (inspectOverlay && overlayLayerIds.length > 0) {
+			let info = document.getElementById('info');
 			map.on('mousemove', overlayLayerIds, (e) => {
-				const properties = e.features?.map((f) => f.properties);
-				const info = document.getElementById('info');
-				if (info && properties) {
-					info.innerHTML = `<pre>${JSON.stringify(properties, null, 2)}</pre>`;
+				const properties = (e.features ?? []).map((f) => f.properties);
+				if (properties.length > 0) {
+					setInfo(`<pre>${JSON.stringify(properties, null, 2)}</pre>`);
+				} else {
+					setInfo();
 				}
 			});
+			map.on('mouseleave', overlayLayerIds, () => {
+				setInfo();
+			});
+			function setInfo(text?: string) {
+				if (!info) return;
+				if (text) {
+					info.innerHTML = text;
+					canvas!.style.cursor = 'pointer';
+				} else {
+					info.innerHTML = '';
+					canvas!.style.cursor = '';
+				}
+			}
 		}
 	});
 
