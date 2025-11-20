@@ -1,5 +1,7 @@
 <script lang="ts">
+	import { ProgressStatus } from '$lib/api/types';
 	import Dialog from './Dialog.svelte';
+	import * as v from 'valibot';
 
 	let { url, params }: { url: string; params: Record<string, unknown> } = $props();
 
@@ -38,13 +40,13 @@
 				buffer = buffer.slice(idx + 1);
 				if (!line) continue;
 
-				const evt = JSON.parse(line);
+				const evt = v.parse(ProgressStatus, JSON.parse(line));
 				switch (evt.event) {
 					case 'progress':
-						percentage = Number(evt.data);
+						percentage = Number(evt.progress);
 						break;
 					case 'message':
-						message = String(evt.data);
+						message = String(evt.message);
 						break;
 					case 'done':
 						visible = false;

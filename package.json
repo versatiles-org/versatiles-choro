@@ -24,7 +24,8 @@
 	},
 	"dependencies": {
 		"@versatiles/style": "^5.8.0",
-		"commander": "^14.0.2"
+		"commander": "^14.0.2",
+		"valibot": "^1.1.0"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^2.0.0",
@@ -49,7 +50,6 @@
 		"tsx": "^4.20.6",
 		"typescript": "^5.9.3",
 		"typescript-eslint": "^8.47.0",
-		"valibot": "^1.1.0",
 		"vite": "^7.2.2",
 		"vitest": "^4.0.10"
 	}

@@ -1,12 +1,12 @@
-import { SimpleProgress } from '../progress/simple';
 import https from 'https';
 import { createWriteStream, existsSync } from 'fs';
 import path from 'path';
 import zlib from 'zlib';
 import { rename } from 'fs/promises';
 import type { Writable } from 'stream';
+import { SimpleProgress, type Progress } from '../progress/index';
 
-export function downloadTestData(outputDir: string) {
+export function downloadTestData(outputDir: string): Progress {
 	const urlVerwaltungsgebiete =
 		'https://raw.githubusercontent.com/MichaelKreil/verwaltungsgebiete/refs/heads/main/data/2025-01-01/';
 	const files: { url: string; name: string }[] = [

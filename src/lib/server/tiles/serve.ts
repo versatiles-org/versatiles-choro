@@ -1,11 +1,15 @@
+import type { TilesInitResponse } from '$lib/api/types.js';
 import { runVersaTilesServer } from '../spawn/spawn.js';
+import * as v from 'valibot';
 
 const ports = new Set<number>();
 const MIN_PORT = 51001;
 const MAX_PORT = 52000;
 let port = MIN_PORT;
 
-export async function startTileServer(filename: string): Promise<{ port: number }> {
+export async function startTileServer(
+	filename: string
+): Promise<v.InferOutput<typeof TilesInitResponse>> {
 	console.log(`Starting tile server for file ${filename}`);
 	while (ports.has(port)) {
 		port++;
@@ -30,5 +34,5 @@ export async function startTileServer(filename: string): Promise<{ port: number 
 		}, 100);
 	});
 
-	return { port };
+	return { id: String(port) };
 }

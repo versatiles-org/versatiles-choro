@@ -1,18 +1,15 @@
+import { TilesLoadRequest } from '$lib/api/types';
 import type { RequestHandler } from './$types';
+import * as v from 'valibot';
 
 export const GET: RequestHandler = async ({ request }) => {
 	const params = new URL(request.url).searchParams;
-	const id = params.get('id');
-	const path = params.get('path');
+	const { id, path } = v.parse(TilesLoadRequest, {
+		id: params.get('id'),
+		path: params.get('path')
+	});
 
-	if (typeof id !== 'string' || !/^\d+$/.test(id)) {
-		return new Response(`Invalid or missing id parameter "${id}"`, { status: 400 });
-	}
-
-	if (typeof path !== 'string') {
-		return new Response(`Invalid or missing path parameter "${path}"`, { status: 400 });
-	}
-
+	// Proxy the request to the tile server
 	const url = `http://localhost:${id}/tiles/${id}/${path}`;
 	const newRequest = new Request(url, {
 		method: 'GET'

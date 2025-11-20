@@ -1,3 +1,4 @@
+import { TilesInitRequest, TilesInitResponse } from '$lib/api/types';
 import {
 	colorful,
 	guessStyle,
@@ -15,6 +16,7 @@ import type {
 	StyleSpecification,
 	VectorSourceSpecification
 } from 'maplibre-gl';
+import * as v from 'valibot';
 
 export type BackgroundMap = 'Colorful' | 'Gray' | 'GrayBright' | 'GrayDark' | 'None';
 
@@ -129,12 +131,13 @@ export function overlayStyles(
 	};
 }
 
-export async function getTileSource(file: string): Promise<TileSource> {
-	const res = await fetch(`/api/tiles/init?file=${encodeURIComponent(file)}`);
+export async function getTileSource(input: string): Promise<TileSource> {
+	const req = v.parse(TilesInitRequest, { input });
+	const res = await fetch('/api/tiles/init', { body: JSON.stringify(req), method: 'POST' });
 	if (!res.ok) {
 		throw new Error(`Failed to initialize tile server: ${await res.text()}`);
 	}
-	const data = (await res.json()) as { id: number };
+	const data = v.parse(TilesInitResponse, await res.json());
 	const origin = window.location.origin;
 	const source = new TileSource(`${origin}/api/tiles/load?id=${data.id}&path=`);
 	await source.init();

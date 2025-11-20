@@ -1,5 +1,5 @@
 <script lang="ts">
-	import maplibregl, { type LngLatBoundsLike, type Map } from 'maplibre-gl';
+	import maplibre, { type LngLat, type Map, type LngLatBoundsLike } from 'maplibre-gl';
 	import 'maplibre-gl/dist/maplibre-gl.css';
 	import { onMount, onDestroy } from 'svelte';
 	import { createStyle, getTileSource, overlayStyles, type BackgroundMap } from './map/map';
@@ -16,7 +16,7 @@
 	}: {
 		backgroundMap?: BackgroundMap;
 		inspectOverlay?: boolean;
-		onclick?: (payload: { lngLat: maplibregl.LngLat; originalEvent: MouseEvent }) => void;
+		onclick?: (payload: { lngLat: LngLat; originalEvent: MouseEvent }) => void;
 		onerror?: (error: Error) => void;
 		onload?: (map: Map) => void;
 		onmove?: (map: Map) => void;
@@ -44,7 +44,7 @@
 			bounds = source.getBounds() ?? bounds;
 		}
 
-		map = new maplibregl.Map({
+		map = new maplibre.Map({
 			container,
 			style,
 			bounds
