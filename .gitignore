@@ -1,5 +1,6 @@
 data
 node_modules
+temp
 
 # Output
 .svelte-kit
