@@ -27,6 +27,11 @@
 	let container: HTMLDivElement | null = null;
 	let canvas: HTMLCanvasElement | null = null;
 	let map: Map | null = null;
+	interface PropertyEntry {
+		name: string;
+		value: string;
+	}
+	let selectedProperties: PropertyEntry[][] = $state([]);
 
 	const backgroundStyle = createStyle(backgroundMap);
 
@@ -68,28 +73,24 @@
 		canvas = map.getCanvas();
 
 		if (inspectOverlay && overlayLayerIds.length > 0) {
-			let info = document.getElementById('info');
 			map.on('mousemove', overlayLayerIds, (e) => {
-				const properties = (e.features ?? []).map((f) => f.properties);
-				if (properties.length > 0) {
-					setInfo(`<pre>${JSON.stringify(properties, null, 2)}</pre>`);
-				} else {
-					setInfo();
+				const properties = (e.features ?? []).map((feature) => {
+					const props: PropertyEntry[] = [];
+					for (const key in feature.properties) {
+						props.push({ name: key, value: String(feature.properties[key]) });
+					}
+					props.sort((a, b) => a.name.localeCompare(b.name));
+					return props;
+				});
+				if (JSON.stringify(properties) !== JSON.stringify(selectedProperties)) {
+					selectedProperties = properties;
 				}
+				canvas!.style.cursor = 'pointer';
 			});
 			map.on('mouseleave', overlayLayerIds, () => {
-				setInfo();
+				selectedProperties = [];
+				canvas!.style.cursor = '';
 			});
-			function setInfo(text?: string) {
-				if (!info) return;
-				if (text) {
-					info.innerHTML = text;
-					canvas!.style.cursor = 'pointer';
-				} else {
-					info.innerHTML = '';
-					canvas!.style.cursor = '';
-				}
-			}
 		}
 	});
 
@@ -102,7 +103,20 @@
 
 <div bind:this={container} class="map-container"></div>
 {#if inspectOverlay}
-	<div id="info"></div>
+	<div id="info">
+		{#each selectedProperties as properties}
+			<table>
+				<tbody>
+					{#each properties as prop}
+						<tr>
+							<td>{prop.name}:</td>
+							<td>{prop.value}</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		{/each}
+	</div>
 {/if}
 
 <style>
@@ -121,5 +135,17 @@
 		background: rgba(255, 255, 255, 0.8);
 		font-size: 10px;
 		padding: 5px;
+	}
+	#info table {
+		border-collapse: collapse;
+		margin-bottom: 10px;
+	}
+	#info td {
+		padding: 0px 5px;
+		vertical-align: top;
+	}
+	#info td:first-child {
+		text-align: left;
+		font-weight: bold;
 	}
 </style>
