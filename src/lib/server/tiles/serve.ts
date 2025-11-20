@@ -4,6 +4,7 @@ import { runVersaTilesServer } from '$lib/server/spawn/spawn.js';
 import * as v from 'valibot';
 import { resolve } from 'path';
 import { TEMP_PATH } from '$lib/filesystem/filesystem.server.js';
+import { buildVPL } from './vpl';
 
 const ports = new Set<number>();
 const MIN_PORT = 51001;
@@ -19,10 +20,8 @@ export async function startTileServer(
 	}
 	ports.add(port);
 
-	const vpl = [`from_container="${params.input}"`].join('\n   | ');
-
 	const tempFile = resolve(TEMP_PATH, `${port}.vpl`);
-	writeFileSync(tempFile, vpl);
+	writeFileSync(tempFile, buildVPL(params));
 
 	runVersaTilesServer(tempFile, port);
 
