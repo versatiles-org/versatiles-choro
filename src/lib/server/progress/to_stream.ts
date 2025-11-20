@@ -1,6 +1,6 @@
 import type { ProgressStatus } from '$lib/api/types';
-import type { Progress } from './progress/index';
-import * as v from 'valibot';
+import type { Progress } from './index';
+import type { InferInput } from 'valibot';
 
 export function progressToStream(progress: Progress, signal: AbortSignal): Response {
 	const encoder = new TextEncoder();
@@ -10,7 +10,7 @@ export function progressToStream(progress: Progress, signal: AbortSignal): Respo
 	});
 	const stream = new ReadableStream<Uint8Array>({
 		start(controller) {
-			function send(obj: v.InferInput<typeof ProgressStatus>) {
+			function send(obj: InferInput<typeof ProgressStatus>) {
 				if (finished) return;
 				controller.enqueue(encoder.encode(JSON.stringify(obj) + '\n'));
 			}
