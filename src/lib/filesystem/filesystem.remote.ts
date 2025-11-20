@@ -10,6 +10,9 @@ export const getDataPath = query(() => {
 
 export const getChildren = query(v.string(), async (path) => {
 	path = resolve(DATA_PATH, path.replace(/^\/+/, ''));
+	if (!path.startsWith(DATA_PATH)) {
+		throw new Error('Access outside of data path is not allowed');
+	}
 	return readdirSync(path)
 		.filter((name) => !name.startsWith('.'))
 		.map((name) => {
