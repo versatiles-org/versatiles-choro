@@ -10,7 +10,7 @@
 	}: {
 		initialDirectory?: FsDirectory;
 		showModal: boolean;
-		file: string | null;
+		file: string | undefined;
 		fileFilter?: (name: string) => boolean;
 	} = $props();
 

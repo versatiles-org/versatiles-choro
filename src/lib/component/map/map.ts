@@ -1,12 +1,9 @@
 import { TilesInitRequest, TilesInitResponse } from '$lib/api/types';
-import {
-	colorful,
-	guessStyle,
-	type StyleBuilderOptions,
-	type TileJSONSpecification,
-	type TileJSONSpecificationVector,
-	type VectorLayer,
-	Color
+import { colorful, Color } from '@versatiles/style';
+import type {
+	StyleBuilderOptions,
+	TileJSONSpecificationVector,
+	VectorLayer
 } from '@versatiles/style';
 import type {
 	BackgroundLayerSpecification,
@@ -36,7 +33,7 @@ class TileSource {
 	resolve(path: string): string {
 		return `${this.prefix}${path}`;
 	}
-	getTileJson(): TileJSONSpecification {
+	getTileJson(): TileJSONSpecificationVector {
 		if (!this.tileJson) {
 			throw new Error('TileSource not initialized');
 		}
@@ -131,8 +128,10 @@ export function overlayStyles(
 	};
 }
 
-export async function getTileSource(input: string): Promise<TileSource> {
-	const req = v.parse(TilesInitRequest, { input });
+export async function getTileSource(
+	init: v.InferInput<typeof TilesInitRequest>
+): Promise<TileSource> {
+	const req = v.parse(TilesInitRequest, init);
 	const res = await fetch('/api/tiles/init', { body: JSON.stringify(req), method: 'POST' });
 	if (!res.ok) {
 		throw new Error(`Failed to initialize tile server: ${await res.text()}`);

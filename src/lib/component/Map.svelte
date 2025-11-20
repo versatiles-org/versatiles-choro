@@ -3,6 +3,8 @@
 	import 'maplibre-gl/dist/maplibre-gl.css';
 	import { onMount, onDestroy } from 'svelte';
 	import { createStyle, getTileSource, overlayStyles, type BackgroundMap } from './map/map';
+	import type { InferOutput } from 'valibot';
+	import type { TilesInitRequest } from '$lib/api/types';
 
 	// --- Props  --------------------------------------------------------------
 	let {
@@ -12,7 +14,7 @@
 		onerror,
 		onload,
 		onmove,
-		overlayFile
+		overlay
 	}: {
 		backgroundMap?: BackgroundMap;
 		inspectOverlay?: boolean;
@@ -20,7 +22,7 @@
 		onerror?: (error: Error) => void;
 		onload?: (map: Map) => void;
 		onmove?: (map: Map) => void;
-		overlayFile?: string;
+		overlay?: InferOutput<typeof TilesInitRequest>;
 	} = $props();
 
 	// --- State ---------------------------------------------------------------
@@ -42,8 +44,8 @@
 		let style = backgroundStyle;
 		let overlayLayerIds: string[] = [];
 
-		if (overlayFile) {
-			const source = await getTileSource(overlayFile);
+		if (overlay) {
+			const source = await getTileSource(overlay);
 			const overlayStyle = source.getStyle();
 			overlayLayerIds = overlayStyle.layers?.map((layer) => layer.id) ?? [];
 			style = overlayStyles(style, overlayStyle);

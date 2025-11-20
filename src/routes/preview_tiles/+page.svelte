@@ -1,12 +1,21 @@
 <script lang="ts">
+	import type { TilesInitRequest } from '$lib/api/types';
 	import FileSelector from '$lib/component/FileSelector.svelte';
 	import Map from '$lib/component/Map.svelte';
+	import type { InferOutput } from 'valibot';
 
 	let showModal = $state(true);
-	let file: string | null = $state(null);
+	let file: string | undefined = $state(undefined);
+	let overlay: InferOutput<typeof TilesInitRequest> | undefined = $state(undefined);
 
 	$effect(() => {
-		if (file) showModal = false;
+		if (file) {
+			showModal = false;
+			overlay = { input: file };
+		} else {
+			showModal = true;
+			overlay = undefined;
+		}
 	});
 </script>
 
@@ -19,5 +28,5 @@
 		fileFilter={(name) => /\.(versa|mb|pm)tiles$/.test(name)}
 	/>
 {:else}
-	<Map backgroundMap="GrayBright" overlayFile={file} inspectOverlay={true}></Map>
+	<Map backgroundMap="GrayBright" {overlay} inspectOverlay={true}></Map>
 {/if}

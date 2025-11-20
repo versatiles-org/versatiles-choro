@@ -3,7 +3,7 @@
 	import Progress from '$lib/component/Progress.svelte';
 
 	let showModal = $state(true);
-	let file: string | null = $state(null);
+	let file: string | undefined = $state(undefined);
 
 	$effect(() => {
 		if (file) showModal = false;
