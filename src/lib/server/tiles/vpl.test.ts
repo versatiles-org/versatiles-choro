@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import {
 	buildVPL,
 	buildVPLFilter,
@@ -9,6 +9,11 @@ import {
 } from './vpl';
 import type { TilesInitRequest } from '$lib/api/types';
 import * as v from 'valibot';
+
+vi.mock('$lib/server/filesystem/filesystem', async (importActual) => ({
+	...(await importActual()),
+	resolve: (path: string) => path
+}));
 
 describe('buildVPLUpdateProperties', () => {
 	it('returns null for null input', () => {

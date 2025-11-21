@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types';
-import { resolve } from '$lib/filesystem/filesystem.server';
+import { resolve } from '$lib/server/filesystem/filesystem';
 import { convertPolygonsToVersatiles } from '$lib/server/geometry/convert';
 import * as v from 'valibot';
 import { ConvertPolygonsRequest } from '$lib/api/types';

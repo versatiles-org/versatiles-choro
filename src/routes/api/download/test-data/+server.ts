@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 import { progressToStream } from '$lib/server/progress';
-import { resolve } from '$lib/filesystem/filesystem.server';
+import { resolve } from '$lib/server/filesystem/filesystem';
 import { downloadTestData } from '$lib/server/download/test-data';
 import { mkdir } from 'fs/promises';
 

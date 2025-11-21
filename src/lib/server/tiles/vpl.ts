@@ -1,8 +1,9 @@
 import type { TilesInitRequest } from '$lib/api/types';
+import { resolve } from '$lib/server/filesystem/filesystem';
 import * as v from 'valibot';
 
 export function buildVPL(params: v.InferOutput<typeof TilesInitRequest>): string {
-	const vpl: (string | null)[] = [`from_container filename="${params.input}"`];
+	const vpl: (string | null)[] = [`from_container filename="${resolve(params.input)}"`];
 
 	vpl.push(buildVPLUpdateProperties(params.update_properties));
 	vpl.push(buildVPLFilterLayers(params.filter_layers));

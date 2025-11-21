@@ -2,7 +2,7 @@ import { query } from '$app/server';
 import * as v from 'valibot';
 import { readdirSync, statSync } from 'fs';
 import { resolve } from 'path';
-import { DATA_PATH } from './filesystem.server';
+import { DATA_PATH } from '../server/filesystem/filesystem';
 
 export const getDataPath = query(() => {
 	return DATA_PATH;

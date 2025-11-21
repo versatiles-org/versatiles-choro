@@ -3,7 +3,7 @@ import { writeFileSync } from 'fs';
 import { runVersaTilesServer } from '$lib/server/spawn/spawn.js';
 import * as v from 'valibot';
 import { resolve } from 'path';
-import { TEMP_PATH } from '$lib/filesystem/filesystem.server.js';
+import { TEMP_PATH } from '$lib/server/filesystem/filesystem.js';
 import { buildVPL } from './vpl';
 
 const ports = new Set<number>();

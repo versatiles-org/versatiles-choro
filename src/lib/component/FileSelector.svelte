@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Dialog from './Dialog.svelte';
-	import { FsDirectory, getRootDirectory } from '$lib/filesystem/filesystem.svelte';
+	import { FsDirectory, getRootDirectory } from '$lib/api/filesystem.svelte';
 
 	let {
 		initialDirectory,
