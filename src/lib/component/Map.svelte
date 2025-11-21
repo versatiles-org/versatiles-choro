@@ -1,5 +1,5 @@
 <script lang="ts">
-	import maplibre, { type LngLat, type Map, type LngLatBoundsLike } from 'maplibre-gl';
+	import maplibre from 'maplibre-gl';
 	import 'maplibre-gl/dist/maplibre-gl.css';
 	import { onMount, onDestroy } from 'svelte';
 	import type { InferOutput } from 'valibot';
@@ -7,117 +7,87 @@
 	import { createBackgroundStyle, type BackgroundMap } from './map/style_background';
 	import { getTileSource } from './map/tile_source';
 	import { overlayStyles } from './map/style';
+	import { Inspector } from './map/inspector.svelte';
 
 	// --- Props  --------------------------------------------------------------
 	let {
 		backgroundMap,
 		inspectOverlay = false,
-		onclick,
-		onerror,
-		onload,
-		onmove,
 		overlay
 	}: {
 		backgroundMap?: BackgroundMap;
 		inspectOverlay?: boolean;
-		onclick?: (payload: { lngLat: LngLat; originalEvent: MouseEvent }) => void;
-		onerror?: (error: Error) => void;
-		onload?: (map: Map) => void;
-		onmove?: (map: Map) => void;
 		overlay?: InferOutput<typeof TilesInitRequest>;
 	} = $props();
 
 	// --- State ---------------------------------------------------------------
 	let container: HTMLDivElement | null = null;
 	let canvas: HTMLCanvasElement | null = null;
-	let map: Map | null = null;
-	interface PropertyEntry {
-		name: string;
-		value: string;
-	}
-	let selectedProperties: PropertyEntry[][] = $state([]);
+	let map: maplibre.Map | null = null;
 
-	const backgroundStyle = createBackgroundStyle(backgroundMap);
+	// Derived background style so changes to backgroundMap are reflected
+	let backgroundStyle = $derived(createBackgroundStyle(backgroundMap));
+	let inspector: Inspector | null = $state(null);
 
 	// --- Lifecycle: onMount that auto-cleans ---------------------------------
 	onMount(async () => {
 		if (!container) return;
-		let bounds: LngLatBoundsLike = [-23.895, 34.9, 45.806, 71.352];
-		let style = backgroundStyle;
-		let overlayLayerIds: string[] = [];
+		let bounds: maplibre.LngLatBoundsLike = [-23.895, 34.9, 45.806, 71.352];
 
 		map = new maplibre.Map({
 			container,
-			style,
+			style: backgroundStyle,
 			bounds
 		});
-
-		map.on('load', () => onload?.(map!));
-		map.on('click', (e) =>
-			onclick?.({
-				lngLat: e.lngLat,
-				originalEvent: e.originalEvent as MouseEvent
-			})
-		);
-		map.on('moveend', () => onmove?.(map!));
-
-		map.on('error', (e) => {
-			const err = (e as ErrorEvent)?.error ?? e;
-			onerror?.(err instanceof Error ? err : new Error(String(err)));
-		});
+		inspector = new Inspector(map);
 
 		canvas = map.getCanvas();
 	});
 
 	// cleanup (runs automatically when dependencies change or component unmounts)
 	onDestroy(() => {
+		inspector?.detach();
+		inspector = null;
 		map?.remove();
 		map = null;
 	});
 
+	// React to changes of backgroundMap (only when no overlay is active)
 	$effect(() => {
 		if (!map) return;
-		let style = backgroundStyle;
-		let overlayLayerIds: string[] = [];
-
-		if (overlay) {
-			getTileSource(overlay).then((source) => {
-				const overlayStyle = source.getStyle();
-				overlayLayerIds = overlayStyle.layers?.map((layer) => layer.id) ?? [];
-				style = overlayStyles(backgroundStyle, overlayStyle);
-				map!.setStyle(style);
-
-				if (inspectOverlay && overlayLayerIds.length > 0) {
-					map!.on('mousemove', overlayLayerIds, (e) => {
-						const properties = (e.features ?? []).map((feature) => {
-							const props: PropertyEntry[] = [];
-							for (const key in feature.properties) {
-								props.push({ name: key, value: String(feature.properties[key]) });
-							}
-							props.sort((a, b) => a.name.localeCompare(b.name));
-							return props;
-						});
-						if (JSON.stringify(properties) !== JSON.stringify(selectedProperties)) {
-							selectedProperties = properties;
-						}
-						canvas!.style.cursor = 'pointer';
-					});
-					map!.on('mouseleave', overlayLayerIds, () => {
-						selectedProperties = [];
-						canvas!.style.cursor = '';
-					});
-				}
-			});
-		} else {
-			map.setStyle(style);
+		if (!overlay) {
+			inspector?.detach();
+			map.setStyle(backgroundStyle);
+			return;
 		}
+
+		// Overlay present: update style & inspection handlers
+		updateOverlay();
 	});
+
+	async function updateOverlay() {
+		if (!map || !overlay) return;
+
+		const source = await getTileSource(overlay);
+		const overlayStyle = source.getStyle();
+		const overlayLayerIds = overlayStyle.layers?.map((layer) => layer.id) ?? [];
+		const style = overlayStyles(backgroundStyle, overlayStyle);
+
+		// Remove previous inspection handlers and apply new style
+		inspector?.detach();
+
+		if (inspectOverlay && overlayLayerIds.length > 0) {
+			inspector?.attach(overlayLayerIds);
+		}
+
+		map.setStyle(style);
+	}
 </script>
 
 <div bind:this={container} class="map-container"></div>
-{#if inspectOverlay}
+{#if inspectOverlay && inspector}
 	<div id="info">
-		{#each selectedProperties as properties, index (index)}
+		{#each inspector.selectedProperties as properties, index (index)}
 			<table>
 				<tbody>
 					{#each properties as prop, index (index)}
