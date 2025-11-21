@@ -1,5 +1,4 @@
 import type { RequestHandler } from './$types';
-import { resolve } from '$lib/server/filesystem/filesystem';
 import { startTileServer } from '$lib/server/tiles/serve';
 import * as v from 'valibot';
 import { TilesInitRequest, TilesInitResponse } from '$lib/api/types';

@@ -2,8 +2,7 @@ import type { TilesInitRequest, TilesInitResponse } from '$lib/api/types.js';
 import { writeFileSync } from 'fs';
 import { runVersaTilesServer } from '$lib/server/spawn/spawn.js';
 import * as v from 'valibot';
-import { resolve } from 'path';
-import { TEMP_PATH } from '$lib/server/filesystem/filesystem.js';
+import { resolve_temp } from '$lib/server/filesystem/filesystem.js';
 import { buildVPL } from './vpl';
 
 const ports = new Set<number>();
@@ -20,7 +19,7 @@ export async function startTileServer(
 	}
 	ports.add(port);
 
-	const tempFile = resolve(TEMP_PATH, `${port}.vpl`);
+	const tempFile = resolve_temp(`${port}.vpl`);
 	writeFileSync(tempFile, buildVPL(params));
 
 	runVersaTilesServer(tempFile, port);
