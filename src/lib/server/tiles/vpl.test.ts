@@ -10,9 +10,9 @@ import {
 import type { TilesInitRequest } from '$lib/api/types';
 import * as v from 'valibot';
 
-vi.mock('$lib/server/filesystem/filesystem', async (importActual) => ({
-	...(await importActual()),
-	resolve: (path: string) => path
+vi.mock('$lib/server/filesystem/filesystem', () => ({
+	resolve_data: (path: string) => 'data/' + path,
+	resolve_temp: (path: string) => 'temp/' + path
 }));
 
 describe('buildVPLUpdateProperties', () => {
@@ -135,7 +135,7 @@ describe('buildVPL', () => {
 			filter: undefined,
 			meta_update: undefined
 		};
-		expect(buildVPL(params)).toBe('from_container filename="input.versatiles"');
+		expect(buildVPL(params)).toBe('from_container filename="data/input.versatiles"');
 	});
 	it('returns correct string for fully populated parameter object', () => {
 		const params = {
@@ -169,7 +169,7 @@ describe('buildVPL', () => {
 			}
 		} as v.InferOutput<typeof TilesInitRequest>;
 		const expected = [
-			'from_container filename="input.versatiles"',
+			'from_container filename="data/input.versatiles"',
 			'   | vector_update_properties data_source_path="data.csv" layer_name="mylayer" id_field_tiles="tile_id" id_field_data="data_id" replace_properties="true" remove_non_matching="true" include_id="true"',
 			'   | vector_filter_layers filter="a,b" invert="true"',
 			'   | vector_filter_properties regex="^foo"',

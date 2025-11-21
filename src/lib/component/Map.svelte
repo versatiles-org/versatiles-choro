@@ -2,9 +2,11 @@
 	import maplibre, { type LngLat, type Map, type LngLatBoundsLike } from 'maplibre-gl';
 	import 'maplibre-gl/dist/maplibre-gl.css';
 	import { onMount, onDestroy } from 'svelte';
-	import { createStyle, getTileSource, overlayStyles, type BackgroundMap } from './map/map';
 	import type { InferOutput } from 'valibot';
 	import type { TilesInitRequest } from '$lib/api/types';
+	import { createBackgroundStyle, type BackgroundMap } from './map/style_background';
+	import { getTileSource } from './map/tile_source';
+	import { overlayStyles } from './map/style';
 
 	// --- Props  --------------------------------------------------------------
 	let {
@@ -35,7 +37,7 @@
 	}
 	let selectedProperties: PropertyEntry[][] = $state([]);
 
-	const backgroundStyle = createStyle(backgroundMap);
+	const backgroundStyle = createBackgroundStyle(backgroundMap);
 
 	// --- Lifecycle: onMount that auto-cleans ---------------------------------
 	onMount(async () => {

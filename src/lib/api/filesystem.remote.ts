@@ -1,22 +1,15 @@
 import { query } from '$app/server';
 import * as v from 'valibot';
 import { readdirSync, statSync } from 'fs';
-import { resolve } from 'path';
-import { DATA_PATH } from '../server/filesystem/filesystem';
-
-export const getDataPath = query(() => {
-	return DATA_PATH;
-});
+import { resolve_data } from '../server/filesystem/filesystem';
 
 export const getChildren = query(v.string(), async (path) => {
-	path = resolve(DATA_PATH, path.replace(/^\/+/, ''));
-	if (!path.startsWith(DATA_PATH)) {
-		throw new Error('Access outside of data path is not allowed');
-	}
-	return readdirSync(path)
+	path = path.replace(/^\/+/, '');
+	const path_absolute = resolve_data(path);
+	return readdirSync(path_absolute)
 		.filter((name) => !name.startsWith('.'))
 		.map((name) => {
-			const childPath = resolve(path, name);
+			const childPath = resolve_data(path, name);
 			const stats = statSync(childPath);
 			return {
 				name,
