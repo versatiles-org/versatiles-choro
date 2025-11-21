@@ -30,6 +30,7 @@
 	"devDependencies": {
 		"@eslint/compat": "^2.0.0",
 		"@eslint/js": "^9.39.1",
+		"@lucide/svelte": "^0.554.0",
 		"@rollup/plugin-typescript": "^12.3.0",
 		"@sveltejs/adapter-node": "^5.4.0",
 		"@sveltejs/kit": "^2.48.5",

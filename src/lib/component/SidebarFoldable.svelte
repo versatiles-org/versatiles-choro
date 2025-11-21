@@ -27,18 +27,18 @@
 <div class="foldable">
 	<button
 		type="button"
-		class="foldable__header"
+		class="header"
 		aria-expanded={open}
 		aria-controls={contentId}
 		onclick={toggle}
 		{disabled}
 	>
-		<span class="foldable__icon" aria-hidden="true">{open ? iconOpen : iconClosed}</span>
-		<span class="foldable__title">{title}</span>
+		<span class="icon" aria-hidden="true">{open ? iconOpen : iconClosed}</span>
+		<span class="title">{title}</span>
 	</button>
 
 	{#if open}
-		<div class="foldable__content" id={contentId} role="region" aria-label={title} transition:slide>
+		<div class="content" id={contentId} role="region" aria-label={title} transition:slide>
 			{@render children?.()}
 		</div>
 	{/if}
@@ -50,11 +50,11 @@
 		--foldable-bg: var(--color-bg, #f8f9fa);
 		--foldable-header-bg: var(--color-header-bg, #eee);
 		--foldable-radius: 4px;
-		margin: 0.5rem 0.5rem 1rem 0.5rem;
+		margin: 0.2rem 0.2rem 0.2rem 1rem;
 		box-sizing: border-box;
 	}
 
-	.foldable__header {
+	.header {
 		all: unset;
 		display: flex;
 		align-items: center;
@@ -70,23 +70,23 @@
 		user-select: none;
 		box-sizing: border-box;
 	}
-	.foldable__header:focus-visible {
+	.header:focus-visible {
 		outline: 2px solid #2684ff;
 		outline-offset: 2px;
 	}
-	.foldable__header:disabled {
+	.header:disabled {
 		opacity: 0.5;
 		cursor: default;
 	}
 
-	.foldable__icon {
+	.icon {
 		width: 1em;
 		display: inline-flex;
 		justify-content: center;
 		transition: transform 0.2s;
 	}
 
-	.foldable__title {
+	.title {
 		flex: 1;
 		font-weight: 500;
 		white-space: nowrap;
@@ -94,7 +94,7 @@
 		text-overflow: ellipsis;
 	}
 
-	.foldable__content {
+	.content {
 		padding: 0.5rem 0.75rem 0.75rem;
 		border: 1px solid var(--foldable-border);
 		border-top: none;
