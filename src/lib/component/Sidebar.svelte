@@ -2,7 +2,7 @@
 	import type { Snippet } from 'svelte';
 
 	const {
-		children,
+		children
 	}: {
 		children?: Snippet;
 	} = $props();

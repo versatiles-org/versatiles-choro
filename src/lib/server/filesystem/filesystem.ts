@@ -9,7 +9,7 @@ mkdirSync(DATA_PATH, { recursive: true });
 mkdirSync(TEMP_PATH, { recursive: true });
 
 function resolvePath(basePath: string, ...pathSegment: string[]): string {
-	return path.resolve(basePath, ...pathSegment.map(p => p.replace(/^\/+/, '')));
+	return path.resolve(basePath, ...pathSegment.map((p) => p.replace(/^\/+/, '')));
 }
 
 export function resolve_data(...pathSegment: string[]): string {

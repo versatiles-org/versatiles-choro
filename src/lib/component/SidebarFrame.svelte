@@ -9,7 +9,7 @@
 		borderBottom = true
 	}: {
 		children?: Snippet;
-		Icon: Component<IconProps, {}, ''>;
+		Icon: Component<IconProps, object, ''>;
 		title: string;
 		borderBottom?: boolean;
 	} = $props();
