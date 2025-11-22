@@ -1,19 +1,26 @@
 import { Progress } from './types.js';
 
+type Callback = () => void | Promise<void>;
 interface Entry {
-	message?: string,
-	callback: () => void | Promise<void>
-};
+	message?: string;
+	callback: Callback;
+}
 
 export class SimpleProgress extends Progress {
 	private entries: Entry[];
 	private total = 0;
 	private position = 0;
 
-	constructor(entries: Entry[], message?: string) {
+	constructor(entries: (Entry | Callback)[] | Callback | Entry, message?: string) {
 		super(message);
-		this.entries = entries.slice();
-		this.total = entries.length;
+		this.entries = (Array.isArray(entries) ? entries.slice() : [entries]).map((entry) => {
+			if (typeof entry === 'function') {
+				return { callback: entry };
+			} else {
+				return entry;
+			}
+		});
+		this.total = this.entries.length;
 		this.runNext();
 	}
 

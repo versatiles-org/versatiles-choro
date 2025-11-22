@@ -1,4 +1,4 @@
-import { Progress } from './types.js';
+import type { Progress } from './types.js';
 
 export async function logProgress(progress: Progress) {
 	let message = '';

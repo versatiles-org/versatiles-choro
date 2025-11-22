@@ -1,3 +1,5 @@
+import { logProgress } from './log';
+
 type ProgressCb = (progress: number) => void;
 type MessageCb = (message: string, isError: boolean) => void;
 type CompleteCb = () => void;
@@ -58,5 +60,9 @@ export abstract class Progress {
 		return new Promise<void>((resolve) => {
 			this.onComplete(() => resolve());
 		});
+	}
+
+	log(): Promise<void> {
+		return logProgress(this);
 	}
 }
