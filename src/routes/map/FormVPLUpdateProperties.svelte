@@ -40,7 +40,7 @@
 		<input type="checkbox" bind:checked={active} />
 		Active
 	</label>
-	<label class={{missing: !data_source_path}}>
+	<label class={{ missing: !data_source_path }}>
 		Select Data File
 		<button onclick={() => (showModal = true)}>Open File Selector</button>
 		<FileSelector
@@ -49,15 +49,15 @@
 			fileFilter={(name) => /\.csv$/.test(name)}
 		/>
 	</label>
-	<label class={{missing: !layer_name}}>
+	<label class={{ missing: !layer_name }}>
 		Layer Name
 		<input type="text" bind:value={layer_name} />
 	</label>
-	<label class={{missing: !id_field_tiles}}>
+	<label class={{ missing: !id_field_tiles }}>
 		ID Field (Tiles)
 		<input type="text" bind:value={id_field_tiles} />
 	</label>
-	<label class={{missing: !id_field_data}}>
+	<label class={{ missing: !id_field_data }}>
 		ID Field (Data)
 		<input type="text" bind:value={id_field_data} />
 	</label>
