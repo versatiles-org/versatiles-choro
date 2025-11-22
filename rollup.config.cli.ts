@@ -11,6 +11,16 @@ const config: RollupOptions = {
 		format: 'esm',
 		banner: '#!/usr/bin/env node'
 	},
-	external: ['child_process', 'commander', 'fs', 'fs/promises', 'path']
+	external: [
+		'child_process',
+		'commander',
+		'fs',
+		'fs/promises',
+		'https',
+		'os',
+		'path',
+		'valibot',
+		'zlib'
+	]
 };
 export default config;
