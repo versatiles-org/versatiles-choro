@@ -1,6 +1,5 @@
 import { Command } from 'commander';
-import { convertPolygonsToVersatiles } from './lib/server/geometry/convert';
-import { logProgress } from './lib/server/progress/log';
+import { convertPolygonsToVersatiles } from '$lib/server/convert/geometry';
 import { resolve } from 'path';
 import { downloadTestData } from '$lib/server/download/test-data';
 
