@@ -3,7 +3,7 @@
 	import 'maplibre-gl/dist/maplibre-gl.css';
 	import { onMount, onDestroy } from 'svelte';
 	import type { InferOutput } from 'valibot';
-	import type { TilesInitRequest } from '$lib/api/types';
+	import type { TilesInitRequest } from '$lib/api/requests';
 	import { createBackgroundStyle, type BackgroundMap } from './map/style_background';
 	import { getTileSource } from './map/tile_source';
 	import { overlayStyles } from './map/style';

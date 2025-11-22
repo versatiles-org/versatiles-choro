@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ProgressStatus } from '$lib/api/types';
+	import { ProgressStatus } from '$lib/api/basics';
 	import Dialog from './Dialog.svelte';
 	import * as v from 'valibot';
 

@@ -7,8 +7,8 @@ import {
 	buildVPLMetaUpdate,
 	buildVPLUpdateProperties
 } from './vpl';
-import type { TilesInitRequest } from '$lib/api/types';
 import * as v from 'valibot';
+import type { VPLParam } from '$lib/api/vpl';
 
 vi.mock('$lib/server/filesystem/filesystem', () => ({
 	resolve_data: (path: string) => 'data/' + path,
@@ -16,9 +16,6 @@ vi.mock('$lib/server/filesystem/filesystem', () => ({
 }));
 
 describe('buildVPLUpdateProperties', () => {
-	it('returns null for null input', () => {
-		expect(buildVPLUpdateProperties(undefined)).toBeNull();
-	});
 	it('returns correct string for only required fields', () => {
 		const res = buildVPLUpdateProperties({
 			data_source_path: 'data.csv',
@@ -47,9 +44,6 @@ describe('buildVPLUpdateProperties', () => {
 });
 
 describe('buildVPLFilterLayers', () => {
-	it('returns null for null input', () => {
-		expect(buildVPLFilterLayers(undefined)).toBeNull();
-	});
 	it('returns correct string for given layer_names and invert=false', () => {
 		const res = buildVPLFilterLayers({
 			layer_names: ['a', ' b '],
@@ -67,9 +61,6 @@ describe('buildVPLFilterLayers', () => {
 });
 
 describe('buildVPLFilterProperties', () => {
-	it('returns null for null input', () => {
-		expect(buildVPLFilterProperties(undefined)).toBeNull();
-	});
 	it('returns correct string for regex and invert=false', () => {
 		const res = buildVPLFilterProperties({
 			regex: '^foo',
@@ -87,9 +78,6 @@ describe('buildVPLFilterProperties', () => {
 });
 
 describe('buildVPLFilter', () => {
-	it('returns null for null input', () => {
-		expect(buildVPLFilter(undefined)).toBeNull();
-	});
 	it('returns correct string for only minZoom', () => {
 		const res = buildVPLFilter({ minZoom: 3 });
 		expect(res).toBe('filter min_zoom="3"');
@@ -109,9 +97,6 @@ describe('buildVPLFilter', () => {
 });
 
 describe('buildVPLMetaUpdate', () => {
-	it('returns null for null input', () => {
-		expect(buildVPLMetaUpdate(undefined)).toBeNull();
-	});
 	it('returns null when all properties are undefined', () => {
 		expect(buildVPLMetaUpdate({})).toBeNull();
 	});
@@ -128,7 +113,7 @@ describe('buildVPLMetaUpdate', () => {
 describe('buildVPL', () => {
 	it('returns correct string for only input and others null', () => {
 		const params = {
-			input: 'input.versatiles',
+			from_container: { filename: 'input.versatiles' },
 			update_properties: undefined,
 			filter_layers: undefined,
 			filter_properties: undefined,
@@ -139,7 +124,7 @@ describe('buildVPL', () => {
 	});
 	it('returns correct string for fully populated parameter object', () => {
 		const params = {
-			input: 'input.versatiles',
+			from_container: { filename: 'input.versatiles' },
 			update_properties: {
 				data_source_path: 'data.csv',
 				layer_name: 'mylayer',
@@ -167,7 +152,7 @@ describe('buildVPL', () => {
 				name: 'Name',
 				description: 'Desc'
 			}
-		} as v.InferOutput<typeof TilesInitRequest>;
+		} as v.InferOutput<typeof VPLParam>;
 		const expected = [
 			'from_container filename="data/input.versatiles"',
 			'   | vector_update_properties data_source_path="data.csv" layer_name="mylayer" id_field_tiles="tile_id" id_field_data="data_id" replace_properties="true" remove_non_matching="true" include_id="true"',

@@ -1,4 +1,4 @@
-import { TilesLoadRequest } from '$lib/api/types';
+import { TilesLoadRequest } from '$lib/api/requests';
 import type { RequestHandler } from './$types';
 import * as v from 'valibot';
 

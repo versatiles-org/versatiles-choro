@@ -1,4 +1,4 @@
-import type { TilesInitRequest, TilesInitResponse } from '$lib/api/types.js';
+import type { TilesInitRequest, TilesInitResponse } from '$lib/api/requests.js';
 import { writeFileSync } from 'fs';
 import { runVersaTilesServer } from '$lib/server/spawn/spawn.js';
 import * as v from 'valibot';
@@ -20,7 +20,7 @@ export async function startTileServer(
 	ports.add(port);
 
 	const tempFile = resolve_temp(`${port}.vpl`);
-	writeFileSync(tempFile, buildVPL(params));
+	writeFileSync(tempFile, buildVPL(params.vpl));
 
 	runVersaTilesServer(tempFile, port);
 

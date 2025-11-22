@@ -1,23 +1,40 @@
-import type { TilesInitRequest } from '$lib/api/types';
+import type {
+	VPLParam,
+	VPLParamFilter,
+	VPLParamFilterLayers,
+	VPLParamFilterProperties,
+	VPLParamFromContainer,
+	VPLParamMetaUpdate,
+	VPLParamUpdateProperties
+} from '$lib/api/vpl';
 import { resolve_data } from '$lib/server/filesystem/filesystem';
 import * as v from 'valibot';
 
-export function buildVPL(params: v.InferOutput<typeof TilesInitRequest>): string {
-	const vpl: (string | null)[] = [`from_container filename="${resolve_data(params.input)}"`];
+export function buildVPL(vpl: v.InferOutput<typeof VPLParam>): string {
+	const commands: (string | null)[] = [];
 
-	vpl.push(buildVPLUpdateProperties(params.update_properties));
-	vpl.push(buildVPLFilterLayers(params.filter_layers));
-	vpl.push(buildVPLFilterProperties(params.filter_properties));
-	vpl.push(buildVPLFilter(params.filter));
-	vpl.push(buildVPLMetaUpdate(params.meta_update));
+	commands.push(buildVPLFrom(vpl.from_container));
 
-	return vpl.filter(Boolean).join('\n   | ');
+	if (vpl.update_properties) commands.push(buildVPLUpdateProperties(vpl.update_properties));
+
+	if (vpl.filter_layers) commands.push(buildVPLFilterLayers(vpl.filter_layers));
+
+	if (vpl.filter_properties) commands.push(buildVPLFilterProperties(vpl.filter_properties));
+
+	if (vpl.filter) commands.push(buildVPLFilter(vpl.filter));
+
+	if (vpl.meta_update) commands.push(buildVPLMetaUpdate(vpl.meta_update));
+
+	return commands.filter(Boolean).join('\n   | ');
+}
+
+export function buildVPLFrom(p: v.InferOutput<typeof VPLParamFromContainer>): string {
+	return `from_container filename="${resolve_data(p.filename)}"`;
 }
 
 export function buildVPLUpdateProperties(
-	p: v.InferOutput<typeof TilesInitRequest>['update_properties']
+	p: v.InferOutput<typeof VPLParamUpdateProperties>
 ): string | null {
-	if (!p) return null;
 	const parts = [
 		'vector_update_properties',
 		`data_source_path="${p.data_source_path}"`,
@@ -31,10 +48,7 @@ export function buildVPLUpdateProperties(
 	return parts.join(' ');
 }
 
-export function buildVPLFilterLayers(
-	p: v.InferOutput<typeof TilesInitRequest>['filter_layers']
-): string | null {
-	if (!p) return null;
+export function buildVPLFilterLayers(p: v.InferOutput<typeof VPLParamFilterLayers>): string | null {
 	const parts = [
 		'vector_filter_layers',
 		`filter="${p.layer_names.map((name) => name.trim()).join(',')}"`,
@@ -44,9 +58,8 @@ export function buildVPLFilterLayers(
 }
 
 export function buildVPLFilterProperties(
-	p: v.InferOutput<typeof TilesInitRequest>['filter_properties']
+	p: v.InferOutput<typeof VPLParamFilterProperties>
 ): string | null {
-	if (!p) return null;
 	const parts = [
 		'vector_filter_properties',
 		`regex="${p.regex}"`,
@@ -55,8 +68,7 @@ export function buildVPLFilterProperties(
 	return parts.join(' ');
 }
 
-export function buildVPLFilter(p: v.InferOutput<typeof TilesInitRequest>['filter']): string | null {
-	if (!p) return null;
+export function buildVPLFilter(p: v.InferOutput<typeof VPLParamFilter>): string | null {
 	const parts = [];
 	if (p.minZoom !== undefined) parts.push(`min_zoom="${p.minZoom}"`);
 	if (p.maxZoom !== undefined) parts.push(`max_zoom="${p.maxZoom}"`);
@@ -64,10 +76,7 @@ export function buildVPLFilter(p: v.InferOutput<typeof TilesInitRequest>['filter
 	return ['filter', ...parts].join(' ');
 }
 
-export function buildVPLMetaUpdate(
-	p: v.InferOutput<typeof TilesInitRequest>['meta_update']
-): string | null {
-	if (!p) return null;
+export function buildVPLMetaUpdate(p: v.InferOutput<typeof VPLParamMetaUpdate>): string | null {
 	const parts = [];
 	if (p.attribution !== undefined) parts.push(`attribution="${p.attribution}"`);
 	if (p.name !== undefined) parts.push(`name="${p.name}"`);
