@@ -1,49 +1,51 @@
 import https from 'https';
 import { createWriteStream, existsSync } from 'fs';
-import path from 'path';
+import path, { basename } from 'path';
 import zlib from 'zlib';
 import { rename } from 'fs/promises';
 import type { Writable } from 'stream';
 import { SimpleProgress, type Progress } from '../progress/index';
+import { message } from 'valibot';
 
 export function downloadTestData(outputDir: string): Progress {
-	const urlVerwaltungsgebiete =
-		'https://raw.githubusercontent.com/MichaelKreil/verwaltungsgebiete/refs/heads/main/data/2025-01-01/';
-	const files: { url: string; name: string }[] = [
-		{ url: urlVerwaltungsgebiete + '1_bundeslaender.geojson.br', name: '1_bundeslaender.geojson' },
-		{
-			url: urlVerwaltungsgebiete + '2_regierungsbezirke.geojson.br',
-			name: '2_regierungsbezirke.geojson'
-		},
-		{ url: urlVerwaltungsgebiete + '3_kreise.geojson.br', name: '3_kreise.geojson' },
-		{
-			url: urlVerwaltungsgebiete + '4_verwaltungsgemeinschaften.geojson.br',
-			name: '4_verwaltungsgemeinschaften.geojson'
-		},
-		{ url: urlVerwaltungsgebiete + '5_gemeinden.geojson.br', name: '5_gemeinden.geojson' }
+	const urlUser = 'https://raw.githubusercontent.com/MichaelKreil/';
+	const urlRegions = `${urlUser}verwaltungsgebiete/refs/heads/main/data/2025-01-01/`;
+	const urlTestdata = `${urlUser}testdata/refs/heads/main/`;
+	const files: string[] = [
+		urlRegions + '1_bundeslaender.geojson.br',
+		urlRegions + '2_regierungsbezirke.geojson.br',
+		urlRegions + '3_kreise.geojson.br',
+		urlRegions + '4_verwaltungsgemeinschaften.geojson.br',
+		urlRegions + '5_gemeinden.geojson.br',
+		urlTestdata + '73111-01-01-5-Einkommen.tsv.br'
 	];
 
-	const downloadTasks = files.flatMap((file) => {
-		const outputPath = path.join(outputDir, file.name);
+	const downloadTasks = files.flatMap((url) => {
+		let filename = url
+			.split('/')
+			.pop()!
+			.replace(/\.(br)$/, '');
+		const outputPath = path.join(outputDir, filename);
 		if (existsSync(outputPath)) return [];
-		return [
-			async () => {
+		return [{
+			message: `Downloading ${basename(filename)}...`,
+			callback: async () => {
 				const tempFilePath = outputPath + '.part';
 				let fileStream: Writable = createWriteStream(tempFilePath);
 
-				if (file.url.endsWith('.br')) {
+				if (url.endsWith('.br')) {
 					const unzip = zlib.createBrotliDecompress();
 					unzip.pipe(fileStream);
 					fileStream = unzip;
 				}
 
-				await downloadFile(file.url, fileStream);
+				await downloadFile(url, fileStream);
 				await rename(tempFilePath, outputPath);
 			}
-		];
+		}];
 	});
 
-	return new SimpleProgress('downloading test data', downloadTasks);
+	return new SimpleProgress(downloadTasks);
 }
 
 function downloadFile(url: string, stream: Writable): Promise<void> {
