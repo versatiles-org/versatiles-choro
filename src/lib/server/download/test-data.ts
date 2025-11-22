@@ -5,7 +5,6 @@ import zlib from 'zlib';
 import { rename } from 'fs/promises';
 import type { Writable } from 'stream';
 import { SimpleProgress, type Progress } from '../progress/index';
-import { message } from 'valibot';
 
 export function downloadTestData(outputDir: string): Progress {
 	const urlUser = 'https://raw.githubusercontent.com/MichaelKreil/';
@@ -21,28 +20,30 @@ export function downloadTestData(outputDir: string): Progress {
 	];
 
 	const downloadTasks = files.flatMap((url) => {
-		let filename = url
+		const filename = url
 			.split('/')
 			.pop()!
 			.replace(/\.(br)$/, '');
 		const outputPath = path.join(outputDir, filename);
 		if (existsSync(outputPath)) return [];
-		return [{
-			message: `Downloading ${basename(filename)}...`,
-			callback: async () => {
-				const tempFilePath = outputPath + '.part';
-				let fileStream: Writable = createWriteStream(tempFilePath);
+		return [
+			{
+				message: `Downloading ${basename(filename)}...`,
+				callback: async () => {
+					const tempFilePath = outputPath + '.part';
+					let fileStream: Writable = createWriteStream(tempFilePath);
 
-				if (url.endsWith('.br')) {
-					const unzip = zlib.createBrotliDecompress();
-					unzip.pipe(fileStream);
-					fileStream = unzip;
+					if (url.endsWith('.br')) {
+						const unzip = zlib.createBrotliDecompress();
+						unzip.pipe(fileStream);
+						fileStream = unzip;
+					}
+
+					await downloadFile(url, fileStream);
+					await rename(tempFilePath, outputPath);
 				}
-
-				await downloadFile(url, fileStream);
-				await rename(tempFilePath, outputPath);
 			}
-		}];
+		];
 	});
 
 	return new SimpleProgress(downloadTasks);
