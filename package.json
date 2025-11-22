@@ -9,7 +9,7 @@
 		"check-svelte:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"check-svelte": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check": "npm run lint && npm run check-svelte && npm run test && npm run build",
-		"cli": "tsx ./src/lib/engine/cli.ts",
+		"cli": "tsx ./src/cli.ts",
 		"dev": "mkdir -p data && DATA_PATH=data vite dev",
 		"format": "prettier --write .",
 		"lint": "eslint . && prettier --check .",
