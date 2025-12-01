@@ -3,7 +3,7 @@ FROM versatiles/versatiles-tippecanoe:latest AS tippecanoe
 
 
 # ---------- Build stage ----------
-FROM node:24-alpine AS build
+FROM node:25-alpine AS build
 WORKDIR /app
 COPY . ./
 
@@ -15,7 +15,7 @@ RUN \
 
 
 # ---------- Runtime stage ----------
-FROM node:24-alpine
+FROM node:25-alpine
 
 LABEL org.opencontainers.image.title="VersaTiles Choro"
 LABEL org.opencontainers.image.url="https://github.com/versatiles-org/versatiles-choro"
