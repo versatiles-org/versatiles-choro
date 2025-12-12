@@ -13,7 +13,7 @@
 		"dev": "mkdir -p data && DATA_PATH=data vite dev",
 		"format": "prettier --write .",
 		"lint": "eslint . && prettier --check .",
-		"prepare": "svelte-kit sync",
+		"prepare": "husky",
 		"preview": "vite preview",
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run",
@@ -22,8 +22,16 @@
 	"engines": {
 		"node": ">=24"
 	},
+	"lint-staged": {
+		"*.{js,ts,svelte}": [
+			"eslint --fix",
+			"prettier --write"
+		],
+		"*.{json,md,css,html}": [
+			"prettier --write"
+		]
+	},
 	"dependencies": {
-		"@versatiles/style": "^5.8.0",
 		"commander": "^14.0.2",
 		"valibot": "^1.1.0"
 	},
@@ -36,10 +44,13 @@
 		"@sveltejs/kit": "^2.48.5",
 		"@sveltejs/vite-plugin-svelte": "^6.2.1",
 		"@types/node": "^24",
+		"@versatiles/style": "^5.8.0",
 		"eslint": "^9.39.1",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-svelte": "^3.13.0",
 		"globals": "^16.5.0",
+		"husky": "^9.1.7",
+		"lint-staged": "^16.2.7",
 		"maplibre-gl": "^5.13.0",
 		"npm-check-updates": "^19.1.2",
 		"prettier": "^3.6.2",
