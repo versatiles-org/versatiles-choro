@@ -14,7 +14,13 @@
 		fileFilter?: (name: string) => boolean;
 	} = $props();
 
-	let dir = $state(initialDirectory || getRootDirectory());
+	let dir = $state<FsDirectory>(getRootDirectory());
+
+	$effect.pre(() => {
+		if (initialDirectory) {
+			dir = initialDirectory;
+		}
+	});
 </script>
 
 <Dialog bind:showModal>
