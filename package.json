@@ -17,6 +17,9 @@
 		"prepare": "husky",
 		"preview": "vite preview",
 		"test:unit": "vitest",
+		"test:coverage": "vitest run --coverage",
+		"test:e2e": "playwright test",
+		"test:e2e:ui": "playwright test --ui",
 		"test": "npm run test:unit -- --run",
 		"upgrade": "ncu -u && rm -r node_modules && rm -f package-lock.json && npm install"
 	},
