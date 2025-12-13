@@ -5,6 +5,12 @@
 
 import { vi } from 'vitest';
 
+// Ensure we're in a browser-like environment for Svelte 5
+if (typeof globalThis !== 'undefined') {
+	// @ts-ignore
+	globalThis.browser = true;
+}
+
 // Mock SvelteKit environment modules
 vi.mock('$app/environment', () => ({
 	browser: true,
