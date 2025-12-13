@@ -7,7 +7,7 @@
 	import { createBackgroundStyle, type BackgroundMap } from './map/style_background';
 	import { getTileSource } from './map/tile_source';
 	import { overlayStyles } from './map/style';
-	import { Inspector } from './map/inspector.svelte.ts';
+	import { Inspector } from './map/Inspector.svelte.ts';
 
 	// --- Props  --------------------------------------------------------------
 	let {
