@@ -7,7 +7,7 @@ import { vi } from 'vitest';
 
 // Ensure we're in a browser-like environment for Svelte 5
 if (typeof globalThis !== 'undefined') {
-	// @ts-ignore
+	// @ts-expect-error - Adding browser flag for Svelte 5 testing
 	globalThis.browser = true;
 }
 

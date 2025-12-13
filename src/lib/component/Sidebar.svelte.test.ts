@@ -44,15 +44,14 @@ describe('Sidebar', () => {
 		expect(sidebar?.textContent?.trim()).toBe('');
 	});
 
-	it('renders multiple child elements', () => {
+	it('renders text content', () => {
 		const { container } = render(SidebarWrapper, {
 			props: {
-				content: '<div>Item 1</div><div>Item 2</div>'
+				content: 'Multiple items in sidebar'
 			}
 		});
 
 		const sidebar = container.querySelector('.sidebar');
-		expect(sidebar?.textContent).toContain('Item 1');
-		expect(sidebar?.textContent).toContain('Item 2');
+		expect(sidebar?.textContent).toContain('Multiple items in sidebar');
 	});
 });

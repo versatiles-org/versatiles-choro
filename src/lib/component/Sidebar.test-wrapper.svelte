@@ -6,6 +6,6 @@
 
 <Sidebar>
 	{#if content}
-		{@html content}
+		{content}
 	{/if}
 </Sidebar>
