@@ -11,16 +11,16 @@ beforeEach(() => {
 
 describe('Dialog', () => {
 	it('renders children content', () => {
-		let showModal = $state(false);
+		const state = { showModal: false };
 
 		const { container } = render(DialogWrapper, {
 			props: {
 				content: 'Test content',
 				get showModal() {
-					return showModal;
+					return state.showModal;
 				},
 				set showModal(value) {
-					showModal = value;
+					state.showModal = value;
 				}
 			}
 		});
@@ -31,17 +31,17 @@ describe('Dialog', () => {
 	});
 
 	it('renders title when provided', () => {
-		let showModal = $state(true);
+		const state = { showModal: true };
 
 		const { container } = render(DialogWrapper, {
 			props: {
 				title: 'Test Dialog',
 				content: 'Content',
 				get showModal() {
-					return showModal;
+					return state.showModal;
 				},
 				set showModal(value) {
-					showModal = value;
+					state.showModal = value;
 				}
 			}
 		});
@@ -53,16 +53,16 @@ describe('Dialog', () => {
 	});
 
 	it('does not render title when not provided', () => {
-		let showModal = $state(false);
+		const state = { showModal: false };
 
 		const { container } = render(DialogWrapper, {
 			props: {
 				content: 'Content',
 				get showModal() {
-					return showModal;
+					return state.showModal;
 				},
 				set showModal(value) {
-					showModal = value;
+					state.showModal = value;
 				}
 			}
 		});
@@ -72,22 +72,22 @@ describe('Dialog', () => {
 	});
 
 	it('calls showModal when showModal prop is true', async () => {
-		let showModal = $state(false);
+		const state = $state({ showModal: false });
 
 		const { component } = render(DialogWrapper, {
 			props: {
 				content: 'Content',
 				get showModal() {
-					return showModal;
+					return state.showModal;
 				},
 				set showModal(value) {
-					showModal = value;
+					state.showModal = value;
 				}
 			}
 		});
 
 		// Change showModal to true
-		showModal = true;
+		state.showModal = true;
 		await tick();
 
 		const showModalSpy = HTMLDialogElement.prototype.showModal as ReturnType<typeof vi.fn>;
@@ -95,22 +95,22 @@ describe('Dialog', () => {
 	});
 
 	it('calls close when showModal prop is false', async () => {
-		let showModal = $state(true);
+		const state = $state({ showModal: true });
 
 		const { component } = render(DialogWrapper, {
 			props: {
 				content: 'Content',
 				get showModal() {
-					return showModal;
+					return state.showModal;
 				},
 				set showModal(value) {
-					showModal = value;
+					state.showModal = value;
 				}
 			}
 		});
 
 		// Change showModal to false
-		showModal = false;
+		state.showModal = false;
 		await tick();
 
 		const closeSpy = HTMLDialogElement.prototype.close as ReturnType<typeof vi.fn>;
@@ -118,41 +118,41 @@ describe('Dialog', () => {
 	});
 
 	it('sets showModal to false when dialog close event fires', async () => {
-		let showModal = $state(true);
+		const state = $state({ showModal: true });
 
 		const { container } = render(DialogWrapper, {
 			props: {
 				content: 'Content',
 				get showModal() {
-					return showModal;
+					return state.showModal;
 				},
 				set showModal(value) {
-					showModal = value;
+					state.showModal = value;
 				}
 			}
 		});
 
 		const dialog = container.querySelector('dialog');
-		expect(showModal).toBe(true);
+		expect(state.showModal).toBe(true);
 
 		// Simulate close event
 		dialog?.dispatchEvent(new Event('close'));
 		await tick();
 
-		expect(showModal).toBe(false);
+		expect(state.showModal).toBe(false);
 	});
 
 	it('closes when backdrop is clicked', async () => {
-		let showModal = $state(true);
+		const state = { showModal: true };
 
 		const { container } = render(DialogWrapper, {
 			props: {
 				content: 'Content',
 				get showModal() {
-					return showModal;
+					return state.showModal;
 				},
 				set showModal(value) {
-					showModal = value;
+					state.showModal = value;
 				}
 			}
 		});
@@ -171,16 +171,16 @@ describe('Dialog', () => {
 	});
 
 	it('does not close when content inside dialog is clicked', async () => {
-		let showModal = $state(true);
+		const state = { showModal: true };
 
 		const { container } = render(DialogWrapper, {
 			props: {
 				content: 'Content',
 				get showModal() {
-					return showModal;
+					return state.showModal;
 				},
 				set showModal(value) {
-					showModal = value;
+					state.showModal = value;
 				}
 			}
 		});
