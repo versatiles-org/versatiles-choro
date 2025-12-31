@@ -55,7 +55,6 @@ export async function runVersaTilesConvert(
 }
 
 export function runVersaTilesServer(inputFile: string, port: number): ChildProcess {
-	console.log(`Starting VersaTiles server on port ${port} with input file ${inputFile}`);
 	return spawn('versatiles', ['server', '--port', String(port), `[${port}]${inputFile}`], {
 		stdio: 'inherit'
 	});

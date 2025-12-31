@@ -1,5 +1,6 @@
 import { mkdirSync } from 'fs';
 import * as path from 'path';
+import { PathTraversalError } from '../errors/index.js';
 
 const CWD = process.cwd();
 const DATA_PATH = path.resolve(CWD, process.env.DATA_PATH || '.');
@@ -14,7 +15,7 @@ function resolvePath(basePath: string, ...pathSegment: string[]): string {
 	// Validate that the resolved path is within the base path (prevent directory traversal)
 	const relative = path.relative(basePath, resolved);
 	if (relative.startsWith('..') || path.isAbsolute(relative)) {
-		throw new Error(`Invalid path: attempted directory traversal (${relative})`);
+		throw new PathTraversalError(relative);
 	}
 
 	return resolved;

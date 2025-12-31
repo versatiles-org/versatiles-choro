@@ -6,10 +6,11 @@ import { tmpdir } from 'os';
 import { resolve } from 'path';
 import { buildVPL } from '../tiles/vpl';
 import { unlinkSync, writeFileSync } from 'fs';
+import { ValidationError } from '../errors/index.js';
 
 export function convertTiles(vpl: InferOutput<typeof VPLParam>, output: string): Progress {
 	if (!output.endsWith('.versatiles')) {
-		throw new Error('Output file must have a .versatiles extension');
+		throw new ValidationError('Output file must have a .versatiles extension');
 	}
 	const vplFile = resolve(tmpdir(), Math.random().toString(36).substring(2) + '.vpl');
 	writeFileSync(vplFile, buildVPL(vpl));
