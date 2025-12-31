@@ -19,6 +19,7 @@ const config: RollupOptions = {
 		'https',
 		'os',
 		'path',
+		'pino',
 		'valibot',
 		'zlib'
 	]
