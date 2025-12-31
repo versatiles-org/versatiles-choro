@@ -198,4 +198,83 @@ describe('Dialog', () => {
 
 		expect(closeSpy).not.toHaveBeenCalled();
 	});
+
+	it('has proper ARIA attributes when title is provided', () => {
+		const state = $state({ showModal: true });
+
+		const { container } = render(DialogWrapper, {
+			props: {
+				title: 'Test Dialog',
+				content: 'Content',
+				get showModal() {
+					return state.showModal;
+				},
+				set showModal(value) {
+					state.showModal = value;
+				}
+			}
+		});
+
+		const dialog = container.querySelector('dialog');
+		expect(dialog).toHaveAttribute('aria-modal', 'true');
+		expect(dialog).toHaveAttribute('aria-labelledby');
+		expect(dialog).toHaveAttribute('aria-describedby');
+
+		const titleId = dialog?.getAttribute('aria-labelledby');
+		const descId = dialog?.getAttribute('aria-describedby');
+
+		expect(container.querySelector(`#${titleId}`)).toHaveTextContent('Test Dialog');
+		expect(container.querySelector(`#${descId}`)).toBeInTheDocument();
+	});
+
+	it('has proper ARIA attributes when no title is provided', () => {
+		const state = $state({ showModal: true });
+
+		const { container } = render(DialogWrapper, {
+			props: {
+				content: 'Content',
+				get showModal() {
+					return state.showModal;
+				},
+				set showModal(value) {
+					state.showModal = value;
+				}
+			}
+		});
+
+		const dialog = container.querySelector('dialog');
+		expect(dialog).toHaveAttribute('aria-modal', 'true');
+		expect(dialog).not.toHaveAttribute('aria-labelledby');
+		expect(dialog).toHaveAttribute('aria-describedby');
+	});
+
+	it('closes when Escape key is pressed', async () => {
+		const state = $state({ showModal: true });
+
+		const { container } = render(DialogWrapper, {
+			props: {
+				content: 'Content',
+				get showModal() {
+					return state.showModal;
+				},
+				set showModal(value) {
+					state.showModal = value;
+				}
+			}
+		});
+
+		const dialog = container.querySelector('dialog');
+		expect(state.showModal).toBe(true);
+
+		// Simulate Escape key press
+		const escapeEvent = new KeyboardEvent('keydown', {
+			key: 'Escape',
+			bubbles: true,
+			cancelable: true
+		});
+		dialog?.dispatchEvent(escapeEvent);
+		await tick();
+
+		expect(state.showModal).toBe(false);
+	});
 });

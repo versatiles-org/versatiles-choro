@@ -11,10 +11,71 @@
 		showModal: boolean;
 	} = $props();
 
+	// Generate unique IDs for ARIA labeling
+	const titleId = `dialog-title-${Math.random().toString(36).substr(2, 9)}`;
+	const descId = `dialog-desc-${Math.random().toString(36).substr(2, 9)}`;
+
 	let dialog: HTMLDialogElement | null = $state(null);
+	let previouslyFocusedElement: HTMLElement | null = null;
+
+	// Focus trap implementation
+	function trapFocus(e: KeyboardEvent) {
+		if (e.key !== 'Tab' || !dialog) return;
+
+		const focusableElements = dialog.querySelectorAll<HTMLElement>(
+			'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+		);
+
+		const firstElement = focusableElements[0];
+		const lastElement = focusableElements[focusableElements.length - 1];
+
+		if (e.shiftKey && document.activeElement === firstElement) {
+			e.preventDefault();
+			lastElement?.focus();
+		} else if (!e.shiftKey && document.activeElement === lastElement) {
+			e.preventDefault();
+			firstElement?.focus();
+		}
+	}
+
+	// Handle Escape key explicitly
+	function handleKeydown(e: KeyboardEvent) {
+		if (e.key === 'Escape') {
+			e.preventDefault();
+			showModal = false;
+		}
+	}
+
+	// Dialog state effect
 	$effect(() => {
-		if (showModal) dialog?.showModal();
-		else dialog?.close();
+		if (showModal && dialog) {
+			dialog.showModal();
+
+			// Store previously focused element
+			previouslyFocusedElement = document.activeElement as HTMLElement;
+
+			// Focus first focusable element in dialog
+			const firstFocusable = dialog.querySelector<HTMLElement>(
+				'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+			);
+			firstFocusable?.focus();
+
+			// Add focus trap and escape handler
+			dialog.addEventListener('keydown', trapFocus);
+			dialog.addEventListener('keydown', handleKeydown);
+		} else if (!showModal && dialog) {
+			dialog.close();
+
+			// Restore focus to previously focused element
+			if (previouslyFocusedElement) {
+				previouslyFocusedElement.focus();
+				previouslyFocusedElement = null;
+			}
+
+			// Remove event listeners
+			dialog.removeEventListener('keydown', trapFocus);
+			dialog.removeEventListener('keydown', handleKeydown);
+		}
 	});
 </script>
 
@@ -24,11 +85,16 @@
 	onclick={(e) => {
 		if (e.target === dialog) dialog?.close();
 	}}
+	aria-modal="true"
+	aria-labelledby={title ? titleId : undefined}
+	aria-describedby={descId}
 >
 	{#if title}
-		<h2>{title}</h2>
+		<h2 id={titleId}>{title}</h2>
 	{/if}
-	{@render children?.()}
+	<div id={descId}>
+		{@render children?.()}
+	</div>
 </dialog>
 
 <style>
