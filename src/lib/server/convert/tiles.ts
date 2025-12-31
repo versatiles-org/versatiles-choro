@@ -3,19 +3,28 @@ import { ConcatenatedProgress, SimpleProgress, type Progress } from '../progress
 import { type InferOutput } from 'valibot';
 import { runVersaTilesConvert } from '../spawn/spawn';
 import { tmpdir } from 'os';
-import { resolve } from 'path';
+import { join } from 'path';
 import { buildVPL } from '../tiles/vpl';
-import { unlinkSync, writeFileSync } from 'fs';
+import { mkdtemp, writeFile, unlink } from 'fs/promises';
 import { ValidationError } from '../errors/index.js';
 
 export function convertTiles(vpl: InferOutput<typeof VPLParam>, output: string): Progress {
 	if (!output.endsWith('.versatiles')) {
 		throw new ValidationError('Output file must have a .versatiles extension');
 	}
-	const vplFile = resolve(tmpdir(), Math.random().toString(36).substring(2) + '.vpl');
-	writeFileSync(vplFile, buildVPL(vpl));
+
+	let vplFile = '';
+
 	return new ConcatenatedProgress([
+		() =>
+			new SimpleProgress(async () => {
+				// Create secure temporary directory
+				const tempDir = await mkdtemp(join(tmpdir(), 'versatiles-'));
+				vplFile = join(tempDir, 'tiles.vpl');
+				// Write VPL file asynchronously
+				await writeFile(vplFile, buildVPL(vpl));
+			}, 'Creating temporary VPL file'),
 		() => runVersaTilesConvert(vplFile, output),
-		() => new SimpleProgress(() => unlinkSync(vplFile), 'Cleaning up temporary file')
+		() => new SimpleProgress(() => unlink(vplFile), 'Cleaning up temporary file')
 	]);
 }

@@ -1,5 +1,5 @@
 import type { TilesInitRequest, TilesInitResponse } from '$lib/api/requests.js';
-import { writeFileSync } from 'fs';
+import { writeFile } from 'fs/promises';
 import { runVersaTilesServer } from '$lib/server/spawn/spawn.js';
 import * as v from 'valibot';
 import { resolve_temp } from '$lib/server/filesystem/filesystem.js';
@@ -21,7 +21,7 @@ export async function startTileServer(
 	ports.add(port);
 
 	const tempFile = resolve_temp(`${port}.vpl`);
-	writeFileSync(tempFile, buildVPL(params.vpl));
+	await writeFile(tempFile, buildVPL(params.vpl));
 
 	loggers.tiles.info({ port, tempFile }, 'Starting VersaTiles server');
 
