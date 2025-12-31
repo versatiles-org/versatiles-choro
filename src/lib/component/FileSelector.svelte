@@ -23,7 +23,7 @@
 	});
 </script>
 
-<Dialog bind:showModal>
+<Dialog bind:showModal maxWidth="80vw">
 	<div class="file-selector">
 		<h3>Select File:</h3>
 		<p>{dir.fullPath()}</p>
@@ -49,9 +49,6 @@
 </Dialog>
 
 <style>
-	:global(dialog) {
-		min-width: 80vw;
-	}
 	button.directory,
 	button.file {
 		all: unset;

@@ -1,14 +1,26 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 
+	type CloseReason = 'backdrop' | 'escape' | 'action';
+
 	let {
 		title,
 		children,
-		showModal = $bindable()
+		showModal = $bindable(),
+		closeOnBackdropClick = true,
+		onBeforeClose,
+		onClose,
+		maxWidth = '32em',
+		class: className = ''
 	}: {
 		title?: string;
 		children: Snippet;
 		showModal: boolean;
+		closeOnBackdropClick?: boolean;
+		onBeforeClose?: (reason: CloseReason) => boolean;
+		onClose?: (reason: CloseReason) => void;
+		maxWidth?: string;
+		class?: string;
 	} = $props();
 
 	// Generate unique IDs for ARIA labeling
@@ -17,6 +29,20 @@
 
 	let dialog: HTMLDialogElement | null = $state(null);
 	let previouslyFocusedElement: HTMLElement | null = null;
+
+	// Handle dialog close with reason tracking
+	function handleClose(reason: CloseReason) {
+		// Allow prevention via callback
+		if (onBeforeClose && !onBeforeClose(reason)) {
+			return; // Closing prevented
+		}
+
+		// Close the dialog
+		showModal = false;
+
+		// Fire onClose callback after state update
+		onClose?.(reason);
+	}
 
 	// Focus trap implementation
 	function trapFocus(e: KeyboardEvent) {
@@ -42,7 +68,7 @@
 	function handleKeydown(e: KeyboardEvent) {
 		if (e.key === 'Escape') {
 			e.preventDefault();
-			showModal = false;
+			handleClose('escape');
 		}
 	}
 
@@ -81,13 +107,17 @@
 
 <dialog
 	bind:this={dialog}
-	onclose={() => (showModal = false)}
+	onclose={() => handleClose('action')}
 	onclick={(e) => {
-		if (e.target === dialog) dialog?.close();
+		if (closeOnBackdropClick && e.target === dialog) {
+			handleClose('backdrop');
+		}
 	}}
 	aria-modal="true"
 	aria-labelledby={title ? titleId : undefined}
 	aria-describedby={descId}
+	class={className}
+	style="--dialog-max-width: {maxWidth}"
 >
 	{#if title}
 		<h2 id={titleId}>{title}</h2>
@@ -99,7 +129,7 @@
 
 <style>
 	dialog {
-		max-width: 32em;
+		max-width: var(--dialog-max-width, 32em);
 		border-radius: 0.2em;
 		border: none;
 		padding: 1em;

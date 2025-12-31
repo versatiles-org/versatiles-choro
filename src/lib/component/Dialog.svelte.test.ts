@@ -166,8 +166,8 @@ describe('Dialog', () => {
 		dialog?.dispatchEvent(clickEvent);
 		await tick();
 
-		const closeSpy = HTMLDialogElement.prototype.close as ReturnType<typeof vi.fn>;
-		expect(closeSpy).toHaveBeenCalled();
+		// Verify the dialog closed by checking state
+		expect(state.showModal).toBe(false);
 	});
 
 	it('does not close when content inside dialog is clicked', async () => {
@@ -276,5 +276,168 @@ describe('Dialog', () => {
 		await tick();
 
 		expect(state.showModal).toBe(false);
+	});
+
+	it('does not close on backdrop click when closeOnBackdropClick is false', async () => {
+		const state = $state({ showModal: true });
+
+		const { container } = render(DialogWrapper, {
+			props: {
+				content: 'Content',
+				closeOnBackdropClick: false,
+				get showModal() {
+					return state.showModal;
+				},
+				set showModal(value) {
+					state.showModal = value;
+				}
+			}
+		});
+
+		const dialog = container.querySelector('dialog');
+		expect(state.showModal).toBe(true);
+
+		// Simulate backdrop click
+		const clickEvent = new MouseEvent('click', { bubbles: true });
+		Object.defineProperty(clickEvent, 'target', { value: dialog, enumerable: true });
+		dialog?.dispatchEvent(clickEvent);
+		await tick();
+
+		// Dialog should still be open
+		expect(state.showModal).toBe(true);
+	});
+
+	it('calls onBeforeClose and can prevent closing', async () => {
+		const state = $state({ showModal: true });
+		const onBeforeClose = vi.fn(() => false); // Prevent close
+
+		const { container } = render(DialogWrapper, {
+			props: {
+				content: 'Content',
+				onBeforeClose,
+				get showModal() {
+					return state.showModal;
+				},
+				set showModal(value) {
+					state.showModal = value;
+				}
+			}
+		});
+
+		const dialog = container.querySelector('dialog');
+
+		// Try to close via backdrop
+		const clickEvent = new MouseEvent('click', { bubbles: true });
+		Object.defineProperty(clickEvent, 'target', { value: dialog, enumerable: true });
+		dialog?.dispatchEvent(clickEvent);
+		await tick();
+
+		// onBeforeClose should have been called with 'backdrop'
+		expect(onBeforeClose).toHaveBeenCalledWith('backdrop');
+		// Dialog should still be open (prevented)
+		expect(state.showModal).toBe(true);
+	});
+
+	it('calls onClose with correct reason when closed via backdrop', async () => {
+		const state = $state({ showModal: true });
+		const onClose = vi.fn();
+
+		const { container } = render(DialogWrapper, {
+			props: {
+				content: 'Content',
+				onClose,
+				get showModal() {
+					return state.showModal;
+				},
+				set showModal(value) {
+					state.showModal = value;
+				}
+			}
+		});
+
+		const dialog = container.querySelector('dialog');
+
+		// Close via backdrop
+		const clickEvent = new MouseEvent('click', { bubbles: true });
+		Object.defineProperty(clickEvent, 'target', { value: dialog, enumerable: true });
+		dialog?.dispatchEvent(clickEvent);
+		await tick();
+
+		// onClose should have been called with 'backdrop'
+		expect(onClose).toHaveBeenCalledWith('backdrop');
+		expect(state.showModal).toBe(false);
+	});
+
+	it('calls onClose with correct reason when closed via Escape', async () => {
+		const state = $state({ showModal: true });
+		const onClose = vi.fn();
+
+		const { container } = render(DialogWrapper, {
+			props: {
+				content: 'Content',
+				onClose,
+				get showModal() {
+					return state.showModal;
+				},
+				set showModal(value) {
+					state.showModal = value;
+				}
+			}
+		});
+
+		const dialog = container.querySelector('dialog');
+
+		// Close via Escape key
+		const escapeEvent = new KeyboardEvent('keydown', {
+			key: 'Escape',
+			bubbles: true,
+			cancelable: true
+		});
+		dialog?.dispatchEvent(escapeEvent);
+		await tick();
+
+		// onClose should have been called with 'escape'
+		expect(onClose).toHaveBeenCalledWith('escape');
+		expect(state.showModal).toBe(false);
+	});
+
+	it('applies custom maxWidth via CSS custom property', () => {
+		const state = $state({ showModal: true });
+
+		const { container } = render(DialogWrapper, {
+			props: {
+				content: 'Content',
+				maxWidth: '90vw',
+				get showModal() {
+					return state.showModal;
+				},
+				set showModal(value) {
+					state.showModal = value;
+				}
+			}
+		});
+
+		const dialog = container.querySelector('dialog');
+		expect(dialog).toHaveStyle('--dialog-max-width: 90vw');
+	});
+
+	it('applies custom class to dialog element', () => {
+		const state = $state({ showModal: true });
+
+		const { container } = render(DialogWrapper, {
+			props: {
+				content: 'Content',
+				class: 'custom-dialog-class',
+				get showModal() {
+					return state.showModal;
+				},
+				set showModal(value) {
+					state.showModal = value;
+				}
+			}
+		});
+
+		const dialog = container.querySelector('dialog');
+		expect(dialog).toHaveClass('custom-dialog-class');
 	});
 });
