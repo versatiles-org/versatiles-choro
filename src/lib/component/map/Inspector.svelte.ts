@@ -1,5 +1,6 @@
 import maplibre from 'maplibre-gl';
 import { writable, type Writable } from 'svelte/store';
+import equal from 'fast-deep-equal';
 
 interface PropertyEntry {
 	name: string;
@@ -13,6 +14,7 @@ export class Inspector {
 	selectedProperties;
 	mouseMoveHandler: ((e: maplibre.MapLayerMouseEvent) => void) | null = null;
 	mouseLeaveHandler: ((e: maplibre.MapLayerMouseEvent) => void) | null = null;
+	private rafId: number | null = null;
 
 	constructor(map: maplibre.Map) {
 		this.map = map;
@@ -22,6 +24,12 @@ export class Inspector {
 
 	detach() {
 		if (this.layerIds.length === 0) return;
+
+		// Cancel any pending RAF
+		if (this.rafId !== null) {
+			cancelAnimationFrame(this.rafId);
+			this.rafId = null;
+		}
 
 		if (this.mouseMoveHandler) {
 			this.map.off('mousemove', this.layerIds, this.mouseMoveHandler);
@@ -41,26 +49,41 @@ export class Inspector {
 		this.layerIds = layerIds;
 
 		this.mouseMoveHandler = (e) => {
-			const properties = (e.features ?? []).map((feature) => {
-				const props: PropertyEntry[] = [];
-				for (const key in feature.properties) {
-					props.push({ name: key, value: String(feature.properties[key]) });
-				}
-				props.sort((a, b) => a.name.localeCompare(b.name));
-				return props;
-			});
-
-			// Avoid unnecessary state updates
-			if (JSON.stringify(properties) !== JSON.stringify(this.selectedProperties)) {
-				this.selectedProperties = properties;
+			// Cancel previous RAF if still pending
+			if (this.rafId !== null) {
+				cancelAnimationFrame(this.rafId);
 			}
 
-			this.canvas.style.cursor = 'pointer';
+			// Schedule update for next animation frame (throttle to 60fps)
+			this.rafId = requestAnimationFrame(() => {
+				this.rafId = null;
+
+				const properties = (e.features ?? []).map((feature) => {
+					const props: PropertyEntry[] = [];
+					for (const key in feature.properties) {
+						props.push({ name: key, value: String(feature.properties[key]) });
+					}
+					props.sort((a, b) => a.name.localeCompare(b.name));
+					return props;
+				});
+
+				// Avoid unnecessary state updates using fast deep equality check
+				if (!equal(properties, this.selectedProperties)) {
+					this.selectedProperties = properties;
+				}
+
+				this.canvas.style.cursor = 'pointer';
+			});
 		};
 
 		this.mouseLeaveHandler = () => {
-			this.selectedProperties = [];
+			// Cancel any pending RAF
+			if (this.rafId !== null) {
+				cancelAnimationFrame(this.rafId);
+				this.rafId = null;
+			}
 
+			this.selectedProperties = [];
 			this.canvas.style.cursor = '';
 		};
 
