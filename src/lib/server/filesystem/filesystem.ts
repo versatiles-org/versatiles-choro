@@ -9,7 +9,15 @@ mkdirSync(DATA_PATH, { recursive: true });
 mkdirSync(TEMP_PATH, { recursive: true });
 
 function resolvePath(basePath: string, ...pathSegment: string[]): string {
-	return path.resolve(basePath, ...pathSegment.map((p) => p.replace(/^\/+/, '')));
+	const resolved = path.resolve(basePath, ...pathSegment.map((p) => p.replace(/^\/+/, '')));
+
+	// Validate that the resolved path is within the base path (prevent directory traversal)
+	const relative = path.relative(basePath, resolved);
+	if (relative.startsWith('..') || path.isAbsolute(relative)) {
+		throw new Error(`Invalid path: attempted directory traversal (${relative})`);
+	}
+
+	return resolved;
 }
 
 export function resolve_data(...pathSegment: string[]): string {
