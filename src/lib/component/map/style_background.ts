@@ -60,7 +60,7 @@ export function createBackgroundStyle(
 			case 'water':
 				return true;
 		}
-		console.log(layer.id);
+		// Unknown layer type - include it by default
 		return true;
 	});
 

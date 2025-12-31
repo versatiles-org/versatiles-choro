@@ -4,6 +4,7 @@ import { runVersaTilesServer } from '$lib/server/spawn/spawn.js';
 import * as v from 'valibot';
 import { resolve_temp } from '$lib/server/filesystem/filesystem.js';
 import { buildVPL } from './vpl';
+import { loggers } from '../logger/index.js';
 
 const ports = new Set<number>();
 const MIN_PORT = 51001;
@@ -22,6 +23,8 @@ export async function startTileServer(
 	const tempFile = resolve_temp(`${port}.vpl`);
 	writeFileSync(tempFile, buildVPL(params.vpl));
 
+	loggers.tiles.info({ port, tempFile }, 'Starting VersaTiles server');
+
 	runVersaTilesServer(tempFile, port);
 
 	// wait until there is a response at `http://localhost:${port}/tiles/index.json`
@@ -32,6 +35,7 @@ export async function startTileServer(
 				const res = await fetch(url);
 				if (res.ok) {
 					clearInterval(interval);
+					loggers.tiles.info({ port }, 'VersaTiles server ready');
 					resolve();
 				}
 			} catch (_) {

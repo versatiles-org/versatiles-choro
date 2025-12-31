@@ -1,6 +1,7 @@
 import { AppError } from './errors.js';
 import { ValiError } from 'valibot';
 import type { RequestHandler } from '@sveltejs/kit';
+import { loggers } from '../logger/index.js';
 
 /**
  * Wraps a SvelteKit request handler with error handling
@@ -10,7 +11,7 @@ export function withErrorHandling<T extends RequestHandler>(handler: T): T {
 		try {
 			return await handler(event);
 		} catch (error) {
-			logError(error, `API:${event.route.id}`);
+			logError(error, event.route.id || 'unknown');
 			return errorToResponse(error);
 		}
 	}) as T;
@@ -83,17 +84,48 @@ export function errorToResponse(error: unknown): Response {
  * Log error with appropriate level based on error type
  */
 export function logError(error: unknown, context?: string): void {
-	const prefix = context ? `[${context}] ` : '';
+	const logContext = context ? { context } : {};
 
 	if (error instanceof AppError) {
 		if (error.isOperational) {
-			console.warn(`${prefix}Operational error:`, error.message);
+			loggers.error.warn(
+				{
+					...logContext,
+					statusCode: error.statusCode,
+					message: error.message,
+					cause: error.cause
+				},
+				'Operational error'
+			);
 		} else {
-			console.error(`${prefix}Programming error:`, error);
+			loggers.error.error(
+				{
+					...logContext,
+					statusCode: error.statusCode,
+					message: error.message,
+					stack: error.stack,
+					cause: error.cause
+				},
+				'Programming error'
+			);
 		}
 	} else if (error instanceof Error) {
-		console.error(`${prefix}Unexpected error:`, error.message, error.stack);
+		loggers.error.error(
+			{
+				...logContext,
+				message: error.message,
+				stack: error.stack,
+				name: error.name
+			},
+			'Unexpected error'
+		);
 	} else {
-		console.error(`${prefix}Unknown error:`, error);
+		loggers.error.error(
+			{
+				...logContext,
+				error: String(error)
+			},
+			'Unknown error'
+		);
 	}
 }

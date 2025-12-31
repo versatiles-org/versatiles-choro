@@ -5,6 +5,7 @@ import zlib from 'zlib';
 import { rename } from 'fs/promises';
 import type { Writable } from 'stream';
 import { SimpleProgress, type Progress } from '../progress/index';
+import { loggers } from '../logger/index.js';
 
 export function downloadTestData(outputDir: string): Progress {
 	const urlUser = 'https://raw.githubusercontent.com/MichaelKreil/';
@@ -54,7 +55,7 @@ function downloadFile(url: string, stream: Writable): Promise<void> {
 		https
 			.get(url, (response) => {
 				if (response.statusCode !== 200) {
-					console.error(`Failed to download ${url}: ${response.statusCode}`);
+					loggers.server.error({ url, statusCode: response.statusCode }, 'Failed to download file');
 					return reject(new Error(`Failed to download ${url}: ${response.statusCode}`));
 				}
 				response.pipe(stream);
@@ -63,7 +64,7 @@ function downloadFile(url: string, stream: Writable): Promise<void> {
 				});
 			})
 			.on('error', (err) => {
-				console.error(`Error downloading ${url}: ${err.message}`);
+				loggers.server.error({ url, error: err.message }, 'Error downloading file');
 				reject(err);
 			});
 	});
