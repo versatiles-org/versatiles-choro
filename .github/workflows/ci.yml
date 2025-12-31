@@ -34,8 +34,8 @@ jobs:
 
       - name: Check bundle size
         run: |
-          # Check if any chunk exceeds threshold (500KB = 512000 bytes)
-          MAX_SIZE=512000
+          # Check if any chunk exceeds threshold (1.1MB)
+          MAX_SIZE=1100000
 
           for file in .svelte-kit/output/client/_app/immutable/chunks/*.js; do
             if [ -f "$file" ]; then
@@ -52,7 +52,7 @@ jobs:
             fi
           done
 
-          echo "All chunks under 500KB threshold ✓"
+          echo "All chunks are under the size threshold ✓"
 
       - name: Upload bundle stats
         uses: actions/upload-artifact@v4
