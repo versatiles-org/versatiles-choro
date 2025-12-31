@@ -1,4 +1,4 @@
-import maplibre from 'maplibre-gl';
+import type { Map, MapLayerMouseEvent } from 'maplibre-gl';
 import { writable, type Writable } from 'svelte/store';
 import equal from 'fast-deep-equal';
 
@@ -8,15 +8,15 @@ interface PropertyEntry {
 }
 
 export class Inspector {
-	map: maplibre.Map;
+	map: Map;
 	canvas: HTMLCanvasElement;
 	layerIds: string[] = [];
 	selectedProperties;
-	mouseMoveHandler: ((e: maplibre.MapLayerMouseEvent) => void) | null = null;
-	mouseLeaveHandler: ((e: maplibre.MapLayerMouseEvent) => void) | null = null;
+	mouseMoveHandler: ((e: MapLayerMouseEvent) => void) | null = null;
+	mouseLeaveHandler: ((e: MapLayerMouseEvent) => void) | null = null;
 	private rafId: number | null = null;
 
-	constructor(map: maplibre.Map) {
+	constructor(map: Map) {
 		this.map = map;
 		this.canvas = map.getCanvas();
 		this.selectedProperties = $state<PropertyEntry[][]>([]);

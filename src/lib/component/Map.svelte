@@ -1,6 +1,4 @@
 <script lang="ts">
-	import maplibre from 'maplibre-gl';
-	import 'maplibre-gl/dist/maplibre-gl.css';
 	import { onMount, onDestroy } from 'svelte';
 	import type { InferOutput } from 'valibot';
 	import type { TilesInitRequest } from '$lib/api/requests';
@@ -23,7 +21,9 @@
 	// --- State ---------------------------------------------------------------
 	let container: HTMLDivElement | null = null;
 	let canvas: HTMLCanvasElement | null = null;
-	let map: maplibre.Map | null = null;
+	let map: import('maplibre-gl').Map | null = null;
+	let isLoading = $state(true);
+	let loadError = $state<string | null>(null);
 
 	// Derived background style so changes to backgroundMap are reflected
 	let backgroundStyle = $derived(createBackgroundStyle(backgroundMap));
@@ -31,17 +31,30 @@
 
 	// --- Lifecycle: onMount that auto-cleans ---------------------------------
 	onMount(async () => {
-		if (!container) return;
-		let bounds: maplibre.LngLatBoundsLike = [-23.895, 34.9, 45.806, 71.352];
+		try {
+			if (!container) return;
 
-		map = new maplibre.Map({
-			container,
-			style: backgroundStyle,
-			bounds
-		});
-		inspector = new Inspector(map);
+			isLoading = true;
 
-		canvas = map.getCanvas();
+			// Dynamic import - loads MapLibre only when component mounts
+			const maplibreModule = await import('maplibre-gl');
+			const maplibre = maplibreModule.default;
+
+			const bounds: import('maplibre-gl').LngLatBoundsLike = [-23.895, 34.9, 45.806, 71.352];
+
+			map = new maplibre.Map({
+				container,
+				style: backgroundStyle,
+				bounds
+			});
+
+			inspector = new Inspector(map);
+			canvas = map.getCanvas();
+			isLoading = false;
+		} catch (error) {
+			loadError = error instanceof Error ? error.message : 'Failed to load map';
+			isLoading = false;
+		}
 	});
 
 	// cleanup (runs automatically when dependencies change or component unmounts)
@@ -84,7 +97,14 @@
 	}
 </script>
 
-<div bind:this={container} class="map-container"></div>
+<div bind:this={container} class="map-container">
+	{#if isLoading}
+		<div class="map-loading">Loading map...</div>
+	{/if}
+	{#if loadError}
+		<div class="map-error">Error: {loadError}</div>
+	{/if}
+</div>
 {#if inspectOverlay && inspector}
 	<div id="info">
 		{#each inspector.selectedProperties as properties, index (index)}
@@ -130,5 +150,18 @@
 	#info td:first-child {
 		text-align: left;
 		font-weight: bold;
+	}
+	.map-loading,
+	.map-error {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		padding: 1rem;
+		background: rgba(255, 255, 255, 0.9);
+		border-radius: 4px;
+	}
+	.map-error {
+		color: red;
 	}
 </style>

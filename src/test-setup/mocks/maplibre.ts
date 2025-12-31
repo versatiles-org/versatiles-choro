@@ -65,7 +65,7 @@ vi.mock('maplibre-gl', () => {
 		showTileBoundaries: false
 	};
 
-	return {
+	const mockImplementation = {
 		Map: vi.fn(() => mockMap),
 		NavigationControl: vi.fn(() => ({
 			onAdd: vi.fn(),
@@ -127,5 +127,13 @@ vi.mock('maplibre-gl', () => {
 		supported: vi.fn(() => true),
 		setRTLTextPlugin: vi.fn(),
 		getRTLTextPluginStatus: vi.fn(() => 'loaded')
+	};
+
+	// Support both static and dynamic imports
+	// - import maplibre from 'maplibre-gl' (uses default)
+	// - const m = await import('maplibre-gl') (uses default)
+	return {
+		...mockImplementation,
+		default: mockImplementation
 	};
 });

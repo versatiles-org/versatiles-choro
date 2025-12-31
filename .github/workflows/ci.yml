@@ -31,3 +31,32 @@ jobs:
 
       - name: Run checks
         run: npm run check
+
+      - name: Check bundle size
+        run: |
+          # Check if any chunk exceeds threshold (500KB = 512000 bytes)
+          MAX_SIZE=512000
+
+          for file in .svelte-kit/output/client/_app/immutable/chunks/*.js; do
+            if [ -f "$file" ]; then
+              size=$(stat -c%s "$file" 2>/dev/null || stat -f%z "$file" 2>/dev/null)
+              filename=$(basename "$file")
+
+              if [ $size -gt $MAX_SIZE ]; then
+                echo "❌ ERROR: $filename is ${size} bytes (exceeds ${MAX_SIZE} bytes)"
+                echo "Bundle size regression detected!"
+                exit 1
+              else
+                echo "✅ $filename: ${size} bytes"
+              fi
+            fi
+          done
+
+          echo "All chunks under 500KB threshold ✓"
+
+      - name: Upload bundle stats
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-stats
+          path: stats.html
+          retention-days: 30

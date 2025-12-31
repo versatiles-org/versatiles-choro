@@ -1,8 +1,17 @@
 import { defineConfig } from 'vitest/config';
 import { sveltekit } from '@sveltejs/kit/vite';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig({
-	plugins: [sveltekit()],
+	plugins: [
+		sveltekit(),
+		visualizer({
+			filename: 'stats.html',
+			open: false,
+			gzipSize: true,
+			brotliSize: true
+		})
+	],
 	test: {
 		globals: true,
 		expect: { requireAssertions: true },
@@ -56,6 +65,26 @@ export default defineConfig({
 		]
 	},
 	build: {
-		chunkSizeWarningLimit: 2000
+		chunkSizeWarningLimit: 1500,
+		rollupOptions: {
+			output: {
+				manualChunks(id) {
+					// Only split node_modules packages
+					if (id.includes('node_modules')) {
+						// Separate vendor chunks for better caching
+						if (id.includes('svelte')) {
+							return 'vendor-svelte';
+						}
+						if (id.includes('@lucide/svelte')) {
+							return 'vendor-lucide';
+						}
+						// Isolate MapLibre (will be lazy loaded)
+						if (id.includes('maplibre-gl')) {
+							return 'vendor-maplibre';
+						}
+					}
+				}
+			}
+		}
 	}
 });

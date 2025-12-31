@@ -6,6 +6,7 @@ temp
 .svelte-kit
 build
 build-cli
+stats.html
 
 # OS
 .DS_Store
