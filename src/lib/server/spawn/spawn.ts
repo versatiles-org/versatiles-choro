@@ -1,5 +1,6 @@
-import { type ChildProcess, spawn } from 'child_process';
-import { Progress, SpawnProgress } from '../progress/index.js';
+import { spawn } from 'child_process';
+import { convert, type ProgressData, type MessageData } from '@versatiles/versatiles-rs';
+import { CallbackProgress, Progress, SpawnProgress } from '../progress/index.js';
 
 function optionsToArgs(options: Record<string, unknown>): string[] {
 	const args: string[] = [];
@@ -40,22 +41,46 @@ export async function runVersaTilesConvert(
 	outputFile: string,
 	options?: Record<string, unknown>
 ): Promise<Progress> {
-	const child = spawn(
-		'versatiles',
-		['convert', ...optionsToArgs(options || {}), inputFile, outputFile],
-		{ stdio: 'pipe' }
+	// Map old options to new API
+	const convertOptions: {
+		minZoom?: number;
+		maxZoom?: number;
+		bbox?: [number, number, number, number];
+		compress?: 'gzip' | 'brotli' | 'uncompressed';
+	} = {};
+
+	if (options?.minZoom !== undefined) convertOptions.minZoom = Number(options.minZoom);
+	if (options?.maxZoom !== undefined) convertOptions.maxZoom = Number(options.maxZoom);
+	if (options?.bbox) convertOptions.bbox = options.bbox as [number, number, number, number];
+	if (options?.compress)
+		convertOptions.compress = String(options.compress) as 'gzip' | 'brotli' | 'uncompressed';
+
+	// Create callbacks for progress tracking
+	let progressCallback: ((progress: number) => void) | undefined;
+	let messageCallback: ((message: string, isError: boolean) => void) | undefined;
+
+	const promise = convert(
+		inputFile,
+		outputFile,
+		convertOptions,
+		(data: ProgressData) => {
+			// ProgressData has: position, total, percentage, speed, eta, message
+			progressCallback?.(data.percentage);
+		},
+		(data: MessageData) => {
+			// MessageData has: type ('step' | 'warning' | 'error'), message
+			const isError = data.type === 'error' || data.type === 'warning';
+			messageCallback?.(data.message, isError);
+		}
 	);
 
-	return new SpawnProgress(child, 'versatiles convert', (line) => {
-		const matches = /\(\s*(\d+)%\)/.exec(line);
-		if (matches) return { progress: Number(matches[1]), message: 'Converting tiles' };
-
-		return {};
-	});
-}
-
-export function runVersaTilesServer(inputFile: string, port: number): ChildProcess {
-	return spawn('versatiles', ['server', '--port', String(port), `[${port}]${inputFile}`], {
-		stdio: 'inherit'
-	});
+	return new CallbackProgress(
+		promise,
+		(cb) => {
+			progressCallback = cb;
+		},
+		(cb) => {
+			messageCallback = cb;
+		}
+	);
 }

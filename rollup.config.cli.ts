@@ -12,6 +12,7 @@ const config: RollupOptions = {
 		banner: '#!/usr/bin/env node'
 	},
 	external: [
+		'@versatiles/versatiles-rs',
 		'child_process',
 		'commander',
 		'fs',
