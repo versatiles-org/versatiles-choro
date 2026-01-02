@@ -6,12 +6,14 @@
 		initialDirectory,
 		showModal = $bindable(),
 		file = $bindable(),
-		fileFilter
+		fileFilter,
+		title = 'Select File'
 	}: {
 		initialDirectory?: FsDirectory;
 		showModal: boolean;
 		file: string | undefined;
 		fileFilter?: (name: string) => boolean;
+		title?: string;
 	} = $props();
 
 	let dir = $state<FsDirectory>(getRootDirectory());
@@ -25,7 +27,7 @@
 
 <Dialog bind:showModal width="80vw">
 	<div class="file-selector">
-		<h3>Select File:</h3>
+		<h3>{title}</h3>
 		<p>{dir.fullPath()}</p>
 		<div>
 			{#if dir.getParent()}
