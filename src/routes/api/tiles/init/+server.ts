@@ -1,16 +1,12 @@
 import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit';
 import { startTileServer } from '$lib/server/tiles/serve';
-import { parse } from 'valibot';
+import * as v from 'valibot';
 import { TilesInitRequest } from '$lib/api/requests';
-import { errorToResponse, logError } from '$lib/server/errors/index.js';
+import { withErrorHandling } from '$lib/server/errors/handler.js';
 
-export const POST: RequestHandler = async ({ request, route }) => {
-	try {
-		const params = parse(TilesInitRequest, await request.json());
-		const response = await startTileServer(params);
-		return new Response(JSON.stringify(response), { status: 200 });
-	} catch (error) {
-		logError(error, `API:${route.id}`);
-		return errorToResponse(error);
-	}
-};
+export const POST: RequestHandler = withErrorHandling(async ({ request }) => {
+	const params = v.parse(TilesInitRequest, await request.json());
+	const response = await startTileServer(params);
+	return json(response);
+});

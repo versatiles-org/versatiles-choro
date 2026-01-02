@@ -20,3 +20,7 @@ export const TilesLoadRequest = v.object({
 	id: TileSourceId,
 	path: Path
 });
+
+export const TilesStopRequest = v.object({
+	id: TileSourceId
+});
