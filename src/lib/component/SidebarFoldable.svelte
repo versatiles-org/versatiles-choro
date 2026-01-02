@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { type Snippet } from 'svelte';
 	import { slide } from 'svelte/transition';
+	import { generateId } from '$lib/utils/id.js';
 
 	let {
 		title,
@@ -16,7 +17,7 @@
 	const iconOpen: string = '▾';
 	const iconClosed: string = '▸';
 
-	const contentId = `foldable-${crypto.getRandomValues(new Uint32Array(1))[0].toString(36)}`;
+	const contentId = generateId('foldable');
 
 	function toggle() {
 		if (disabled) return;

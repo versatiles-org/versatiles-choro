@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { generateId } from '$lib/utils/id.js';
 
 	type CloseReason = 'backdrop' | 'escape' | 'action';
 
@@ -24,8 +25,8 @@
 	} = $props();
 
 	// Generate unique IDs for ARIA labeling
-	const titleId = `dialog-title-${Math.random().toString(36).substr(2, 9)}`;
-	const descId = `dialog-desc-${Math.random().toString(36).substr(2, 9)}`;
+	const titleId = generateId('dialog-title');
+	const descId = generateId('dialog-desc');
 
 	let dialog: HTMLDialogElement | null = $state(null);
 	let previouslyFocusedElement: HTMLElement | null = null;
