@@ -407,7 +407,7 @@ describe('Dialog', () => {
 		const { container } = render(DialogWrapper, {
 			props: {
 				content: 'Content',
-				maxWidth: '90vw',
+				width: '90vw',
 				get showModal() {
 					return state.showModal;
 				},
@@ -418,7 +418,7 @@ describe('Dialog', () => {
 		});
 
 		const dialog = container.querySelector('dialog');
-		expect(dialog).toHaveStyle('--dialog-max-width: 90vw');
+		expect(dialog).toHaveStyle('--dialog-width: 90vw');
 	});
 
 	it('applies custom class to dialog element', () => {

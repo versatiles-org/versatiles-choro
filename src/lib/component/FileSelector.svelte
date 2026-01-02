@@ -23,7 +23,7 @@
 	});
 </script>
 
-<Dialog bind:showModal maxWidth="80vw">
+<Dialog bind:showModal width="80vw">
 	<div class="file-selector">
 		<h3>Select File:</h3>
 		<p>{dir.fullPath()}</p>

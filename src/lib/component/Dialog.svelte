@@ -11,7 +11,7 @@
 		closeOnBackdropClick = true,
 		onBeforeClose,
 		onClose,
-		maxWidth = '32em',
+		width,
 		class: className = ''
 	}: {
 		title?: string;
@@ -20,7 +20,7 @@
 		closeOnBackdropClick?: boolean;
 		onBeforeClose?: (reason: CloseReason) => boolean;
 		onClose?: (reason: CloseReason) => void;
-		maxWidth?: string;
+		width?: string;
 		class?: string;
 	} = $props();
 
@@ -118,7 +118,7 @@
 	aria-labelledby={title ? titleId : undefined}
 	aria-describedby={descId}
 	class={className}
-	style="--dialog-max-width: {maxWidth}"
+	style="--dialog-width: {width}"
 >
 	{#if title}
 		<h2 id={titleId}>{title}</h2>
@@ -130,7 +130,8 @@
 
 <style>
 	dialog {
-		max-width: var(--dialog-max-width, 32em);
+		width: var(--dialog-width, 32em);
+		max-width: 80%;
 		border-radius: 0.2em;
 		border: none;
 		padding: 1em;

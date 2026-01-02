@@ -10,7 +10,7 @@
 		closeOnBackdropClick,
 		onBeforeClose,
 		onClose,
-		maxWidth,
+		width,
 		class: className
 	}: {
 		title?: string;
@@ -19,7 +19,7 @@
 		closeOnBackdropClick?: boolean;
 		onBeforeClose?: (reason: CloseReason) => boolean;
 		onClose?: (reason: CloseReason) => void;
-		maxWidth?: string;
+		width?: string;
 		class?: string;
 	} = $props();
 </script>
@@ -30,7 +30,7 @@
 	{closeOnBackdropClick}
 	{onBeforeClose}
 	{onClose}
-	{maxWidth}
+	{width}
 	class={className}
 >
 	{#if content}
