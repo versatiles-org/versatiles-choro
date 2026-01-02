@@ -5,13 +5,11 @@ import { runVersaTilesConvert } from '../spawn/spawn';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import { buildVPL } from '../tiles/vpl';
-import { mkdtemp, writeFile, unlink } from 'fs/promises';
-import { ValidationError } from '../errors/index.js';
+import { mkdtemp, writeFile } from 'fs/promises';
+import { validateOutputExtension, safeDelete } from './utils.js';
 
 export function convertTiles(vpl: InferOutput<typeof VPLParam>, output: string): Progress {
-	if (!output.endsWith('.versatiles')) {
-		throw new ValidationError('Output file must have a .versatiles extension');
-	}
+	validateOutputExtension(output, '.versatiles');
 
 	let vplFile = '';
 
@@ -25,6 +23,6 @@ export function convertTiles(vpl: InferOutput<typeof VPLParam>, output: string):
 				await writeFile(vplFile, buildVPL(vpl));
 			}, 'Creating temporary VPL file'),
 		() => runVersaTilesConvert(vplFile, output),
-		() => new SimpleProgress(() => unlink(vplFile), 'Cleaning up temporary file')
+		() => new SimpleProgress(() => safeDelete(vplFile), 'Cleaning up temporary file')
 	]);
 }

@@ -5,11 +5,19 @@ export abstract class AppError extends Error {
 	public readonly statusCode: number;
 	public readonly isOperational: boolean;
 
-	constructor(message: string, statusCode: number = 500, isOperational: boolean = true) {
+	constructor(
+		message: string,
+		statusCode: number = 500,
+		isOperational: boolean = true,
+		cause?: unknown
+	) {
 		super(message);
 		this.statusCode = statusCode;
 		this.isOperational = isOperational;
 		this.name = this.constructor.name;
+		if (cause) {
+			this.cause = cause;
+		}
 		Error.captureStackTrace(this, this.constructor);
 	}
 }
@@ -45,11 +53,8 @@ export class PathTraversalError extends AppError {
  * Error thrown when a file operation fails
  */
 export class FileSystemError extends AppError {
-	constructor(message: string, cause?: Error) {
-		super(message, 500);
-		if (cause) {
-			this.cause = cause;
-		}
+	constructor(message: string, cause?: unknown) {
+		super(message, 500, true, cause);
 	}
 }
 
@@ -80,11 +85,8 @@ export class ProcessError extends AppError {
  * Error thrown when conversion fails
  */
 export class ConversionError extends AppError {
-	constructor(message: string, cause?: Error) {
-		super(message, 500);
-		if (cause) {
-			this.cause = cause;
-		}
+	constructor(message: string, cause?: unknown) {
+		super(message, 500, true, cause);
 	}
 }
 
@@ -92,10 +94,7 @@ export class ConversionError extends AppError {
  * Error thrown when tile operations fail
  */
 export class TileError extends AppError {
-	constructor(message: string, cause?: Error) {
-		super(message, 500);
-		if (cause) {
-			this.cause = cause;
-		}
+	constructor(message: string, cause?: unknown) {
+		super(message, 500, true, cause);
 	}
 }

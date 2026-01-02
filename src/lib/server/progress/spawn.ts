@@ -47,11 +47,7 @@ export class SpawnProgress extends Progress {
 			const lines = data.toString().split('\n');
 			lines.forEach((line: string) => {
 				if (line.trim()) {
-					// Keep only the last N lines in buffer
-					this.stderrBuffer.push(line);
-					if (this.stderrBuffer.length > this.maxBufferLines) {
-						this.stderrBuffer.shift();
-					}
+					this.addToBuffer(this.stderrBuffer, line);
 					this.handleLine(line, true);
 				}
 			});
@@ -61,15 +57,21 @@ export class SpawnProgress extends Progress {
 			const lines = data.toString().split('\n');
 			lines.forEach((line: string) => {
 				if (line.trim()) {
-					// Keep only the last N lines in buffer
-					this.stdoutBuffer.push(line);
-					if (this.stdoutBuffer.length > this.maxBufferLines) {
-						this.stdoutBuffer.shift();
-					}
+					this.addToBuffer(this.stdoutBuffer, line);
 					this.handleLine(line, false);
 				}
 			});
 		});
+	}
+
+	/**
+	 * Add line to buffer, maintaining max buffer size
+	 */
+	private addToBuffer(buffer: string[], line: string): void {
+		buffer.push(line);
+		if (buffer.length > this.maxBufferLines) {
+			buffer.shift();
+		}
 	}
 
 	private handleLine(line: string, isStderr: boolean) {
