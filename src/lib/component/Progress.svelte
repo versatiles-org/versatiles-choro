@@ -60,13 +60,13 @@
 	}
 </script>
 
-<Dialog title="Conversion Progress" bind:showModal={visible}>
+<Dialog title="Conversion Progress" bind:showModal={visible} width="400px">
+	{#if message}
+		<div class="progress-message">{message}</div>
+	{/if}
 	<div class="progress-container" class:invisible={!visible}>
 		<div class="progress-bar" style="width: {percentage}%;"></div>
 		<div class="progress-text">
-			{#if message}
-				<span class="progress-message">{message}</span>
-			{/if}
 			<span class="progress-percentage">{percentage.toFixed(0)}%</span>
 		</div>
 	</div>
@@ -74,6 +74,16 @@
 </Dialog>
 
 <style>
+	.progress-message {
+		width: 100%;
+		margin-bottom: 4px;
+		font-size: 14px;
+		color: hsl(220, 20%, 20%);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
 	.progress-container {
 		position: relative;
 		width: 100%;
@@ -98,8 +108,8 @@
 		height: 100%;
 		display: flex;
 		align-items: center;
-		justify-content: space-around;
-		padding: 0 12px;
+		justify-content: center;
+		padding: 0;
 		font-size: 14px;
 		color: #ffffff;
 		text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
