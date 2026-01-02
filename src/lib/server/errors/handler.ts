@@ -1,7 +1,23 @@
 import { AppError } from './errors.js';
 import { ValiError } from 'valibot';
 import type { RequestHandler } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
 import { loggers } from '../logger/index.js';
+
+/**
+ * Success response with optional status code
+ */
+export function successResponse<T>(data: T, status = 200) {
+	return json(data, { status });
+}
+
+/**
+ * Error response with appropriate status code
+ */
+export function errorResponse(error: unknown, status = 500) {
+	const message = error instanceof Error ? error.message : String(error);
+	return json({ error: message }, { status });
+}
 
 /**
  * Wraps a SvelteKit request handler with error handling
@@ -23,18 +39,15 @@ export function withErrorHandling<T extends RequestHandler>(handler: T): T {
 export function errorToResponse(error: unknown): Response {
 	// Handle Valibot validation errors
 	if (error instanceof ValiError) {
-		return new Response(
-			JSON.stringify({
+		return json(
+			{
 				error: 'Validation failed',
 				details: error.issues.map((issue) => ({
 					path: issue.path?.map((p: { key: string }) => p.key).join('.'),
 					message: issue.message
 				}))
-			}),
-			{
-				status: 400,
-				headers: { 'Content-Type': 'application/json' }
-			}
+			},
+			{ status: 400 }
 		);
 	}
 
@@ -46,37 +59,28 @@ export function errorToResponse(error: unknown): Response {
 		if (error.cause) {
 			response.cause = String(error.cause);
 		}
-		return new Response(JSON.stringify(response), {
-			status: error.statusCode,
-			headers: { 'Content-Type': 'application/json' }
-		});
+		return json(response, { status: error.statusCode });
 	}
 
 	// Handle standard errors
 	if (error instanceof Error) {
 		// Don't expose internal error details in production
 		const isDevelopment = process.env.NODE_ENV !== 'production';
-		return new Response(
-			JSON.stringify({
+		return json(
+			{
 				error: isDevelopment ? error.message : 'Internal server error',
 				...(isDevelopment && error.stack && { stack: error.stack })
-			}),
-			{
-				status: 500,
-				headers: { 'Content-Type': 'application/json' }
-			}
+			},
+			{ status: 500 }
 		);
 	}
 
 	// Handle unknown errors
-	return new Response(
-		JSON.stringify({
-			error: 'An unexpected error occurred'
-		}),
+	return json(
 		{
-			status: 500,
-			headers: { 'Content-Type': 'application/json' }
-		}
+			error: 'An unexpected error occurred'
+		},
+		{ status: 500 }
 	);
 }
 
