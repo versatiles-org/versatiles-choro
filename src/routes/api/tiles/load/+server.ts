@@ -12,7 +12,7 @@ export const GET: RequestHandler = withErrorHandling(async ({ request }) => {
 	});
 
 	// Get the fixed port of the global TileServer
-	const port = await getTileServerPort();
+	const port = getTileServerPort();
 
 	// Construct correct URL: /tiles/{name}/{z}/{x}/{y}
 	const url = `http://localhost:${port}/tiles/${id}/${path}`;
