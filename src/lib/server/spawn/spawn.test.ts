@@ -250,10 +250,10 @@ describe('Spawn Utilities', () => {
 		});
 
 		it('passes progress data to callback', async () => {
-			let progressCallback: ((data: unknown) => void) | undefined;
+			let progressCallback: ((data: unknown) => void) | undefined = undefined;
 
 			vi.mocked(convert).mockImplementation((input, output, options, onProgress) => {
-				progressCallback = onProgress;
+				progressCallback = onProgress as typeof progressCallback;
 				return Promise.resolve();
 			});
 
@@ -263,9 +263,9 @@ describe('Spawn Utilities', () => {
 			progress.onProgress((p) => progressValues.push(p));
 
 			// Simulate progress updates
-			progressCallback?.({ percentage: 25, position: 25, total: 100, speed: 1000, eta: 75 });
-			progressCallback?.({ percentage: 50, position: 50, total: 100, speed: 1000, eta: 50 });
-			progressCallback?.({ percentage: 75, position: 75, total: 100, speed: 1000, eta: 25 });
+			progressCallback!({ percentage: 25, position: 25, total: 100, speed: 1000, eta: 75 });
+			progressCallback!({ percentage: 50, position: 50, total: 100, speed: 1000, eta: 50 });
+			progressCallback!({ percentage: 75, position: 75, total: 100, speed: 1000, eta: 25 });
 
 			await new Promise((resolve) => setTimeout(resolve, 10));
 
@@ -275,10 +275,10 @@ describe('Spawn Utilities', () => {
 		});
 
 		it('passes message data to callback', async () => {
-			let messageCallback: ((data: unknown) => void) | undefined;
+			let messageCallback: ((data: unknown) => void) | undefined = undefined;
 
 			vi.mocked(convert).mockImplementation((input, output, options, onProgress, onMessage) => {
-				messageCallback = onMessage;
+				messageCallback = onMessage as typeof messageCallback;
 				return Promise.resolve();
 			});
 
@@ -288,9 +288,9 @@ describe('Spawn Utilities', () => {
 			progress.onMessage((msg, isErr) => messages.push({ message: msg, isError: isErr }));
 
 			// Simulate message updates
-			messageCallback?.({ type: 'step', message: 'Processing tiles' });
-			messageCallback?.({ type: 'warning', message: 'Low memory' });
-			messageCallback?.({ type: 'error', message: 'Failed to read tile' });
+			messageCallback!({ type: 'step', message: 'Processing tiles' });
+			messageCallback!({ type: 'warning', message: 'Low memory' });
+			messageCallback!({ type: 'error', message: 'Failed to read tile' });
 
 			await new Promise((resolve) => setTimeout(resolve, 10));
 
@@ -300,10 +300,10 @@ describe('Spawn Utilities', () => {
 		});
 
 		it('marks warnings as errors', async () => {
-			let messageCallback: ((data: unknown) => void) | undefined;
+			let messageCallback: ((data: unknown) => void) | undefined = undefined;
 
 			vi.mocked(convert).mockImplementation((input, output, options, onProgress, onMessage) => {
-				messageCallback = onMessage;
+				messageCallback = onMessage as typeof messageCallback;
 				return Promise.resolve();
 			});
 
@@ -312,7 +312,7 @@ describe('Spawn Utilities', () => {
 			const messages: Array<{ message: string; isError: boolean }> = [];
 			progress.onMessage((msg, isErr) => messages.push({ message: msg, isError: isErr }));
 
-			messageCallback?.({ type: 'warning', message: 'Warning message' });
+			messageCallback!({ type: 'warning', message: 'Warning message' });
 
 			await new Promise((resolve) => setTimeout(resolve, 10));
 

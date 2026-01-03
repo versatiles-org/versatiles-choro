@@ -31,9 +31,9 @@ describe('CallbackProgress', () => {
 		progress.onProgress((p) => progressValues.push(p));
 
 		// Trigger progress updates
-		progressCb?.(25);
-		progressCb?.(50);
-		progressCb?.(75);
+		progressCb!(25);
+		progressCb!(50);
+		progressCb!(75);
 
 		expect(progressValues).toContain(25);
 		expect(progressValues).toContain(50);
@@ -52,8 +52,8 @@ describe('CallbackProgress', () => {
 		progress.onMessage((msg, isErr) => messages.push({ message: msg, isError: isErr }));
 
 		// Trigger message updates
-		messageCb?.('Processing', false);
-		messageCb?.('Warning', false);
+		messageCb!('Processing', false);
+		messageCb!('Warning', false);
 
 		expect(messages).toContainEqual({ message: 'Processing', isError: false });
 		expect(messages).toContainEqual({ message: 'Warning', isError: false });
@@ -70,7 +70,7 @@ describe('CallbackProgress', () => {
 		const messages: Array<{ message: string; isError: boolean }> = [];
 		progress.onMessage((msg, isErr) => messages.push({ message: msg, isError: isErr }));
 
-		messageCb?.('Error occurred', true);
+		messageCb!('Error occurred', true);
 
 		expect(messages).toContainEqual({ message: 'Error occurred', isError: true });
 	});
@@ -110,14 +110,14 @@ describe('CallbackProgress', () => {
 		progress.onProgress((p) => progressValues.push(p));
 		progress.onMessage((msg) => messages.push(msg));
 
-		progressCb?.(25);
-		messageCb?.('Before abort', false);
+		progressCb!(25);
+		messageCb!('Before abort', false);
 
 		progress.abort();
 
 		// These should be ignored after abort
-		progressCb?.(50);
-		messageCb?.('After abort', false);
+		progressCb!(50);
+		messageCb!('After abort', false);
 
 		expect(progressValues).toContain(25);
 		expect(progressValues).not.toContain(50);
@@ -187,10 +187,10 @@ describe('CallbackProgress', () => {
 		progress.onProgress((p) => progressValues.push(p));
 		progress.onMessage((msg) => messages.push(msg));
 
-		progressCb?.(30);
-		messageCb?.('Step 1', false);
-		progressCb?.(60);
-		messageCb?.('Step 2', false);
+		progressCb!(30);
+		messageCb!('Step 1', false);
+		progressCb!(60);
+		messageCb!('Step 2', false);
 
 		expect(progressValues).toEqual([0, 30, 60]);
 		expect(messages).toContain('Step 1');

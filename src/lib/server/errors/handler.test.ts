@@ -86,7 +86,7 @@ describe('Error Handler', () => {
 
 	describe('withErrorHandling', () => {
 		it('returns response on successful handler execution', async () => {
-			const mockHandler = vi.fn(async () => successResponse({ data: 'test' }));
+			const mockHandler = vi.fn(async (_event) => successResponse({ data: 'test' }));
 			const wrappedHandler = withErrorHandling(mockHandler);
 
 			const mockEvent = {
@@ -102,7 +102,7 @@ describe('Error Handler', () => {
 
 		it('catches and converts errors to responses', async () => {
 			const testError = new ValidationError('Invalid input');
-			const mockHandler = vi.fn(async () => {
+			const mockHandler = vi.fn(async (_event) => {
 				throw testError;
 			});
 			const wrappedHandler = withErrorHandling(mockHandler);
@@ -112,7 +112,7 @@ describe('Error Handler', () => {
 				route: { id: '/test' }
 			} as { request: Request; route: { id: string } };
 
-			const response = await wrappedHandler(mockEvent);
+			const response: Response = await wrappedHandler(mockEvent);
 
 			expect(response.status).toBe(400);
 			expect(loggers.error.warn).toHaveBeenCalled();
@@ -120,7 +120,7 @@ describe('Error Handler', () => {
 
 		it('logs errors with route context', async () => {
 			const testError = new Error('Test error');
-			const mockHandler = vi.fn(async () => {
+			const mockHandler = vi.fn(async (_event) => {
 				throw testError;
 			});
 			const wrappedHandler = withErrorHandling(mockHandler);
@@ -142,7 +142,7 @@ describe('Error Handler', () => {
 
 		it('handles unknown route id', async () => {
 			const testError = new Error('Test error');
-			const mockHandler = vi.fn(async () => {
+			const mockHandler = vi.fn(async (_event) => {
 				throw testError;
 			});
 			const wrappedHandler = withErrorHandling(mockHandler);
@@ -255,7 +255,8 @@ describe('Error Handler', () => {
 		});
 
 		it('logs non-operational AppError as error', () => {
-			const error = new AppError('Critical error', 500, false);
+			class TestError extends AppError {}
+			const error = new TestError('Critical error', 500, false);
 			logError(error);
 
 			expect(loggers.error.error).toHaveBeenCalledWith(
@@ -369,7 +370,8 @@ describe('Error Classes', () => {
 		});
 
 		it('supports non-operational errors', () => {
-			const error = new AppError('Programming error', 500, false);
+			class TestError extends AppError {}
+			const error = new TestError('Programming error', 500, false);
 
 			expect(error.isOperational).toBe(false);
 		});

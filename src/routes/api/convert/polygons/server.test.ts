@@ -27,7 +27,9 @@ describe('POST /api/convert/polygons', () => {
 		vi.clearAllMocks();
 	});
 
-	const createMockEvent = (body: unknown): RequestEvent => {
+	const createMockEvent = (
+		body: unknown
+	): RequestEvent<Record<string, never>, '/api/convert/polygons'> => {
 		const request = new Request('http://localhost/api/convert/polygons', {
 			method: 'POST',
 			headers: { 'content-type': 'application/json' },
@@ -37,11 +39,11 @@ describe('POST /api/convert/polygons', () => {
 		return {
 			request,
 			route: { id: '/api/convert/polygons' }
-		} as RequestEvent;
+		} as RequestEvent<Record<string, never>, '/api/convert/polygons'>;
 	};
 
 	it('converts polygons with valid request', async () => {
-		const mockProgress = new SimpleProgress(async () => 'done');
+		const mockProgress = new SimpleProgress(async () => {});
 		vi.mocked(convertPolygonsToVersatiles).mockReturnValue(mockProgress);
 		vi.mocked(progressToStream).mockReturnValue(new Response('stream'));
 
@@ -62,7 +64,7 @@ describe('POST /api/convert/polygons', () => {
 	});
 
 	it('returns progress stream', async () => {
-		const mockProgress = new SimpleProgress(async () => 'done');
+		const mockProgress = new SimpleProgress(async () => {});
 		vi.mocked(convertPolygonsToVersatiles).mockReturnValue(mockProgress);
 
 		const mockStreamResponse = new Response('mock stream');
@@ -113,7 +115,7 @@ describe('POST /api/convert/polygons', () => {
 	});
 
 	it('passes abort signal to progressToStream', async () => {
-		const mockProgress = new SimpleProgress(async () => 'done');
+		const mockProgress = new SimpleProgress(async () => {});
 		vi.mocked(convertPolygonsToVersatiles).mockReturnValue(mockProgress);
 		vi.mocked(progressToStream).mockReturnValue(new Response('stream'));
 

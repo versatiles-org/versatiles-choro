@@ -36,12 +36,12 @@ describe('logProgress', () => {
 
 		await logPromise;
 
-		const calls = stdoutWriteSpy.mock.calls.map((call) => call[0] as string);
+		const calls = stdoutWriteSpy.mock.calls.map((call: unknown[]) => call[0] as string);
 
 		// Should contain progress percentages
-		expect(calls.some((call) => call.includes('25%'))).toBe(true);
-		expect(calls.some((call) => call.includes('50%'))).toBe(true);
-		expect(calls.some((call) => call.includes('75%'))).toBe(true);
+		expect(calls.some((call: string) => call.includes('25%'))).toBe(true);
+		expect(calls.some((call: string) => call.includes('50%'))).toBe(true);
+		expect(calls.some((call: string) => call.includes('75%'))).toBe(true);
 	});
 
 	it('logs messages', async () => {
@@ -65,10 +65,10 @@ describe('logProgress', () => {
 
 		await logPromise;
 
-		const calls = stdoutWriteSpy.mock.calls.map((call) => call[0] as string);
+		const calls = stdoutWriteSpy.mock.calls.map((call: unknown[]) => call[0] as string);
 
-		expect(calls.some((call) => call.includes('Processing data'))).toBe(true);
-		expect(calls.some((call) => call.includes('Almost done'))).toBe(true);
+		expect(calls.some((call: string) => call.includes('Processing data'))).toBe(true);
+		expect(calls.some((call: string) => call.includes('Almost done'))).toBe(true);
 	});
 
 	it('uses green color for normal progress', async () => {
@@ -91,10 +91,10 @@ describe('logProgress', () => {
 
 		await logPromise;
 
-		const calls = stdoutWriteSpy.mock.calls.map((call) => call[0] as string);
+		const calls = stdoutWriteSpy.mock.calls.map((call: unknown[]) => call[0] as string);
 
 		// Green color code: \x1b[32m
-		expect(calls.some((call) => call.includes('\x1b[32m'))).toBe(true);
+		expect(calls.some((call: string) => call.includes('\x1b[32m'))).toBe(true);
 	});
 
 	it('uses red color when error occurs', async () => {
@@ -117,10 +117,10 @@ describe('logProgress', () => {
 
 		await logPromise;
 
-		const calls = stdoutWriteSpy.mock.calls.map((call) => call[0] as string);
+		const calls = stdoutWriteSpy.mock.calls.map((call: unknown[]) => call[0] as string);
 
 		// Red color code: \x1b[31m
-		expect(calls.some((call) => call.includes('\x1b[31m'))).toBe(true);
+		expect(calls.some((call: string) => call.includes('\x1b[31m'))).toBe(true);
 	});
 
 	it('writes newline before new message', async () => {
@@ -145,10 +145,10 @@ describe('logProgress', () => {
 
 		await logPromise;
 
-		const calls = stdoutWriteSpy.mock.calls.map((call) => call[0] as string);
+		const calls = stdoutWriteSpy.mock.calls.map((call: unknown[]) => call[0] as string);
 
 		// Should have newlines between messages
-		expect(calls.some((call) => call === '\n')).toBe(true);
+		expect(calls.some((call: string) => call === '\n')).toBe(true);
 	});
 
 	it('writes final newline on completion', async () => {
@@ -158,7 +158,7 @@ describe('logProgress', () => {
 
 		await logProgress(progress);
 
-		const calls = stdoutWriteSpy.mock.calls.map((call) => call[0] as string);
+		const calls = stdoutWriteSpy.mock.calls.map((call: unknown[]) => call[0] as string);
 
 		// Last call should be a newline
 		expect(calls[calls.length - 1]).toBe('\n');
@@ -186,12 +186,14 @@ describe('logProgress', () => {
 
 		await logPromise;
 
-		const calls = stdoutWriteSpy.mock.calls.map((call) => call[0] as string);
+		const calls = stdoutWriteSpy.mock.calls.map((call: unknown[]) => call[0] as string);
 
 		// Check for padded values
-		expect(calls.some((call) => call.includes('  5%') || call.includes('   5%'))).toBe(true);
-		expect(calls.some((call) => call.includes(' 50%'))).toBe(true);
-		expect(calls.some((call) => call.includes('100%'))).toBe(true);
+		expect(calls.some((call: string) => call.includes('  5%') || call.includes('   5%'))).toBe(
+			true
+		);
+		expect(calls.some((call: string) => call.includes(' 50%'))).toBe(true);
+		expect(calls.some((call: string) => call.includes('100%'))).toBe(true);
 	});
 
 	it('skips duplicate messages', async () => {
@@ -216,8 +218,8 @@ describe('logProgress', () => {
 
 		await logPromise;
 
-		const calls = stdoutWriteSpy.mock.calls.map((call) => call[0] as string);
-		const messagesWithText = calls.filter((call) => call.includes('Same message'));
+		const calls = stdoutWriteSpy.mock.calls.map((call: unknown[]) => call[0] as string);
+		const messagesWithText = calls.filter((call: string) => call.includes('Same message'));
 
 		// Should only log the message once, not multiple times
 		expect(messagesWithText.length).toBe(1);
@@ -244,10 +246,12 @@ describe('logProgress', () => {
 
 		await logPromise;
 
-		const calls = stdoutWriteSpy.mock.calls.map((call) => call[0] as string);
+		const calls = stdoutWriteSpy.mock.calls.map((call: unknown[]) => call[0] as string);
 
 		// Should have output with both progress and message
-		expect(calls.some((call) => call.includes('50%') && call.includes('Halfway done'))).toBe(true);
+		expect(
+			calls.some((call: string) => call.includes('50%') && call.includes('Halfway done'))
+		).toBe(true);
 	});
 
 	it('clears line and returns carriage on each update', async () => {
@@ -270,10 +274,10 @@ describe('logProgress', () => {
 
 		await logPromise;
 
-		const calls = stdoutWriteSpy.mock.calls.map((call) => call[0] as string);
+		const calls = stdoutWriteSpy.mock.calls.map((call: unknown[]) => call[0] as string);
 
 		// Should contain clear line (\x1b[2K) and carriage return (\r)
-		expect(calls.some((call) => call.includes('\x1b[2K\r'))).toBe(true);
+		expect(calls.some((call: string) => call.includes('\x1b[2K\r'))).toBe(true);
 	});
 
 	it('hides cursor during progress', async () => {
@@ -283,10 +287,10 @@ describe('logProgress', () => {
 
 		await logProgress(progress);
 
-		const calls = stdoutWriteSpy.mock.calls.map((call) => call[0] as string);
+		const calls = stdoutWriteSpy.mock.calls.map((call: unknown[]) => call[0] as string);
 
 		// Should hide cursor: \x1b[?25l
-		expect(calls.some((call) => call.includes('\x1b[?25l'))).toBe(true);
+		expect(calls.some((call: string) => call.includes('\x1b[?25l'))).toBe(true);
 	});
 
 	it('resolves when progress completes', async () => {

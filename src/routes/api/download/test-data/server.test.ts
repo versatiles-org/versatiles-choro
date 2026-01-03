@@ -33,7 +33,7 @@ describe('POST /api/download/test-data', () => {
 		vi.clearAllMocks();
 	});
 
-	const createMockEvent = (): RequestEvent => {
+	const createMockEvent = (): RequestEvent<Record<string, never>, '/api/download/test-data'> => {
 		const request = new Request('http://localhost/api/download/test-data', {
 			method: 'POST',
 			headers: { 'content-type': 'application/json' }
@@ -42,12 +42,12 @@ describe('POST /api/download/test-data', () => {
 		return {
 			request,
 			route: { id: '/api/download/test-data' }
-		} as RequestEvent;
+		} as RequestEvent<Record<string, never>, '/api/download/test-data'>;
 	};
 
 	it('creates test-data directory', async () => {
 		vi.mocked(mkdir).mockResolvedValue(undefined);
-		const mockProgress = new SimpleProgress(async () => 'done');
+		const mockProgress = new SimpleProgress(async () => {});
 		vi.mocked(downloadTestData).mockReturnValue(mockProgress);
 		vi.mocked(progressToStream).mockReturnValue(new Response('stream'));
 
@@ -60,7 +60,7 @@ describe('POST /api/download/test-data', () => {
 
 	it('calls downloadTestData with resolved folder', async () => {
 		vi.mocked(mkdir).mockResolvedValue(undefined);
-		const mockProgress = new SimpleProgress(async () => 'done');
+		const mockProgress = new SimpleProgress(async () => {});
 		vi.mocked(downloadTestData).mockReturnValue(mockProgress);
 		vi.mocked(progressToStream).mockReturnValue(new Response('stream'));
 
@@ -72,7 +72,7 @@ describe('POST /api/download/test-data', () => {
 
 	it('returns progress stream', async () => {
 		vi.mocked(mkdir).mockResolvedValue(undefined);
-		const mockProgress = new SimpleProgress(async () => 'done');
+		const mockProgress = new SimpleProgress(async () => {});
 		vi.mocked(downloadTestData).mockReturnValue(mockProgress);
 
 		const mockStreamResponse = new Response('mock stream');
@@ -87,7 +87,7 @@ describe('POST /api/download/test-data', () => {
 
 	it('passes abort signal to progressToStream', async () => {
 		vi.mocked(mkdir).mockResolvedValue(undefined);
-		const mockProgress = new SimpleProgress(async () => 'done');
+		const mockProgress = new SimpleProgress(async () => {});
 		vi.mocked(downloadTestData).mockReturnValue(mockProgress);
 		vi.mocked(progressToStream).mockReturnValue(new Response('stream'));
 
@@ -121,7 +121,7 @@ describe('POST /api/download/test-data', () => {
 
 	it('creates directory recursively', async () => {
 		vi.mocked(mkdir).mockResolvedValue(undefined);
-		const mockProgress = new SimpleProgress(async () => 'done');
+		const mockProgress = new SimpleProgress(async () => {});
 		vi.mocked(downloadTestData).mockReturnValue(mockProgress);
 		vi.mocked(progressToStream).mockReturnValue(new Response('stream'));
 

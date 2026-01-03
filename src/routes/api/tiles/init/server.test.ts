@@ -17,7 +17,9 @@ describe('POST /api/tiles/init', () => {
 		vi.clearAllMocks();
 	});
 
-	const createMockEvent = (body: unknown): RequestEvent => {
+	const createMockEvent = (
+		body: unknown
+	): RequestEvent<Record<string, never>, '/api/tiles/init'> => {
 		const request = new Request('http://localhost/api/tiles/init', {
 			method: 'POST',
 			headers: { 'content-type': 'application/json' },
@@ -27,7 +29,7 @@ describe('POST /api/tiles/init', () => {
 		return {
 			request,
 			route: { id: '/api/tiles/init' }
-		} as RequestEvent;
+		} as RequestEvent<Record<string, never>, '/api/tiles/init'>;
 	};
 
 	it('initializes tile source with from_container VPL', async () => {

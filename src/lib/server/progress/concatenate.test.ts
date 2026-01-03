@@ -8,7 +8,7 @@ describe('ConcatenatedProgress', () => {
 	});
 
 	it('runs single progress to completion', async () => {
-		const progress1 = new SimpleProgress(async () => 'done');
+		const progress1 = new SimpleProgress(async () => {});
 
 		const concat = new ConcatenatedProgress([() => progress1]);
 

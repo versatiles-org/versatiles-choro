@@ -7,7 +7,7 @@ describe('SimpleProgress', () => {
 	});
 
 	it('executes single callback', async () => {
-		const callback = vi.fn(async () => 'result');
+		const callback = vi.fn(async () => {});
 
 		const progress = new SimpleProgress(callback);
 
@@ -217,11 +217,7 @@ describe('SimpleProgress', () => {
 	});
 
 	it('handles async callbacks that resolve with values', async () => {
-		const progress = new SimpleProgress([
-			async () => 'result1',
-			async () => 'result2',
-			async () => 'result3'
-		]);
+		const progress = new SimpleProgress([async () => {}, async () => {}, async () => {}]);
 
 		await progress.done();
 

@@ -14,7 +14,9 @@ describe('POST /api/tiles/stop', () => {
 		vi.clearAllMocks();
 	});
 
-	const createMockEvent = (body: unknown): RequestEvent => {
+	const createMockEvent = (
+		body: unknown
+	): RequestEvent<Record<string, never>, '/api/tiles/stop'> => {
 		const request = new Request('http://localhost/api/tiles/stop', {
 			method: 'POST',
 			headers: { 'content-type': 'application/json' },
@@ -24,7 +26,7 @@ describe('POST /api/tiles/stop', () => {
 		return {
 			request,
 			route: { id: '/api/tiles/stop' }
-		} as RequestEvent;
+		} as RequestEvent<Record<string, never>, '/api/tiles/stop'>;
 	};
 
 	it('successfully removes tile source', async () => {

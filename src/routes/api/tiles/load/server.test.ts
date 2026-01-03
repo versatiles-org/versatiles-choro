@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { GET } from './+server';
 import type { RequestEvent } from '@sveltejs/kit';
 
@@ -24,7 +24,10 @@ describe('GET /api/tiles/load', () => {
 		global.fetch = originalFetch;
 	});
 
-	const createMockEvent = (id: string, path: string): RequestEvent => {
+	const createMockEvent = (
+		id: string,
+		path: string
+	): RequestEvent<Record<string, never>, '/api/tiles/load'> => {
 		const url = `http://localhost/api/tiles/load?id=${encodeURIComponent(id)}&path=${encodeURIComponent(path)}`;
 		const request = new Request(url, {
 			method: 'GET'
@@ -33,7 +36,7 @@ describe('GET /api/tiles/load', () => {
 		return {
 			request,
 			route: { id: '/api/tiles/load' }
-		} as RequestEvent;
+		} as RequestEvent<Record<string, never>, '/api/tiles/load'>;
 	};
 
 	const createMockTileResponse = (
@@ -41,7 +44,7 @@ describe('GET /api/tiles/load', () => {
 		buffer: Uint8Array,
 		contentType: string = 'application/x-protobuf'
 	) => {
-		return new Response(buffer, {
+		return new Response(buffer as unknown as BodyInit, {
 			status,
 			headers: {
 				'content-type': contentType
@@ -141,7 +144,7 @@ describe('GET /api/tiles/load', () => {
 		const mockEvent = {
 			request,
 			route: { id: '/api/tiles/load' }
-		} as RequestEvent;
+		} as RequestEvent<Record<string, never>, '/api/tiles/load'>;
 
 		const response = await GET(mockEvent);
 
@@ -155,7 +158,7 @@ describe('GET /api/tiles/load', () => {
 		const mockEvent = {
 			request,
 			route: { id: '/api/tiles/load' }
-		} as RequestEvent;
+		} as RequestEvent<Record<string, never>, '/api/tiles/load'>;
 
 		const response = await GET(mockEvent);
 
@@ -168,7 +171,7 @@ describe('GET /api/tiles/load', () => {
 		const mockEvent = {
 			request,
 			route: { id: '/api/tiles/load' }
-		} as RequestEvent;
+		} as RequestEvent<Record<string, never>, '/api/tiles/load'>;
 
 		const response = await GET(mockEvent);
 
