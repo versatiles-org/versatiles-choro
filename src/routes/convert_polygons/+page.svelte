@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageContainer from '$lib/component/PageContainer.svelte';
 	import FileSelector from '$lib/component/FileSelector.svelte';
 	import FileSaver from '$lib/component/FileSaver.svelte';
 	import Progress from '$lib/component/Progress.svelte';
@@ -17,30 +18,40 @@
 	});
 </script>
 
-{#if !inputFile}
-	<h3>Select input file (GeoJSON):</h3>
-	<button onclick={() => (showInputModal = true)}>Open File Selector</button>
-	<FileSelector
-		bind:showModal={showInputModal}
-		bind:file={inputFile}
-		fileFilter={(name) => /\.geojson$/.test(name)}
-		title="Select Input File (GeoJSON)"
-	/>
-{/if}
+<PageContainer title="Convert Polygons to Vector Tiles">
+	{#if !inputFile}
+		<div class="step-section">
+			<h3>Step 1: Select Input File</h3>
+			<p>Choose a GeoJSON file containing polygon data to convert into optimized vector tiles.</p>
+			<button onclick={() => (showInputModal = true)}>Select GeoJSON File</button>
+		</div>
+		<FileSelector
+			bind:showModal={showInputModal}
+			bind:file={inputFile}
+			fileFilter={(name) => /\.geojson$/.test(name)}
+			title="Select Input File (GeoJSON)"
+		/>
+	{/if}
 
-{#if inputFile && !outputFile}
-	<h3>Select output file location:</h3>
-	<p>Input: {inputFile}</p>
-	<button onclick={() => (showOutputModal = true)}>Choose Output Location</button>
-	<FileSaver
-		bind:showModal={showOutputModal}
-		bind:filepath={outputFile}
-		defaultFilename="output"
-		defaultExtension=".versatiles"
-		title="Save Output File"
-	/>
-{/if}
+	{#if inputFile && !outputFile}
+		<div class="step-section">
+			<h3>Step 2: Choose Output Location</h3>
+			<div class="info-card">
+				<p><strong>Input file:</strong> {inputFile}</p>
+			</div>
+			<p>Select where to save the generated vector tiles (.versatiles file).</p>
+			<button onclick={() => (showOutputModal = true)}>Choose Output Location</button>
+		</div>
+		<FileSaver
+			bind:showModal={showOutputModal}
+			bind:filepath={outputFile}
+			defaultFilename="output"
+			defaultExtension=".versatiles"
+			title="Save Output File"
+		/>
+	{/if}
 
-{#if inputFile && outputFile}
-	<Progress url="/api/convert/polygons" params={{ input: inputFile, output: outputFile }} />
-{/if}
+	{#if inputFile && outputFile}
+		<Progress url="/api/convert/polygons" params={{ input: inputFile, output: outputFile }} />
+	{/if}
+</PageContainer>
