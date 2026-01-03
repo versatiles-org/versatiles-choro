@@ -63,7 +63,7 @@
 				}
 			} catch (error) {
 				// Ignore AbortError - it's expected when component unmounts or user aborts
-				if (error.name !== 'AbortError') {
+				if (error instanceof Error && error.name !== 'AbortError') {
 					message = `Error: ${error.message}`;
 					visible = false;
 				}
