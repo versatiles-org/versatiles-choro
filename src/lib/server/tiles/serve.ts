@@ -1,81 +1,154 @@
-import type { TilesInitRequest, TilesInitResponse } from '$lib/api/requests.js';
-import { writeFile, unlink } from 'fs/promises';
-import { TileServer } from '@versatiles/versatiles-rs';
+import { TileServer, TileSource } from '@versatiles/versatiles-rs';
 import { randomUUID } from 'crypto';
-import * as v from 'valibot';
-import { resolve_temp } from '$lib/server/filesystem/filesystem.js';
+import type * as v from 'valibot';
 import { buildVPL } from './vpl';
 import { loggers } from '../logger/index.js';
+import type { VPLParam } from '$lib/api/vpl';
 
-// Store server instances instead of just ports
-const servers = new Map<string, { server: TileServer; tempFile: string }>();
-const MIN_PORT = 51001;
-const MAX_PORT = 52000;
-let nextPort = MIN_PORT;
+// Singleton TileServer instance
+let globalServer: TileServer | null = null;
 
-async function allocatePort(): Promise<number> {
-	const usedPorts = new Set(
-		await Promise.all(Array.from(servers.values()).map(async (s) => await s.server.port))
-	);
+// Track active tile sources by name
+const tileSources = new Map<string, TileSource>();
 
-	while (usedPorts.has(nextPort)) {
-		nextPort++;
-		if (nextPort > MAX_PORT) nextPort = MIN_PORT;
+// Lazy initialization promise to ensure single initialization
+let initPromise: Promise<void> | null = null;
+
+/**
+ * Initialize the global TileServer (called once at app startup or lazily on first use)
+ */
+async function initializeTileServer(port: number = 8080): Promise<void> {
+	if (globalServer) {
+		loggers.tiles.warn('TileServer already initialized');
+		return;
 	}
 
-	return nextPort++;
-}
+	loggers.tiles.info({ port }, 'Initializing TileServer');
 
-export async function startTileServer(
-	params: v.InferOutput<typeof TilesInitRequest>
-): Promise<v.InferOutput<typeof TilesInitResponse>> {
-	const port = await allocatePort();
-	const id = randomUUID();
-
-	// Create TileServer instance
-	const server = new TileServer({
-		ip: '127.0.0.1',
+	globalServer = new TileServer({
+		ip: '127.0.0.1', // Localhost only for security
 		port,
 		minimalRecompression: true
 	});
 
-	// Write VPL temp file
-	const tempFile = resolve_temp(`${id}.vpl`);
-	await writeFile(tempFile, buildVPL(params.vpl));
+	await globalServer.start();
 
-	loggers.tiles.info({ id, port, tempFile }, 'Starting VersaTiles server');
-
-	// Add tile source from VPL file
-	await server.addTileSourceFromPath('tiles', tempFile);
-
-	// Start server (this is async and waits for readiness - no polling needed!)
-	await server.start();
-
-	// Store server instance for cleanup later
-	servers.set(id, { server, tempFile });
-
-	loggers.tiles.info({ id, port }, 'VersaTiles server ready');
-
-	return { id };
+	loggers.tiles.info({ port: await globalServer.port }, 'TileServer started');
 }
 
-export async function stopTileServer(id: string): Promise<void> {
-	const entry = servers.get(id);
-	if (!entry) {
-		throw new Error(`Server ${id} not found`);
+/**
+ * Ensure TileServer is initialized (lazy initialization)
+ */
+async function ensureInitialized(): Promise<void> {
+	if (globalServer) return;
+	if (!initPromise) {
+		initPromise = initializeTileServer(8080);
 	}
+	await initPromise;
+}
 
-	loggers.tiles.info({ id }, 'Stopping VersaTiles server');
+/**
+ * Get the global TileServer instance
+ */
+function getTileServer(): TileServer {
+	if (!globalServer) {
+		throw new Error('TileServer not initialized. Call ensureInitialized() first.');
+	}
+	return globalServer;
+}
+
+/**
+ * Add a new tile source from VPL parameters
+ * Returns the unique name for accessing this tile source
+ */
+export async function addTileSource(vpl: v.InferOutput<typeof VPLParam>): Promise<string> {
+	await ensureInitialized();
+
+	const server = getTileServer();
+	const name = randomUUID();
+
+	try {
+		// Build VPL string from parameters
+		const vplString = buildVPL(vpl);
+
+		// Validate VPL
+		if (!vplString.trim()) {
+			throw new Error('VPL string is empty');
+		}
+
+		loggers.tiles.info({ name, vpl: vplString }, 'Adding tile source');
+
+		// Create TileSource from VPL (no temp file needed!)
+		const source = await TileSource.fromVpl(vplString);
+
+		// Add to server
+		await server.addTileSource(name, source);
+
+		// Track in registry
+		tileSources.set(name, source);
+
+		loggers.tiles.info({ name }, 'Tile source added successfully');
+
+		return name;
+	} catch (error) {
+		loggers.tiles.error({ name, error }, 'Failed to add tile source');
+		throw new Error(
+			`Failed to create tile source: ${error instanceof Error ? error.message : 'Unknown error'}`
+		);
+	}
+}
+
+/**
+ * Remove a tile source by name
+ */
+export async function removeTileSource(name: string): Promise<boolean> {
+	await ensureInitialized();
+
+	const server = getTileServer();
+
+	try {
+		loggers.tiles.info({ name }, 'Removing tile source');
+
+		// Remove from server
+		const removed = await server.removeTileSource(name);
+
+		if (removed) {
+			tileSources.delete(name);
+			loggers.tiles.info({ name }, 'Tile source removed successfully');
+		} else {
+			loggers.tiles.warn({ name }, 'Tile source not found');
+		}
+
+		return removed;
+	} catch (error) {
+		loggers.tiles.error({ name, error }, 'Failed to remove tile source');
+		throw error;
+	}
+}
+
+/**
+ * Get the port of the global TileServer
+ */
+export async function getTileServerPort(): Promise<number> {
+	await ensureInitialized();
+	return await getTileServer().port;
+}
+
+/**
+ * Shutdown the global TileServer (cleanup)
+ */
+export async function shutdownTileServer(): Promise<void> {
+	if (!globalServer) return;
+
+	loggers.tiles.info('Shutting down TileServer');
+
+	// Clear all tile sources
+	tileSources.clear();
 
 	// Stop server
-	await entry.server.stop();
+	await globalServer.stop();
+	globalServer = null;
+	initPromise = null;
 
-	// Clean up temp file
-	await unlink(entry.tempFile).catch(() => {
-		// Ignore errors if file already deleted
-	});
-
-	servers.delete(id);
-
-	loggers.tiles.info({ id }, 'VersaTiles server stopped');
+	loggers.tiles.info('TileServer shut down');
 }

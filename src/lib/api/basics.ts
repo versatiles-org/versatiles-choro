@@ -2,9 +2,9 @@ import * as v from 'valibot';
 
 export const TileSourceId = v.pipe(
 	v.string(),
-	v.regex(/^\d+$/),
+	v.regex(/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/),
 	v.title('TileSourceId'),
-	v.description('A unique numeric identifier for a tile source')
+	v.description('A unique UUID identifier for a tile source')
 );
 
 export const Path = v.pipe(

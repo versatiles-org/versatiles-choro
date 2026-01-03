@@ -16,18 +16,12 @@
 	let update_properties: InferOutput<typeof VPLParamUpdateProperties> | undefined = $state();
 
 	$effect(() => {
-		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-		from_container;
-		updateOverlay();
-	});
-
-	function updateOverlay() {
 		if (from_container) {
 			overlay = { vpl: { from_container, update_properties } };
 		} else {
 			overlay = undefined;
 		}
-	}
+	});
 </script>
 
 <div class="wrapper">
@@ -37,7 +31,6 @@
 		</Frame>
 		<Frame title="Data Processing" Icon={IconVector}>
 			<FormVPLUpdateProperties bind:params={update_properties} />
-			<button onclick={updateOverlay}>Apply Changes</button>
 		</Frame>
 		<Frame title="Design" Icon={IconDesign} borderBottom={false}></Frame>
 	</Sidebar>
