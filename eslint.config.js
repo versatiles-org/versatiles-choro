@@ -40,7 +40,9 @@ export default defineConfig(
 					varsIgnorePattern: '^_'
 				}
 			],
-			'@typescript-eslint/no-deprecated': 'warn'
+			'@typescript-eslint/no-deprecated': 'error',
+			'@typescript-eslint/await-thenable': 'error',
+			'no-return-await': 'error'
 		}
 	},
 	{
@@ -61,7 +63,9 @@ export default defineConfig(
 					varsIgnorePattern: '^_'
 				}
 			],
-			'@typescript-eslint/no-deprecated': 'warn'
+			'@typescript-eslint/no-deprecated': 'error',
+			'@typescript-eslint/await-thenable': 'error',
+			'no-return-await': 'error'
 		}
 	},
 	{
@@ -78,7 +82,8 @@ export default defineConfig(
 					argsIgnorePattern: '^_',
 					varsIgnorePattern: '^_'
 				}
-			]
+			],
+			'no-return-await': 'error'
 		}
 	}
 );
