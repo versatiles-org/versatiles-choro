@@ -1,7 +1,5 @@
 FROM versatiles/versatiles-tippecanoe:latest AS tippecanoe
 
-
-
 # ---------- Build stage ----------
 FROM node:24-alpine AS build
 WORKDIR /app
@@ -31,7 +29,6 @@ WORKDIR /app
 
 COPY package-lock.json package.json ./
 
-COPY --from=tippecanoe /app/versatiles /usr/local/bin/
 COPY --from=tippecanoe /usr/local/bin/tippecanoe /usr/local/bin/
 
 COPY --from=build /app/node_modules ./node_modules
