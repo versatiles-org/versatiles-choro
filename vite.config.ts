@@ -18,6 +18,7 @@ export default defineConfig({
 		coverage: {
 			provider: 'v8',
 			reporter: ['text', 'json', 'html'],
+			include: ['src/**/*.ts', 'src/**/*.svelte'],
 			exclude: [
 				'.svelte-kit/**',
 				'**/*.config.{js,ts}',
