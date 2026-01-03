@@ -17,6 +17,6 @@
 	</div>
 
 	{#if running}
-		<Progress url="/api/download/test-data" params={{}} />
+		<Progress url="/api/download/test-data" />
 	{/if}
 </PageContainer>

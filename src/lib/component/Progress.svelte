@@ -3,7 +3,7 @@
 	import Dialog from './Dialog.svelte';
 	import * as v from 'valibot';
 
-	let { url, params }: { url: string; params: Record<string, unknown> } = $props();
+	let { url, params = {} }: { url: string; params?: Record<string, unknown> } = $props();
 
 	let percentage = $state(0);
 	let message = $state('');
