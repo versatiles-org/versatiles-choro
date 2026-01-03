@@ -20,7 +20,7 @@ describe('getTileSource', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		fetchMock = vi.fn();
-		global.fetch = fetchMock;
+		global.fetch = fetchMock as unknown as typeof fetch;
 
 		// Mock window.location.origin
 		Object.defineProperty(window, 'location', {
@@ -32,9 +32,7 @@ describe('getTileSource', () => {
 	const createMockTileJson = (): TileJSONSpecificationVector => ({
 		tilejson: '3.0.0',
 		tiles: ['http://example.com/{z}/{x}/{y}.pbf'],
-		vector_layers: [
-			{ id: 'layer1', fields: {}, minzoom: 0, maxzoom: 14 }
-		],
+		vector_layers: [{ id: 'layer1', fields: {}, minzoom: 0, maxzoom: 14 }],
 		minzoom: 0,
 		maxzoom: 14,
 		bounds: [-180, -85, 180, 85]
@@ -277,7 +275,7 @@ describe('getTileSource', () => {
 		// Invalid request (missing vpl)
 		const init = { invalid: true };
 
-		await expect(getTileSource(init as { invalid: boolean })).rejects.toThrow();
+		await expect(getTileSource(init as never)).rejects.toThrow();
 	});
 
 	it('validates init response with valibot', async () => {

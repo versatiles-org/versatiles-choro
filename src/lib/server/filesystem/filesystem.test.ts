@@ -72,9 +72,7 @@ describe('Filesystem Utilities', () => {
 		});
 
 		it('prevents path traversal with mixed segments', () => {
-			expect(() => resolve_data('foo', '..', '..', 'etc', 'passwd')).toThrow(
-				PathTraversalError
-			);
+			expect(() => resolve_data('foo', '..', '..', 'etc', 'passwd')).toThrow(PathTraversalError);
 		});
 
 		it('strips leading slashes from absolute paths', () => {

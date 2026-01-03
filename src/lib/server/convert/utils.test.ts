@@ -1,10 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import {
-	validateInputFile,
-	validateOutputExtension,
-	safeDelete,
-	safeDeleteAll
-} from './utils';
+import { validateInputFile, validateOutputExtension, safeDelete, safeDeleteAll } from './utils';
 import { FileSystemError, ValidationError } from '../errors/errors.js';
 
 // Mock fs module
@@ -82,7 +77,9 @@ describe('Conversion Utilities', () => {
 			expect(() =>
 				validateOutputExtension('/path/to/output.versatiles', '.versatiles')
 			).not.toThrow();
-			expect(() => validateOutputExtension('relative/output.versatiles', '.versatiles')).not.toThrow();
+			expect(() =>
+				validateOutputExtension('relative/output.versatiles', '.versatiles')
+			).not.toThrow();
 		});
 
 		it('is case-sensitive by default', () => {
@@ -263,7 +260,7 @@ describe('Conversion Utilities', () => {
 			expect(unlink).toHaveBeenCalledTimes(3);
 
 			// Resolve all at once
-			resolveUnlink?.(undefined);
+			resolveUnlink!(undefined);
 			await deletePromise;
 		});
 	});

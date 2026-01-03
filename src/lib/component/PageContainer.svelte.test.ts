@@ -46,7 +46,6 @@ describe('PageContainer', () => {
 		expect(pageContent).toBeInTheDocument();
 	});
 
-
 	it('handles empty title', () => {
 		const { container } = render(PageContainerWrapper, {
 			props: {

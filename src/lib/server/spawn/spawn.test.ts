@@ -97,11 +97,7 @@ describe('Spawn Utilities', () => {
 
 			await runTippecanoe('input.geojson', 'output.mbtiles');
 
-			expect(spawn).toHaveBeenCalledWith('tippecanoe', [
-				'-o',
-				'output.mbtiles',
-				'input.geojson'
-			]);
+			expect(spawn).toHaveBeenCalledWith('tippecanoe', ['-o', 'output.mbtiles', 'input.geojson']);
 		});
 
 		it('parses reordering geometry progress', async () => {
@@ -281,12 +277,10 @@ describe('Spawn Utilities', () => {
 		it('passes message data to callback', async () => {
 			let messageCallback: ((data: unknown) => void) | undefined;
 
-			vi.mocked(convert).mockImplementation(
-				(input, output, options, onProgress, onMessage) => {
-					messageCallback = onMessage;
-					return Promise.resolve();
-				}
-			);
+			vi.mocked(convert).mockImplementation((input, output, options, onProgress, onMessage) => {
+				messageCallback = onMessage;
+				return Promise.resolve();
+			});
 
 			const progress = await runVersaTilesConvert('input.mbtiles', 'output.versatiles');
 
@@ -308,12 +302,10 @@ describe('Spawn Utilities', () => {
 		it('marks warnings as errors', async () => {
 			let messageCallback: ((data: unknown) => void) | undefined;
 
-			vi.mocked(convert).mockImplementation(
-				(input, output, options, onProgress, onMessage) => {
-					messageCallback = onMessage;
-					return Promise.resolve();
-				}
-			);
+			vi.mocked(convert).mockImplementation((input, output, options, onProgress, onMessage) => {
+				messageCallback = onMessage;
+				return Promise.resolve();
+			});
 
 			const progress = await runVersaTilesConvert('input.mbtiles', 'output.versatiles');
 

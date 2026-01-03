@@ -166,7 +166,6 @@ describe('progressToStream', () => {
 		expect(done).toBe(true);
 	});
 
-
 	it('handles abort signal', async () => {
 		const progress = new SimpleProgress(async () => {
 			await new Promise((resolve) => setTimeout(resolve, 1000));

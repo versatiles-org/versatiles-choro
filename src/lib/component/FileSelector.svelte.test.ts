@@ -4,7 +4,10 @@ import { render } from '@testing-library/svelte';
 // Mock filesystem
 vi.mock('$lib/api/filesystem.svelte', () => {
 	class MockFsFile {
-		constructor(private name: string, private path: string) {}
+		constructor(
+			private name: string,
+			private path: string
+		) {}
 		getName() {
 			return this.name;
 		}
@@ -14,7 +17,11 @@ vi.mock('$lib/api/filesystem.svelte', () => {
 	}
 
 	class MockFsDirectory {
-		constructor(private name: string, private path: string, private parent: MockFsDirectory | null = null) {}
+		constructor(
+			private name: string,
+			private path: string,
+			private parent: MockFsDirectory | null = null
+		) {}
 		getName() {
 			return this.name;
 		}
@@ -59,11 +66,11 @@ describe('FileSelector', () => {
 	});
 
 	it('filesystem directory has parent navigation', async () => {
-		const { getRootDirectory } = await import('$lib/api/filesystem.svelte');
+		const { getRootDirectory, FsDirectory } = await import('$lib/api/filesystem.svelte');
 		const root = getRootDirectory();
 		const children = await root.getChildren();
 		const subdir = children.find((c) => c.getName() === 'subdir');
-		if (subdir) {
+		if (subdir && subdir instanceof FsDirectory) {
 			expect(subdir.getParent()).toBe(root);
 		}
 	});

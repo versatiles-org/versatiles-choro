@@ -46,7 +46,7 @@ describe('overlayStyles', () => {
 		const style2: StyleSpecification = {
 			version: 8,
 			sources: {},
-			layers: [{ id: 'layer2', type: 'fill' }]
+			layers: [{ id: 'layer2', type: 'fill', source: 'test-source' }]
 		};
 
 		const result = overlayStyles(style1, style2);
@@ -66,8 +66,8 @@ describe('overlayStyles', () => {
 	});
 
 	it('handles undefined layers', () => {
-		const style1: StyleSpecification = { version: 8, sources: {} };
-		const style2: StyleSpecification = { version: 8, sources: {} };
+		const style1: StyleSpecification = { version: 8, sources: {}, layers: [] };
+		const style2: StyleSpecification = { version: 8, sources: {}, layers: [] };
 
 		const result = overlayStyles(style1, style2);
 
@@ -175,7 +175,9 @@ describe('getInspectorStyle', () => {
 
 		const style = getInspectorStyle(spec);
 
-		expect(style.sources.vectorSource.attribution).toBe('Test Attribution');
+		expect((style.sources.vectorSource as { attribution?: string }).attribution).toBe(
+			'Test Attribution'
+		);
 	});
 
 	it('includes scheme if present in spec', () => {
@@ -184,7 +186,7 @@ describe('getInspectorStyle', () => {
 
 		const style = getInspectorStyle(spec);
 
-		expect(style.sources.vectorSource.scheme).toBe('tms');
+		expect((style.sources.vectorSource as { scheme?: string }).scheme).toBe('tms');
 	});
 
 	it('orders layers as fill, line, point', () => {
@@ -219,7 +221,7 @@ describe('getInspectorStyle', () => {
 		const style = getInspectorStyle(spec);
 
 		style.layers?.forEach((layer) => {
-			expect(layer.source).toBe('vectorSource');
+			expect((layer as { source?: string }).source).toBe('vectorSource');
 		});
 	});
 
@@ -229,7 +231,7 @@ describe('getInspectorStyle', () => {
 
 		const style = getInspectorStyle(spec);
 
-		expect(style.sources.vectorSource.minzoom).toBeUndefined();
+		expect((style.sources.vectorSource as { minzoom?: number }).minzoom).toBeUndefined();
 	});
 
 	it('handles spec without maxzoom', () => {
@@ -238,14 +240,14 @@ describe('getInspectorStyle', () => {
 
 		const style = getInspectorStyle(spec);
 
-		expect(style.sources.vectorSource.maxzoom).toBeUndefined();
+		expect((style.sources.vectorSource as { maxzoom?: number }).maxzoom).toBeUndefined();
 	});
 
 	it('handles spec without attribution', () => {
 		const spec = createMockSpec(['layer1']);
 		const style = getInspectorStyle(spec);
 
-		expect(style.sources.vectorSource.attribution).toBeUndefined();
+		expect((style.sources.vectorSource as { attribution?: string }).attribution).toBeUndefined();
 	});
 
 	it('sets fill opacity to 0.3', () => {
@@ -253,7 +255,9 @@ describe('getInspectorStyle', () => {
 		const style = getInspectorStyle(spec);
 
 		const fillLayer = style.layers?.find((l) => l.type === 'fill');
-		expect((fillLayer as { paint?: { 'fill-opacity'?: number } })?.paint?.['fill-opacity']).toBe(0.3);
+		expect((fillLayer as { paint?: { 'fill-opacity'?: number } })?.paint?.['fill-opacity']).toBe(
+			0.3
+		);
 	});
 
 	it('sets circle radius to 2', () => {
@@ -261,7 +265,9 @@ describe('getInspectorStyle', () => {
 		const style = getInspectorStyle(spec);
 
 		const circleLayer = style.layers?.find((l) => l.type === 'circle');
-		expect((circleLayer as { paint?: { 'circle-radius'?: number } })?.paint?.['circle-radius']).toBe(2);
+		expect(
+			(circleLayer as { paint?: { 'circle-radius'?: number } })?.paint?.['circle-radius']
+		).toBe(2);
 	});
 
 	it('sets line join and cap to round', () => {
@@ -269,7 +275,15 @@ describe('getInspectorStyle', () => {
 		const style = getInspectorStyle(spec);
 
 		const lineLayer = style.layers?.find((l) => l.type === 'line');
-		expect((lineLayer as { layout?: { 'line-join'?: string; 'line-cap'?: string } })?.layout?.['line-join']).toBe('round');
-		expect((lineLayer as { layout?: { 'line-join'?: string; 'line-cap'?: string } })?.layout?.['line-cap']).toBe('round');
+		expect(
+			(lineLayer as { layout?: { 'line-join'?: string; 'line-cap'?: string } })?.layout?.[
+				'line-join'
+			]
+		).toBe('round');
+		expect(
+			(lineLayer as { layout?: { 'line-join'?: string; 'line-cap'?: string } })?.layout?.[
+				'line-cap'
+			]
+		).toBe('round');
 	});
 });

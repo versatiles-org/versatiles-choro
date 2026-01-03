@@ -185,7 +185,6 @@ describe('convertTiles', () => {
 		expect(executionOrder).toEqual(['write-vpl', 'convert', 'cleanup']);
 	});
 
-
 	it('uses secure temporary directory with mkdtemp', async () => {
 		const vpl = { from_container: { filename: 'input.versatiles' } };
 

@@ -171,5 +171,4 @@ describe('convertPolygonsToVersatiles', () => {
 
 		expect(executionOrder).toEqual(['tippecanoe', 'convert', 'cleanup']);
 	});
-
 });

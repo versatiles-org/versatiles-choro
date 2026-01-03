@@ -3,7 +3,10 @@ import { describe, it, expect, vi } from 'vitest';
 // Mock filesystem
 vi.mock('$lib/api/filesystem.svelte', () => {
 	class MockFsFile {
-		constructor(private name: string, private path: string) {}
+		constructor(
+			private name: string,
+			private path: string
+		) {}
 		getName() {
 			return this.name;
 		}
@@ -13,7 +16,11 @@ vi.mock('$lib/api/filesystem.svelte', () => {
 	}
 
 	class MockFsDirectory {
-		constructor(private name: string, private path: string, private parent: MockFsDirectory | null = null) {}
+		constructor(
+			private name: string,
+			private path: string,
+			private parent: MockFsDirectory | null = null
+		) {}
 		getName() {
 			return this.name;
 		}

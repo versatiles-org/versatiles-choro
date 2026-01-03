@@ -23,12 +23,9 @@ describe('CallbackProgress', () => {
 		let progressCb: ((progress: number) => void) | null = null;
 		const promise = new Promise<void>((resolve) => setTimeout(resolve, 100));
 
-		const progress = new CallbackProgress(
-			promise,
-			(cb) => {
-				progressCb = cb;
-			}
-		);
+		const progress = new CallbackProgress(promise, (cb) => {
+			progressCb = cb;
+		});
 
 		const progressValues: number[] = [];
 		progress.onProgress((p) => progressValues.push(p));
@@ -47,13 +44,9 @@ describe('CallbackProgress', () => {
 		let messageCb: ((message: string, isError: boolean) => void) | null = null;
 		const promise = new Promise<void>((resolve) => setTimeout(resolve, 100));
 
-		const progress = new CallbackProgress(
-			promise,
-			undefined,
-			(cb) => {
-				messageCb = cb;
-			}
-		);
+		const progress = new CallbackProgress(promise, undefined, (cb) => {
+			messageCb = cb;
+		});
 
 		const messages: Array<{ message: string; isError: boolean }> = [];
 		progress.onMessage((msg, isErr) => messages.push({ message: msg, isError: isErr }));
@@ -70,13 +63,9 @@ describe('CallbackProgress', () => {
 		let messageCb: ((message: string, isError: boolean) => void) | null = null;
 		const promise = new Promise<void>((resolve) => setTimeout(resolve, 100));
 
-		const progress = new CallbackProgress(
-			promise,
-			undefined,
-			(cb) => {
-				messageCb = cb;
-			}
-		);
+		const progress = new CallbackProgress(promise, undefined, (cb) => {
+			messageCb = cb;
+		});
 
 		const messages: Array<{ message: string; isError: boolean }> = [];
 		progress.onMessage((msg, isErr) => messages.push({ message: msg, isError: isErr }));

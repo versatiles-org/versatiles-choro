@@ -247,9 +247,7 @@ describe('logProgress', () => {
 		const calls = stdoutWriteSpy.mock.calls.map((call) => call[0] as string);
 
 		// Should have output with both progress and message
-		expect(calls.some((call) => call.includes('50%') && call.includes('Halfway done'))).toBe(
-			true
-		);
+		expect(calls.some((call) => call.includes('50%') && call.includes('Halfway done'))).toBe(true);
 	});
 
 	it('clears line and returns carriage on each update', async () => {

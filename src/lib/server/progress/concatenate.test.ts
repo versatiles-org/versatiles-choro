@@ -159,11 +159,7 @@ describe('ConcatenatedProgress', () => {
 			executed.push(3);
 		});
 
-		const concat = new ConcatenatedProgress([
-			() => progress1,
-			() => progress2,
-			() => progress3
-		]);
+		const concat = new ConcatenatedProgress([() => progress1, () => progress2, () => progress3]);
 
 		// Give it time to start first progress
 		await new Promise((resolve) => setTimeout(resolve, 20));

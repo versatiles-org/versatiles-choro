@@ -63,10 +63,7 @@ describe('ErrorBoundary', () => {
 		unmount();
 
 		expect(removeEventListenerSpy).toHaveBeenCalledWith('error', expect.any(Function));
-		expect(removeEventListenerSpy).toHaveBeenCalledWith(
-			'unhandledrejection',
-			expect.any(Function)
-		);
+		expect(removeEventListenerSpy).toHaveBeenCalledWith('unhandledrejection', expect.any(Function));
 
 		removeEventListenerSpy.mockRestore();
 	});
