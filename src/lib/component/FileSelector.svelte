@@ -17,6 +17,8 @@
 	} = $props();
 
 	let dir = $state<FsDirectory>(getRootDirectory());
+
+	// Initialize state from props (one-time capture at component mount)
 	$effect.pre(() => {
 		if (initialDirectory) dir = initialDirectory;
 	});

@@ -23,6 +23,7 @@
 	let dir = $state<FsDirectory>(getRootDirectory());
 	let filename = $state('');
 
+	// Initialize state from props (one-time capture at component mount)
 	$effect.pre(() => {
 		if (initialDirectory) dir = initialDirectory;
 		if (defaultFilename) filename = defaultFilename;
@@ -66,6 +67,7 @@
 		showModal = false;
 	}
 
+	// Legitimate side effect: async file system operation to list directory contents
 	$effect(() => {
 		loadDirectory();
 	});

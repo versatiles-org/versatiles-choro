@@ -65,7 +65,7 @@
 		map = null;
 	});
 
-	// React to changes of backgroundMap (only when no overlay is active)
+	// Legitimate side effect: updates MapLibre map style when overlay or background changes
 	$effect(() => {
 		if (!map) return;
 		if (!overlay) {
