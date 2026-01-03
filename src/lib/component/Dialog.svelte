@@ -73,24 +73,35 @@
 		}
 	}
 
-	// Dialog state effect
+	// Handle backdrop clicks
+	function handleBackdropClick(e: MouseEvent) {
+		if (closeOnBackdropClick && e.target === dialog) {
+			handleClose('backdrop');
+		}
+	}
+
+	// Legitimate side effect: manages dialog focus and accessibility
 	$effect(() => {
-		if (showModal && dialog) {
-			dialog.showModal();
+		if (!showModal || !dialog) return;
 
-			// Store previously focused element
-			previouslyFocusedElement = document.activeElement as HTMLElement;
+		// Setup: open dialog and manage focus
+		dialog.showModal();
 
-			// Focus first focusable element in dialog
-			const firstFocusable = dialog.querySelector<HTMLElement>(
-				'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-			);
-			firstFocusable?.focus();
+		// Store previously focused element
+		previouslyFocusedElement = document.activeElement as HTMLElement;
 
-			// Add focus trap and escape handler
-			dialog.addEventListener('keydown', trapFocus);
-			dialog.addEventListener('keydown', handleKeydown);
-		} else if (!showModal && dialog) {
+		// Focus first focusable element in dialog
+		const firstFocusable = dialog.querySelector<HTMLElement>(
+			'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+		);
+		firstFocusable?.focus();
+
+		// Add focus trap and escape handler
+		dialog.addEventListener('keydown', trapFocus);
+		dialog.addEventListener('keydown', handleKeydown);
+
+		// Cleanup: always runs on effect re-run or component destruction
+		return () => {
 			dialog.close();
 
 			// Restore focus to previously focused element
@@ -102,18 +113,14 @@
 			// Remove event listeners
 			dialog.removeEventListener('keydown', trapFocus);
 			dialog.removeEventListener('keydown', handleKeydown);
-		}
+		};
 	});
 </script>
 
 <dialog
 	bind:this={dialog}
 	onclose={() => handleClose('action')}
-	onclick={(e) => {
-		if (closeOnBackdropClick && e.target === dialog) {
-			handleClose('backdrop');
-		}
-	}}
+	onclick={handleBackdropClick}
 	aria-modal="true"
 	aria-labelledby={title ? titleId : undefined}
 	aria-describedby={descId}
