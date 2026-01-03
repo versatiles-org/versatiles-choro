@@ -94,10 +94,7 @@ describe('POST /api/download/test-data', () => {
 		const mockEvent = createMockEvent();
 		await POST(mockEvent);
 
-		expect(progressToStream).toHaveBeenCalledWith(
-			expect.anything(),
-			mockEvent.request.signal
-		);
+		expect(progressToStream).toHaveBeenCalledWith(expect.anything(), mockEvent.request.signal);
 	});
 
 	it('handles mkdir errors', async () => {

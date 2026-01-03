@@ -125,10 +125,7 @@ describe('POST /api/convert/polygons', () => {
 		const mockEvent = createMockEvent(requestBody);
 		await POST(mockEvent);
 
-		expect(progressToStream).toHaveBeenCalledWith(
-			expect.anything(),
-			mockEvent.request.signal
-		);
+		expect(progressToStream).toHaveBeenCalledWith(expect.anything(), mockEvent.request.signal);
 	});
 
 	it('handles conversion errors', async () => {
