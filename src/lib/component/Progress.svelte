@@ -8,56 +8,75 @@
 	let percentage = $state(0);
 	let message = $state('');
 	let visible = $state(true);
-	const controller = new AbortController();
+	let controller: AbortController;
 
+	// Legitimate side effect: network request for progress streaming
 	$effect(() => {
-		createConvertPolygonsStores();
-	});
+		controller = new AbortController();
 
-	export async function createConvertPolygonsStores() {
-		const decoder = new TextDecoder();
-		let buffer = '';
+		async function fetchProgress() {
+			try {
+				const decoder = new TextDecoder();
+				let buffer = '';
 
-		const response = await fetch(url, {
-			method: 'POST',
-			body: JSON.stringify(params),
-			headers: { 'Content-Type': 'application/json' },
-			signal: controller.signal
-		});
+				const response = await fetch(url, {
+					method: 'POST',
+					body: JSON.stringify(params),
+					headers: { 'Content-Type': 'application/json' },
+					signal: controller.signal
+				});
 
-		const reader = response.body?.getReader();
-		if (!reader) return;
+				if (!response.ok || !response.body) {
+					throw new Error(`HTTP error! status: ${response.status}`);
+				}
 
-		while (true) {
-			const { done, value } = await reader.read();
-			if (done) break;
+				const reader = response.body.getReader();
 
-			buffer += decoder.decode(value, { stream: true });
+				while (true) {
+					const { done, value } = await reader.read();
+					if (done) break;
 
-			let idx;
-			while ((idx = buffer.indexOf('\n')) !== -1) {
-				const line = buffer.slice(0, idx).trim();
-				buffer = buffer.slice(idx + 1);
-				if (!line) continue;
+					buffer += decoder.decode(value, { stream: true });
 
-				const evt = v.parse(ProgressStatus, JSON.parse(line));
-				switch (evt.event) {
-					case 'progress':
-						percentage = Number(evt.progress);
-						break;
-					case 'message':
-						message = String(evt.message);
-						break;
-					case 'done':
-						visible = false;
-						break;
-					case 'error':
-						visible = false;
-						break;
+					let idx;
+					while ((idx = buffer.indexOf('\n')) !== -1) {
+						const line = buffer.slice(0, idx).trim();
+						buffer = buffer.slice(idx + 1);
+						if (!line) continue;
+
+						const evt = v.parse(ProgressStatus, JSON.parse(line));
+						switch (evt.event) {
+							case 'progress':
+								percentage = Number(evt.progress);
+								break;
+							case 'message':
+								message = String(evt.message);
+								break;
+							case 'done':
+								visible = false;
+								break;
+							case 'error':
+								visible = false;
+								break;
+						}
+					}
+				}
+			} catch (error) {
+				// Ignore AbortError - it's expected when component unmounts or user aborts
+				if (error.name !== 'AbortError') {
+					message = `Error: ${error.message}`;
+					visible = false;
 				}
 			}
 		}
-	}
+
+		fetchProgress();
+
+		// Cleanup function: abort fetch when component unmounts or effect re-runs
+		return () => {
+			controller.abort();
+		};
+	});
 </script>
 
 <Dialog title="Conversion Progress" bind:showModal={visible} width="400px">
