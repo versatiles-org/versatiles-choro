@@ -1,6 +1,7 @@
 <script lang="ts">
 	import favicon from '$lib/assets/favicon.svg';
 	import { resolve } from '$app/paths';
+	import { page } from '$app/stores';
 	import '$lib/styles/utilities.css';
 
 	let { children } = $props();
@@ -11,7 +12,11 @@
 </svelte:head>
 
 <div class="app-container">
-	<nav><a href={resolve('/')}>Home</a></nav>
+	<nav>
+		{#if $page.url.pathname !== resolve('/')}
+			<a href={resolve('/')}>Home</a>
+		{/if}
+	</nav>
 	<main>
 		{@render children()}
 	</main>
