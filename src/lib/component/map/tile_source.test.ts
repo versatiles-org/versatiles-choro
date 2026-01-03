@@ -2,6 +2,15 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { getTileSource } from './tile_source';
 import type { TileJSONSpecificationVector } from '@versatiles/style';
 
+// Mock window.location before importing module
+Object.defineProperty(globalThis, 'window', {
+	value: {
+		location: { origin: 'http://localhost:3000' }
+	},
+	writable: true,
+	configurable: true
+});
+
 // Mock the style module
 vi.mock('./style', () => ({
 	getInspectorStyle: vi.fn((tileJson) => ({
@@ -21,12 +30,6 @@ describe('getTileSource', () => {
 		vi.clearAllMocks();
 		fetchMock = vi.fn();
 		global.fetch = fetchMock as unknown as typeof fetch;
-
-		// Mock window.location.origin
-		Object.defineProperty(window, 'location', {
-			value: { origin: 'http://localhost:3000' },
-			writable: true
-		});
 	});
 
 	const createMockTileJson = (): TileJSONSpecificationVector => ({
@@ -38,13 +41,19 @@ describe('getTileSource', () => {
 		bounds: [-180, -85, 180, 85]
 	});
 
+	// Valid UUID for testing
+	const TEST_UUID_1 = '12345678-1234-1234-1234-123456789abc';
+	const TEST_UUID_2 = 'abcdef01-2345-6789-abcd-ef0123456789';
+	const TEST_UUID_3 = 'fedcba98-7654-3210-fedc-ba9876543210';
+	const TEST_UUID_4 = 'aaaabbbb-cccc-dddd-eeee-ffffffffffff';
+
 	it('initializes tile server via API', async () => {
 		const mockTileJson = createMockTileJson();
 
 		fetchMock
 			.mockResolvedValueOnce({
 				ok: true,
-				json: async () => ({ id: 'test-id-123' })
+				json: async () => ({ id: TEST_UUID_1 })
 			})
 			.mockResolvedValueOnce({
 				ok: true,
@@ -69,7 +78,7 @@ describe('getTileSource', () => {
 		fetchMock
 			.mockResolvedValueOnce({
 				ok: true,
-				json: async () => ({ id: 'abc-123' })
+				json: async () => ({ id: TEST_UUID_2 })
 			})
 			.mockResolvedValueOnce({
 				ok: true,
@@ -83,7 +92,7 @@ describe('getTileSource', () => {
 		await getTileSource(init);
 
 		expect(fetchMock).toHaveBeenCalledWith(
-			'http://localhost:3000/api/tiles/load?id=abc-123&path=meta.json'
+			`http://localhost:3000/api/tiles/load?id=${TEST_UUID_2}&path=meta.json`
 		);
 	});
 
@@ -93,7 +102,7 @@ describe('getTileSource', () => {
 		fetchMock
 			.mockResolvedValueOnce({
 				ok: true,
-				json: async () => ({ id: 'xyz-789' })
+				json: async () => ({ id: TEST_UUID_3 })
 			})
 			.mockResolvedValueOnce({
 				ok: true,
@@ -106,7 +115,7 @@ describe('getTileSource', () => {
 
 		const source = await getTileSource(init);
 
-		expect(source['prefix']).toBe('http://localhost:3000/api/tiles/load?id=xyz-789&path=');
+		expect(source['prefix']).toBe(`http://localhost:3000/api/tiles/load?id=${TEST_UUID_3}&path=`);
 	});
 
 	it('updates tile URLs to use API endpoint', async () => {
@@ -115,7 +124,7 @@ describe('getTileSource', () => {
 		fetchMock
 			.mockResolvedValueOnce({
 				ok: true,
-				json: async () => ({ id: 'test-123' })
+				json: async () => ({ id: TEST_UUID_1 })
 			})
 			.mockResolvedValueOnce({
 				ok: true,
@@ -130,7 +139,7 @@ describe('getTileSource', () => {
 		const tileJson = source.getTileJson();
 
 		expect(tileJson.tiles).toEqual([
-			'http://localhost:3000/api/tiles/load?id=test-123&path={z}/{x}/{y}'
+			`http://localhost:3000/api/tiles/load?id=${TEST_UUID_1}&path={z}/{x}/{y}`
 		]);
 	});
 
@@ -176,7 +185,7 @@ describe('getTileSource', () => {
 		fetchMock
 			.mockResolvedValueOnce({
 				ok: true,
-				json: async () => ({ id: 'test-123' })
+				json: async () => ({ id: TEST_UUID_1 })
 			})
 			.mockResolvedValueOnce({
 				ok: true,
@@ -200,7 +209,7 @@ describe('getTileSource', () => {
 		fetchMock
 			.mockResolvedValueOnce({
 				ok: true,
-				json: async () => ({ id: 'test-123' })
+				json: async () => ({ id: TEST_UUID_1 })
 			})
 			.mockResolvedValueOnce({
 				ok: true,
@@ -225,7 +234,7 @@ describe('getTileSource', () => {
 		fetchMock
 			.mockResolvedValueOnce({
 				ok: true,
-				json: async () => ({ id: 'test-123' })
+				json: async () => ({ id: TEST_UUID_1 })
 			})
 			.mockResolvedValueOnce({
 				ok: true,
@@ -249,7 +258,7 @@ describe('getTileSource', () => {
 		fetchMock
 			.mockResolvedValueOnce({
 				ok: true,
-				json: async () => ({ id: 'test-123' })
+				json: async () => ({ id: TEST_UUID_1 })
 			})
 			.mockResolvedValueOnce({
 				ok: true,
@@ -302,7 +311,7 @@ describe('getTileSource', () => {
 		fetchMock
 			.mockResolvedValueOnce({
 				ok: true,
-				json: async () => ({ id: 'test-456' })
+				json: async () => ({ id: TEST_UUID_4 })
 			})
 			.mockResolvedValueOnce({
 				ok: true,
@@ -315,6 +324,8 @@ describe('getTileSource', () => {
 
 		const source = await getTileSource(init);
 
-		expect(source['prefix']).toBe('https://example.com:8080/api/tiles/load?id=test-456&path=');
+		expect(source['prefix']).toBe(
+			`https://example.com:8080/api/tiles/load?id=${TEST_UUID_4}&path=`
+		);
 	});
 });

@@ -123,7 +123,10 @@ describe('progressToStream', () => {
 	it('handles error messages', async () => {
 		class TestProgress extends SimpleProgress {
 			constructor() {
-				super(async () => {});
+				// Keep the progress running for a while so triggerError can be called
+				super(async () => {
+					await new Promise((resolve) => setTimeout(resolve, 100));
+				});
 			}
 
 			triggerError() {
@@ -136,7 +139,10 @@ describe('progressToStream', () => {
 		const abortController = new AbortController();
 		const response = progressToStream(testProgress, abortController.signal);
 
-		setTimeout(() => testProgress.triggerError(), 10);
+		// Allow callbacks to be registered
+		await new Promise((resolve) => setTimeout(resolve, 10));
+
+		testProgress.triggerError();
 
 		const lines = await readStream(response);
 		const events = lines.map((line) => JSON.parse(line));

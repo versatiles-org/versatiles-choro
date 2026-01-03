@@ -58,6 +58,9 @@ describe('ConcatenatedProgress', () => {
 		const progressValues: number[] = [];
 		concat.onProgress((p) => progressValues.push(p));
 
+		// Allow runNext() to complete and register callbacks
+		await new Promise((resolve) => setTimeout(resolve, 10));
+
 		testProgress.triggerProgress(25);
 		testProgress.triggerProgress(50);
 		testProgress.triggerProgress(75);
@@ -83,6 +86,9 @@ describe('ConcatenatedProgress', () => {
 
 		const messages: Array<{ message: string; isError: boolean }> = [];
 		concat.onMessage((msg, isErr) => messages.push({ message: msg, isError: isErr }));
+
+		// Allow runNext() to complete and register callbacks
+		await new Promise((resolve) => setTimeout(resolve, 10));
 
 		testProgress.triggerMessage('Processing', false);
 		testProgress.triggerMessage('Warning', true);
@@ -147,19 +153,22 @@ describe('ConcatenatedProgress', () => {
 	it('clears remaining todos on abort', async () => {
 		const executed: number[] = [];
 
-		const progress1 = new SimpleProgress(async () => {
-			executed.push(1);
-		});
-
-		const progress2 = new SimpleProgress(async () => {
-			executed.push(2);
-		});
-
-		const progress3 = new SimpleProgress(async () => {
-			executed.push(3);
-		});
-
-		const concat = new ConcatenatedProgress([() => progress1, () => progress2, () => progress3]);
+		const concat = new ConcatenatedProgress([
+			() =>
+				new SimpleProgress(async () => {
+					executed.push(1);
+					// Make first progress take longer so abort can happen while it's running
+					await new Promise((resolve) => setTimeout(resolve, 100));
+				}),
+			() =>
+				new SimpleProgress(async () => {
+					executed.push(2);
+				}),
+			() =>
+				new SimpleProgress(async () => {
+					executed.push(3);
+				})
+		]);
 
 		// Give it time to start first progress
 		await new Promise((resolve) => setTimeout(resolve, 20));

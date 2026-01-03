@@ -122,9 +122,9 @@ describe('convertTiles', () => {
 	it('cleans up temporary VPL file', async () => {
 		const vpl = { from_container: { filename: 'input.versatiles' } };
 
-		convertTiles(vpl, 'output.versatiles');
+		const progress = convertTiles(vpl, 'output.versatiles');
 
-		await new Promise((resolve) => setTimeout(resolve, 150));
+		await progress.done();
 
 		expect(safeDelete).toHaveBeenCalledWith('/tmp/versatiles-abc123/tiles.vpl');
 	});

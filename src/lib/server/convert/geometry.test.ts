@@ -83,7 +83,7 @@ describe('convertPolygonsToVersatiles', () => {
 		const progress = convertPolygonsToVersatiles('input.geojson', 'output.versatiles');
 
 		// Wait for all steps to execute
-		await new Promise((resolve) => setTimeout(resolve, 150));
+		await progress.done();
 
 		expect(safeDelete).toHaveBeenCalledWith('output.mbtiles');
 	});

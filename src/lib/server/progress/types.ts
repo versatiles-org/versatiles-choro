@@ -10,7 +10,7 @@ export abstract class Progress {
 	protected isError: boolean = false;
 	protected onProgressCb: null | ProgressCb = null;
 	protected onMessageCb: null | MessageCb = null;
-	protected onCompleteCb: null | CompleteCb = null;
+	protected onCompleteCbs: CompleteCb[] = [];
 
 	constructor(message?: string, progress?: number) {
 		this.setMessage(message ?? '');
@@ -33,7 +33,9 @@ export abstract class Progress {
 
 	setComplete() {
 		this.setProgress(100);
-		if (this.onCompleteCb) this.onCompleteCb();
+		for (const cb of this.onCompleteCbs) {
+			cb();
+		}
 	}
 
 	onProgress(cb: ProgressCb): void {
@@ -47,7 +49,11 @@ export abstract class Progress {
 	}
 
 	onComplete(cb: CompleteCb): void {
-		this.onCompleteCb = cb;
+		this.onCompleteCbs.push(cb);
+		// If already complete, call the callback immediately
+		if (this.progress === 100) {
+			cb();
+		}
 	}
 
 	abstract aborting(): void;
