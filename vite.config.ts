@@ -19,12 +19,16 @@ export default defineConfig({
 			provider: 'v8',
 			reporter: ['text', 'json', 'html'],
 			exclude: [
+				'.svelte-kit/**',
+				'**/*.config.{js,ts}',
+				'**/*.{test,spec}.{js,ts}',
+				'**/mockData/**',
+				'coverage/**',
 				'node_modules/**',
 				'src/test-setup/**',
-				'**/*.{test,spec}.{js,ts}',
-				'**/*.config.{js,ts}',
-				'**/mockData/**',
-				'.svelte-kit/**'
+				'src/app.d.ts',
+				'src/hooks.client.ts',
+				'src/hooks.server.ts'
 			],
 			thresholds: {
 				branches: 70,
