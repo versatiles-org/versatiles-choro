@@ -20,8 +20,8 @@
 		title?: string;
 	} = $props();
 
-	let dir = $state<FsDirectory>(getRootDirectory());
-	let filename = $state('');
+	let dir = $state<FsDirectory>(initialDirectory ?? getRootDirectory());
+	let filename = $state(defaultFilename ?? '');
 	let showOverwriteWarning = $state(false);
 	let existingFiles = $state<string[]>([]);
 
@@ -59,19 +59,6 @@
 		filepath = dir.fullPath() + '/' + finalFilename;
 		showModal = false;
 	}
-
-	$effect.pre(() => {
-		if (initialDirectory) {
-			dir = initialDirectory;
-		}
-	});
-
-	// Initialize filename once from defaultFilename prop
-	$effect.pre(() => {
-		if (!filename && defaultFilename) {
-			filename = defaultFilename;
-		}
-	});
 
 	$effect(() => {
 		loadDirectory();

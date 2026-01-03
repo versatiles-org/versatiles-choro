@@ -11,17 +11,12 @@
 	import FormVPLUpdateProperties from './FormVPLUpdateProperties.svelte';
 	import type { VPLParamFromContainer, VPLParamUpdateProperties } from '$lib/api/vpl';
 
-	let overlay: InferOutput<typeof TilesInitRequest> | undefined = $state(undefined);
 	let from_container: InferOutput<typeof VPLParamFromContainer> | undefined = $state();
 	let update_properties: InferOutput<typeof VPLParamUpdateProperties> | undefined = $state();
 
-	$effect(() => {
-		if (from_container) {
-			overlay = { vpl: { from_container, update_properties } };
-		} else {
-			overlay = undefined;
-		}
-	});
+	let overlay: InferOutput<typeof TilesInitRequest> | undefined = $derived(
+		from_container ? { vpl: { from_container, update_properties } } : undefined
+	);
 </script>
 
 <div class="wrapper">

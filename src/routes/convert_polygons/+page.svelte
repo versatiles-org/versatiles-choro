@@ -8,6 +8,7 @@
 	let inputFile: string | undefined = $state(undefined);
 	let outputFile: string | undefined = $state(undefined);
 
+	// Workflow orchestration: automatically transition to output modal after input file is selected
 	$effect(() => {
 		if (inputFile && !outputFile) {
 			showInputModal = false;

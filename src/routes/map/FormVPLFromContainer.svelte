@@ -10,6 +10,7 @@
 	let showModal = $state(false);
 	let filename: string | undefined = $state();
 
+	// Bindable output pattern: aggregate internal form state into params for parent
 	$effect(() => {
 		if (filename) {
 			params = {

@@ -16,13 +16,7 @@
 		title?: string;
 	} = $props();
 
-	let dir = $state<FsDirectory>(getRootDirectory());
-
-	$effect.pre(() => {
-		if (initialDirectory) {
-			dir = initialDirectory;
-		}
-	});
+	let dir = $state<FsDirectory>(initialDirectory ?? getRootDirectory());
 </script>
 
 <Dialog bind:showModal width="80vw">

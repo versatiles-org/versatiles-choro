@@ -18,6 +18,7 @@
 	let remove_non_matching: boolean | undefined = $state();
 	let include_id: boolean | undefined = $state();
 
+	// Bindable output pattern: aggregate internal form state into params for parent
 	$effect(() => {
 		if (active && data_source_path && layer_name && id_field_tiles && id_field_data) {
 			params = {
