@@ -92,7 +92,7 @@ describe('Error Handler', () => {
 			const mockEvent = {
 				request: new Request('http://localhost/test'),
 				route: { id: '/test' }
-			} as any;
+			} as { request: Request; route: { id: string } };
 
 			const response = await wrappedHandler(mockEvent);
 
@@ -110,7 +110,7 @@ describe('Error Handler', () => {
 			const mockEvent = {
 				request: new Request('http://localhost/test'),
 				route: { id: '/test' }
-			} as any;
+			} as { request: Request; route: { id: string } };
 
 			const response = await wrappedHandler(mockEvent);
 
@@ -128,7 +128,7 @@ describe('Error Handler', () => {
 			const mockEvent = {
 				request: new Request('http://localhost/api/test'),
 				route: { id: '/api/test' }
-			} as any;
+			} as { request: Request; route: { id: string } };
 
 			await wrappedHandler(mockEvent);
 
@@ -150,7 +150,7 @@ describe('Error Handler', () => {
 			const mockEvent = {
 				request: new Request('http://localhost/test'),
 				route: {}
-			} as any;
+			} as { request: Request; route: Record<string, unknown> };
 
 			await wrappedHandler(mockEvent);
 

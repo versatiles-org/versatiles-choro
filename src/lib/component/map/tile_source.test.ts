@@ -277,7 +277,7 @@ describe('getTileSource', () => {
 		// Invalid request (missing vpl)
 		const init = { invalid: true };
 
-		await expect(getTileSource(init as any)).rejects.toThrow();
+		await expect(getTileSource(init as { invalid: boolean })).rejects.toThrow();
 	});
 
 	it('validates init response with valibot', async () => {

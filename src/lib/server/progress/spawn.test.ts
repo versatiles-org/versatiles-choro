@@ -179,7 +179,7 @@ describe('SpawnProgress', () => {
 
 		// Should only keep last 100 lines
 		const errorCall = vi.mocked(logError).mock.calls[0];
-		const processError = errorCall[0] as any;
+		const processError = errorCall[0] as { stderr: string };
 		const lines = processError.stderr.split('\n').filter((l: string) => l.trim());
 
 		expect(lines.length).toBeLessThanOrEqual(100);

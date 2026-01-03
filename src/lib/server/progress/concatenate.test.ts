@@ -39,7 +39,7 @@ describe('ConcatenatedProgress', () => {
 	});
 
 	it('forwards progress updates from current progress', async () => {
-		let progressCb: ((progress: number) => void) | null = null;
+		const progressCb: ((progress: number) => void) | null = null;
 		const promise = new Promise<void>((resolve) => setTimeout(resolve, 100));
 
 		class TestProgress extends SimpleProgress {

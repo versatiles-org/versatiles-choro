@@ -140,7 +140,7 @@ describe('getInspectorStyle', () => {
 
 		const pointLayer = style.layers?.find((l) => l.id.includes('point'));
 		expect(pointLayer?.type).toBe('circle');
-		expect((pointLayer as any)?.filter).toEqual(['==', '$type', 'Point']);
+		expect((pointLayer as { filter?: unknown })?.filter).toEqual(['==', '$type', 'Point']);
 	});
 
 	it('creates line layer with line type', () => {
@@ -149,7 +149,7 @@ describe('getInspectorStyle', () => {
 
 		const lineLayer = style.layers?.find((l) => l.id.includes('line'));
 		expect(lineLayer?.type).toBe('line');
-		expect((lineLayer as any)?.filter).toEqual(['==', '$type', 'LineString']);
+		expect((lineLayer as { filter?: unknown })?.filter).toEqual(['==', '$type', 'LineString']);
 	});
 
 	it('creates fill layer with polygon type', () => {
@@ -158,7 +158,7 @@ describe('getInspectorStyle', () => {
 
 		const fillLayer = style.layers?.find((l) => l.id.includes('polygon'));
 		expect(fillLayer?.type).toBe('fill');
-		expect((fillLayer as any)?.filter).toEqual(['==', '$type', 'Polygon']);
+		expect((fillLayer as { filter?: unknown })?.filter).toEqual(['==', '$type', 'Polygon']);
 	});
 
 	it('handles multiple vector layers', () => {
@@ -210,7 +210,7 @@ describe('getInspectorStyle', () => {
 		const style = getInspectorStyle(spec);
 
 		style.layers?.forEach((layer) => {
-			expect((layer as any)['source-layer']).toBe('testlayer');
+			expect((layer as { 'source-layer'?: string })['source-layer']).toBe('testlayer');
 		});
 	});
 
@@ -253,7 +253,7 @@ describe('getInspectorStyle', () => {
 		const style = getInspectorStyle(spec);
 
 		const fillLayer = style.layers?.find((l) => l.type === 'fill');
-		expect((fillLayer as any)?.paint?.['fill-opacity']).toBe(0.3);
+		expect((fillLayer as { paint?: { 'fill-opacity'?: number } })?.paint?.['fill-opacity']).toBe(0.3);
 	});
 
 	it('sets circle radius to 2', () => {
@@ -261,7 +261,7 @@ describe('getInspectorStyle', () => {
 		const style = getInspectorStyle(spec);
 
 		const circleLayer = style.layers?.find((l) => l.type === 'circle');
-		expect((circleLayer as any)?.paint?.['circle-radius']).toBe(2);
+		expect((circleLayer as { paint?: { 'circle-radius'?: number } })?.paint?.['circle-radius']).toBe(2);
 	});
 
 	it('sets line join and cap to round', () => {
@@ -269,7 +269,7 @@ describe('getInspectorStyle', () => {
 		const style = getInspectorStyle(spec);
 
 		const lineLayer = style.layers?.find((l) => l.type === 'line');
-		expect((lineLayer as any)?.layout?.['line-join']).toBe('round');
-		expect((lineLayer as any)?.layout?.['line-cap']).toBe('round');
+		expect((lineLayer as { layout?: { 'line-join'?: string; 'line-cap'?: string } })?.layout?.['line-join']).toBe('round');
+		expect((lineLayer as { layout?: { 'line-join'?: string; 'line-cap'?: string } })?.layout?.['line-cap']).toBe('round');
 	});
 });

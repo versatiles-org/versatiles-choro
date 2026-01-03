@@ -37,7 +37,7 @@ describe('Spawn Utilities', () => {
 	describe('runTippecanoe', () => {
 		it('spawns tippecanoe with correct arguments', async () => {
 			const mockProcess = new MockChildProcess();
-			vi.mocked(spawn).mockReturnValue(mockProcess as any);
+			vi.mocked(spawn).mockReturnValue(mockProcess as unknown as ReturnType<typeof spawn>);
 
 			const progress = await runTippecanoe('input.geojson', 'output.mbtiles', {
 				force: true,
@@ -58,7 +58,7 @@ describe('Spawn Utilities', () => {
 
 		it('handles boolean options correctly', async () => {
 			const mockProcess = new MockChildProcess();
-			vi.mocked(spawn).mockReturnValue(mockProcess as any);
+			vi.mocked(spawn).mockReturnValue(mockProcess as unknown as ReturnType<typeof spawn>);
 
 			await runTippecanoe('input.geojson', 'output.mbtiles', {
 				force: true,
@@ -74,7 +74,7 @@ describe('Spawn Utilities', () => {
 
 		it('converts non-boolean options to strings', async () => {
 			const mockProcess = new MockChildProcess();
-			vi.mocked(spawn).mockReturnValue(mockProcess as any);
+			vi.mocked(spawn).mockReturnValue(mockProcess as unknown as ReturnType<typeof spawn>);
 
 			await runTippecanoe('input.geojson', 'output.mbtiles', {
 				'maximum-zoom': 14,
@@ -93,7 +93,7 @@ describe('Spawn Utilities', () => {
 
 		it('works without options', async () => {
 			const mockProcess = new MockChildProcess();
-			vi.mocked(spawn).mockReturnValue(mockProcess as any);
+			vi.mocked(spawn).mockReturnValue(mockProcess as unknown as ReturnType<typeof spawn>);
 
 			await runTippecanoe('input.geojson', 'output.mbtiles');
 
@@ -106,7 +106,7 @@ describe('Spawn Utilities', () => {
 
 		it('parses reordering geometry progress', async () => {
 			const mockProcess = new MockChildProcess();
-			vi.mocked(spawn).mockReturnValue(mockProcess as any);
+			vi.mocked(spawn).mockReturnValue(mockProcess as unknown as ReturnType<typeof spawn>);
 
 			const progress = await runTippecanoe('input.geojson', 'output.mbtiles');
 
@@ -125,7 +125,7 @@ describe('Spawn Utilities', () => {
 
 		it('parses building tiles progress', async () => {
 			const mockProcess = new MockChildProcess();
-			vi.mocked(spawn).mockReturnValue(mockProcess as any);
+			vi.mocked(spawn).mockReturnValue(mockProcess as unknown as ReturnType<typeof spawn>);
 
 			const progress = await runTippecanoe('input.geojson', 'output.mbtiles');
 
@@ -145,7 +145,7 @@ describe('Spawn Utilities', () => {
 
 		it('ignores non-matching lines', async () => {
 			const mockProcess = new MockChildProcess();
-			vi.mocked(spawn).mockReturnValue(mockProcess as any);
+			vi.mocked(spawn).mockReturnValue(mockProcess as unknown as ReturnType<typeof spawn>);
 
 			const progress = await runTippecanoe('input.geojson', 'output.mbtiles');
 
@@ -254,7 +254,7 @@ describe('Spawn Utilities', () => {
 		});
 
 		it('passes progress data to callback', async () => {
-			let progressCallback: ((data: any) => void) | undefined;
+			let progressCallback: ((data: unknown) => void) | undefined;
 
 			vi.mocked(convert).mockImplementation((input, output, options, onProgress) => {
 				progressCallback = onProgress;
@@ -279,7 +279,7 @@ describe('Spawn Utilities', () => {
 		});
 
 		it('passes message data to callback', async () => {
-			let messageCallback: ((data: any) => void) | undefined;
+			let messageCallback: ((data: unknown) => void) | undefined;
 
 			vi.mocked(convert).mockImplementation(
 				(input, output, options, onProgress, onMessage) => {
@@ -306,7 +306,7 @@ describe('Spawn Utilities', () => {
 		});
 
 		it('marks warnings as errors', async () => {
-			let messageCallback: ((data: any) => void) | undefined;
+			let messageCallback: ((data: unknown) => void) | undefined;
 
 			vi.mocked(convert).mockImplementation(
 				(input, output, options, onProgress, onMessage) => {
