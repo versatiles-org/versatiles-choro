@@ -20,8 +20,14 @@
 		title?: string;
 	} = $props();
 
-	let dir = $state<FsDirectory>(initialDirectory ?? getRootDirectory());
-	let filename = $state(defaultFilename ?? '');
+	let dir = $state<FsDirectory>(getRootDirectory());
+	let filename = $state('');
+
+	$effect.pre(() => {
+		if (initialDirectory) dir = initialDirectory;
+		if (defaultFilename) filename = defaultFilename;
+	});
+
 	let showOverwriteWarning = $state(false);
 	let existingFiles = $state<string[]>([]);
 
