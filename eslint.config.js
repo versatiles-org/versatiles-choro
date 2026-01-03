@@ -10,6 +10,25 @@ import ts from 'typescript-eslint';
 
 const gitignorePath = fileURLToPath(new URL('./.gitignore', import.meta.url));
 
+// Shared configurations
+const commonGlobals = { ...globals.browser, ...globals.node };
+
+const commonRules = {
+	'@typescript-eslint/no-unused-vars': [
+		'off',
+		{
+			argsIgnorePattern: '^_',
+			varsIgnorePattern: '^_'
+		}
+	],
+	'no-return-await': 'error'
+};
+
+const typeAwareRules = {
+	'@typescript-eslint/no-deprecated': 'error',
+	'@typescript-eslint/await-thenable': 'error'
+};
+
 export default defineConfig(
 	includeIgnoreFile(gitignorePath),
 	js.configs.recommended,
@@ -23,7 +42,7 @@ export default defineConfig(
 	{
 		files: ['**/*.svelte', '**/*.svelte.ts', '**/*.svelte.js'],
 		languageOptions: {
-			globals: { ...globals.browser, ...globals.node },
+			globals: commonGlobals,
 			parserOptions: {
 				projectService: true,
 				extraFileExtensions: ['.svelte'],
@@ -32,58 +51,28 @@ export default defineConfig(
 			}
 		},
 		rules: {
-			'no-undef': 'off',
-			'@typescript-eslint/no-unused-vars': [
-				'off',
-				{
-					argsIgnorePattern: '^_',
-					varsIgnorePattern: '^_'
-				}
-			],
-			'@typescript-eslint/no-deprecated': 'error',
-			'@typescript-eslint/await-thenable': 'error',
-			'no-return-await': 'error'
+			...commonRules,
+			...typeAwareRules
 		}
 	},
 	{
-		// TypeScript files - enable type-aware linting for deprecation detection
 		files: ['**/*.ts', '**/*.tsx'],
 		languageOptions: {
-			globals: { ...globals.browser, ...globals.node },
+			globals: commonGlobals,
 			parserOptions: {
 				projectService: true
 			}
 		},
 		rules: {
-			'no-undef': 'off',
-			'@typescript-eslint/no-unused-vars': [
-				'off',
-				{
-					argsIgnorePattern: '^_',
-					varsIgnorePattern: '^_'
-				}
-			],
-			'@typescript-eslint/no-deprecated': 'error',
-			'@typescript-eslint/await-thenable': 'error',
-			'no-return-await': 'error'
+			...commonRules,
+			...typeAwareRules
 		}
 	},
 	{
-		// JavaScript files
 		files: ['**/*.js', '**/*.mjs', '**/*.cjs'],
 		languageOptions: {
-			globals: { ...globals.browser, ...globals.node }
+			globals: commonGlobals
 		},
-		rules: {
-			'no-undef': 'off',
-			'@typescript-eslint/no-unused-vars': [
-				'off',
-				{
-					argsIgnorePattern: '^_',
-					varsIgnorePattern: '^_'
-				}
-			],
-			'no-return-await': 'error'
-		}
+		rules: commonRules
 	}
 );
