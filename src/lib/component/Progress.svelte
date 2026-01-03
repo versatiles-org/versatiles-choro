@@ -3,7 +3,17 @@
 	import Dialog from './Dialog.svelte';
 	import * as v from 'valibot';
 
-	let { url, params = {} }: { url: string; params?: Record<string, unknown> } = $props();
+	let {
+		url,
+		title = 'Progress',
+		params = {},
+		onComplete
+	}: {
+		url: string;
+		title?: string;
+		params?: Record<string, unknown>;
+		onComplete?: () => void;
+	} = $props();
 
 	let percentage = $state(0);
 	let message = $state('');
@@ -54,9 +64,11 @@
 								break;
 							case 'done':
 								visible = false;
+								onComplete?.();
 								break;
 							case 'error':
 								visible = false;
+								onComplete?.();
 								break;
 						}
 					}
@@ -66,6 +78,7 @@
 				if (error instanceof Error && error.name !== 'AbortError') {
 					message = `Error: ${error.message}`;
 					visible = false;
+					onComplete?.();
 				}
 			}
 		}
@@ -79,7 +92,7 @@
 	});
 </script>
 
-<Dialog title="Conversion Progress" bind:showModal={visible} width="400px">
+<Dialog {title} bind:showModal={visible} width="400px">
 	{#if message}
 		<div class="progress-message">{message}</div>
 	{/if}

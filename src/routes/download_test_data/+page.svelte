@@ -17,6 +17,10 @@
 	</div>
 
 	{#if running}
-		<Progress url="/api/download/test-data" />
+		<Progress
+			url="/api/download/test-data"
+			title="Download Progress"
+			onComplete={() => (running = false)}
+		/>
 	{/if}
 </PageContainer>
