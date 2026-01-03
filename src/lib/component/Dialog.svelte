@@ -84,25 +84,28 @@
 	$effect(() => {
 		if (!showModal || !dialog) return;
 
+		// Capture dialog reference for cleanup closure
+		const currentDialog = dialog;
+
 		// Setup: open dialog and manage focus
-		dialog.showModal();
+		currentDialog.showModal();
 
 		// Store previously focused element
 		previouslyFocusedElement = document.activeElement as HTMLElement;
 
 		// Focus first focusable element in dialog
-		const firstFocusable = dialog.querySelector<HTMLElement>(
+		const firstFocusable = currentDialog.querySelector<HTMLElement>(
 			'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
 		);
 		firstFocusable?.focus();
 
 		// Add focus trap and escape handler
-		dialog.addEventListener('keydown', trapFocus);
-		dialog.addEventListener('keydown', handleKeydown);
+		currentDialog.addEventListener('keydown', trapFocus);
+		currentDialog.addEventListener('keydown', handleKeydown);
 
 		// Cleanup: always runs on effect re-run or component destruction
 		return () => {
-			dialog.close();
+			currentDialog.close();
 
 			// Restore focus to previously focused element
 			if (previouslyFocusedElement) {
@@ -111,8 +114,8 @@
 			}
 
 			// Remove event listeners
-			dialog.removeEventListener('keydown', trapFocus);
-			dialog.removeEventListener('keydown', handleKeydown);
+			currentDialog.removeEventListener('keydown', trapFocus);
+			currentDialog.removeEventListener('keydown', handleKeydown);
 		};
 	});
 </script>
