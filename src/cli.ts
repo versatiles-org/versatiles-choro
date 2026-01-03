@@ -5,15 +5,15 @@ import { downloadTestData } from '$lib/server/download/test-data';
 import { convertTiles } from '$lib/server/convert/tiles';
 import type { VPLParam } from '$lib/api/vpl';
 import type { InferOutput } from 'valibot';
+import pjson from '../package.json' assert { type: 'json' };
 
-const program = new Command();
-const cwd = process.env.INIT_CWD ?? process.cwd();
-
-program
+const program = new Command()
 	.name('versatiles-choro')
 	.description('CLI for VersaTiles Choro <https://github.com/versatiles-org/versatiles-choro/>')
 	.showHelpAfterError()
-	.version('1.0.0');
+	.version(pjson.version);
+
+const cwd = process.env.INIT_CWD ?? process.cwd();
 
 program
 	.command('download-test-data')

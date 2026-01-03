@@ -1,5 +1,6 @@
 {
 	"name": "versatiles-choro",
+	"version": "0.0.7",
 	"private": true,
 	"type": "module",
 	"scripts": {
