@@ -86,8 +86,6 @@
 	async function updateOverlay() {
 		if (!map || !overlay) return;
 
-		console.log('Updating overlay in Map.svelte:', overlay);
-
 		const source = await getTileSource(overlay);
 		const overlayStyle = source.getStyle();
 		const overlayLayerIds = overlayStyle.layers?.map((layer) => layer.id) ?? [];
@@ -102,8 +100,6 @@
 
 		map.setStyle(style);
 	}
-
-	$effect(() => console.log('Overlay changed in Map.svelte:', overlay));
 </script>
 
 <div bind:this={container} class="map-container">

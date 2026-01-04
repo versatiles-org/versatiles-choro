@@ -17,9 +17,6 @@
 	let overlay: InferOutput<typeof TilesInitRequest> | undefined = $derived(
 		from_container ? { vpl: { from_container, update_properties } } : undefined
 	);
-
-	// log overlay changes
-	$effect(() => console.log('Overlay changed in map/+page.svelte:', overlay));
 </script>
 
 <div class="wrapper">
