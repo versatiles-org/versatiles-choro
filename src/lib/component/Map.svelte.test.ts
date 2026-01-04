@@ -10,7 +10,10 @@ vi.mock('maplibre-gl', () => ({
 			return {
 				remove: vi.fn(),
 				setStyle: vi.fn(),
-				getCanvas: vi.fn(() => document.createElement('canvas')),
+				getCanvas: vi.fn(() => ({
+					style: {},
+					getContext: vi.fn(() => null)
+				})),
 				on: vi.fn(),
 				off: vi.fn()
 			};

@@ -67,3 +67,6 @@ const localStorageMock = {
 	key: vi.fn()
 };
 global.localStorage = localStorageMock as Storage;
+
+// Mock HTMLCanvasElement.getContext to prevent JSDOM warnings
+HTMLCanvasElement.prototype.getContext = vi.fn(() => null);
