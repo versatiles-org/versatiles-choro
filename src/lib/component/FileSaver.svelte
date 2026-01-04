@@ -81,11 +81,13 @@
 		<!-- Directory navigation -->
 		<div class="directory-list">
 			{#if dir.getParent()}
-				<button class="directory" onclick={() => (dir = dir.getParent()!)}>..</button>
+				<button class="button-ghost directory" onclick={() => (dir = dir.getParent()!)}>..</button>
 			{/if}
 			{#each await dir.getChildren() as child (child)}
 				{#if child instanceof FsDirectory}
-					<button class="directory" onclick={() => (dir = child)}>{child.getName()}/</button>
+					<button class="button-ghost directory" onclick={() => (dir = child)}
+						>{child.getName()}/</button
+					>
 				{:else}
 					<div class="existing-file">{child.getName()}</div>
 				{/if}
@@ -98,6 +100,7 @@
 			<input
 				id="filename"
 				type="text"
+				class="input-mono"
 				bind:value={filename}
 				placeholder="Enter filename"
 				onkeydown={(e) => {
@@ -113,8 +116,9 @@
 
 		<!-- Actions -->
 		<div class="actions">
-			<button onclick={() => (showModal = false)}>Cancel</button>
-			<button onclick={handleSave} disabled={!filename.trim()}>Save</button>
+			<button class="button-secondary" onclick={() => (showModal = false)}>Cancel</button>
+			<button class="button-secondary" onclick={handleSave} disabled={!filename.trim()}>Save</button
+			>
 		</div>
 
 		<!-- Overwrite warning -->
@@ -122,8 +126,10 @@
 			<div class="overwrite-warning">
 				<p><strong>Warning:</strong> File already exists. Do you want to overwrite it?</p>
 				<div class="warning-actions">
-					<button onclick={() => (showOverwriteWarning = false)}>Cancel</button>
-					<button class="danger" onclick={confirmOverwriteAction}>Overwrite</button>
+					<button class="button-secondary" onclick={() => (showOverwriteWarning = false)}
+						>Cancel</button
+					>
+					<button class="button-danger" onclick={confirmOverwriteAction}>Overwrite</button>
 				</div>
 			</div>
 		{/if}
@@ -156,20 +162,6 @@
 		padding: 0.5em;
 	}
 
-	button.directory {
-		all: unset;
-		font-family: monospace;
-		cursor: pointer;
-		display: block;
-		text-align: left;
-		width: 100%;
-		padding: 2px 4px;
-	}
-
-	button.directory:hover {
-		background-color: #f0f0f0;
-	}
-
 	.existing-file {
 		font-family: monospace;
 		opacity: 0.5;
@@ -189,15 +181,6 @@
 
 	.filename-input input {
 		flex: 1;
-		padding: 0.5em;
-		font-family: monospace;
-		border: 1px solid #ccc;
-		border-radius: 4px;
-	}
-
-	.filename-input input:focus {
-		outline: none;
-		border-color: #4a90e2;
 	}
 
 	.extension {
@@ -210,27 +193,6 @@
 		display: flex;
 		gap: 0.5em;
 		justify-content: flex-end;
-	}
-
-	.actions button {
-		padding: 0.5em 1em;
-		border: 1px solid #ccc;
-		border-radius: 4px;
-		background-color: white;
-		cursor: pointer;
-	}
-
-	.actions button:hover {
-		background-color: #f0f0f0;
-	}
-
-	.actions button:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
-	}
-
-	.actions button:not(:disabled):hover {
-		background-color: #e0e0e0;
 	}
 
 	.overwrite-warning {
@@ -252,23 +214,5 @@
 		display: flex;
 		gap: 0.5em;
 		justify-content: flex-end;
-	}
-
-	.warning-actions button {
-		padding: 0.5em 1em;
-		border: 1px solid #ccc;
-		border-radius: 4px;
-		background-color: white;
-		cursor: pointer;
-	}
-
-	.warning-actions button.danger {
-		background-color: #dc3545;
-		color: white;
-		border-color: #dc3545;
-	}
-
-	.warning-actions button:hover {
-		opacity: 0.9;
 	}
 </style>

@@ -21,7 +21,7 @@
 			Download sample GeoJSON polygon data to test the choropleth mapping functionality. This will
 			fetch test datasets and save them to your local filesystem.
 		</p>
-		<button class:success onclick={() => (running = true)} disabled={running}>
+		<button class:button-success={success} onclick={() => (running = true)} disabled={running}>
 			{#if running}
 				Downloading...
 			{:else if success}
@@ -36,17 +36,8 @@
 		<Progress
 			url="/api/download/test-data"
 			title="Download Progress"
+			params={{}}
 			onComplete={handleDownloadComplete}
 		/>
 	{/if}
 </PageContainer>
-
-<style>
-	button.success {
-		background: hsl(140, 60%, 45%) !important;
-	}
-
-	button.success:hover {
-		background: hsl(140, 60%, 40%) !important;
-	}
-</style>

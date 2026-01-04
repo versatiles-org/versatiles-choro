@@ -30,14 +30,20 @@
 		<p>{dir.fullPath()}</p>
 		<div>
 			{#if dir.getParent()}
-				<button class="directory" onclick={() => (dir = dir.getParent()!)}>..</button>
+				<button class="button-ghost directory" onclick={() => (dir = dir.getParent()!)}>..</button>
 			{/if}
 			{#each await dir.getChildren() as child (child)}
 				{#if child instanceof FsDirectory}
-					<button class="directory" onclick={() => (dir = child)}>{child.getName()}/</button>
+					<button class="button-ghost directory" onclick={() => (dir = child)}
+						>{child.getName()}/</button
+					>
 				{:else}
 					<button
-						class={{ file: true, disabled: fileFilter && !fileFilter(child.getName()) }}
+						class={{
+							'button-ghost': true,
+							file: true,
+							disabled: fileFilter && !fileFilter(child.getName())
+						}}
 						onclick={() => {
 							file = child;
 							showModal = false;
@@ -50,21 +56,6 @@
 </Dialog>
 
 <style>
-	button.directory,
-	button.file {
-		all: unset;
-		font-family: monospace;
-		cursor: pointer;
-		border: none;
-		background: none;
-		display: block;
-		text-align: left;
-		width: 100%;
-	}
-	button.directory:hover,
-	button.file:hover {
-		background-color: #f0f0f0;
-	}
 	button.file.disabled {
 		opacity: 0.3;
 		pointer-events: none;

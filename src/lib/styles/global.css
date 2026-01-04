@@ -1,0 +1,349 @@
+/* ===================================================================
+   CSS Custom Properties (Variables)
+   =================================================================== */
+
+:root {
+	/* Color Palette - Primary */
+	--color-primary-500: hsl(220, 80%, 50%);
+	--color-primary-600: hsl(220, 80%, 45%);
+
+	/* Color Palette - Success */
+	--color-success-500: hsl(140, 60%, 45%);
+	--color-success-600: hsl(140, 60%, 40%);
+
+	/* Color Palette - Danger */
+	--color-danger-50: #fee;
+	--color-danger-500: #dc3545;
+	--color-danger-600: #c33;
+	--color-danger-700: #a22;
+
+	/* Neutral Colors */
+	--color-gray-300: #f0f0f0;
+	--color-gray-400: #ccc;
+	--color-gray-600: hsl(220, 20%, 70%);
+
+	/* Text Colors */
+	--color-text-primary: hsl(220, 20%, 20%);
+	--color-text-secondary: hsl(220, 20%, 30%);
+	--color-text-tertiary: hsl(220, 20%, 35%);
+	--color-text-muted: hsl(220, 20%, 40%);
+
+	/* Semantic Colors */
+	--color-border-default: hsl(220, 30%, 90%);
+	--color-border-input: #ccc;
+	--color-focus: #4a90e2;
+
+	/* Spacing */
+	--spacing-sm: 0.5rem;
+	--spacing-md: 0.75rem;
+	--spacing-lg: 1rem;
+	--spacing-xl: 1.5rem;
+	--spacing-2xl: 2rem;
+
+	/* Border Radius */
+	--radius-sm: 4px;
+	--radius-md: 6px;
+	--radius-lg: 8px;
+
+	/* Shadows */
+	--shadow-button: 0 2px 4px rgba(0, 0, 0, 0.1);
+	--shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.15);
+
+	/* Transitions */
+	--transition-fast: 0.2s ease;
+}
+
+/* ===================================================================
+   Base Typography
+   =================================================================== */
+
+h1 {
+	font-size: 2rem;
+	color: var(--color-text-primary);
+	font-weight: 600;
+	margin: 0;
+}
+
+h2 {
+	color: var(--color-text-secondary);
+	font-size: 1.5rem;
+	margin: 2rem 0 1rem 0;
+	font-weight: 600;
+}
+
+h3 {
+	color: var(--color-text-tertiary);
+	font-size: 1.25rem;
+	margin: 1.5rem 0 1rem 0;
+	font-weight: 500;
+}
+
+h4,
+h5,
+h6 {
+	color: var(--color-text-tertiary);
+	font-weight: 500;
+	margin: 1rem 0 0.5rem 0;
+}
+
+p {
+	color: var(--color-text-muted);
+	line-height: 1.6;
+	margin: 0.75rem 0;
+}
+
+/* ===================================================================
+   Base Button Styles
+   =================================================================== */
+
+button {
+	font-family: inherit;
+	font-size: 1rem;
+	font-weight: 500;
+	border: none;
+	border-radius: var(--radius-md);
+	cursor: pointer;
+	transition: all var(--transition-fast);
+	box-sizing: border-box;
+
+	/* Default primary appearance */
+	background: var(--color-primary-500);
+	color: white;
+	padding: var(--spacing-md) var(--spacing-xl);
+	box-shadow: var(--shadow-button);
+}
+
+button:hover:not(:disabled) {
+	background: var(--color-primary-600);
+	box-shadow: var(--shadow-lg);
+	transform: translateY(-1px);
+}
+
+button:active:not(:disabled) {
+	transform: translateY(0);
+	box-shadow: var(--shadow-button);
+}
+
+button:disabled {
+	background: var(--color-gray-600);
+	cursor: not-allowed;
+	opacity: 0.6;
+	transform: none;
+}
+
+button:focus-visible {
+	outline: 2px solid var(--color-focus);
+	outline-offset: 2px;
+}
+
+/* ===================================================================
+   Button Variants
+   =================================================================== */
+
+.button-secondary {
+	background: white;
+	color: var(--color-text-primary);
+	border: 1px solid var(--color-border-input);
+	padding: var(--spacing-sm) var(--spacing-lg);
+}
+
+.button-secondary:hover:not(:disabled) {
+	background: var(--color-gray-300);
+	transform: none;
+}
+
+.button-secondary:not(:disabled):hover {
+	background: #e0e0e0;
+}
+
+.button-danger {
+	background: var(--color-danger-500);
+}
+
+.button-danger:hover:not(:disabled) {
+	background: var(--color-danger-600);
+	opacity: 0.9;
+}
+
+.button-success {
+	background: var(--color-success-500);
+}
+
+.button-success:hover:not(:disabled) {
+	background: var(--color-success-600);
+}
+
+.button-ghost {
+	all: unset;
+	font-family: monospace;
+	cursor: pointer;
+	display: block;
+	text-align: left;
+	width: 100%;
+	padding: 2px 4px;
+	box-sizing: border-box;
+}
+
+.button-ghost:hover {
+	background-color: var(--color-gray-300);
+}
+
+.button-ghost:focus-visible {
+	outline: 2px solid var(--color-focus);
+	outline-offset: 2px;
+}
+
+/* ===================================================================
+   Form Input Styles
+   =================================================================== */
+
+input[type='text'],
+input[type='email'],
+input[type='password'],
+input[type='number'],
+input[type='search'],
+input[type='tel'],
+input[type='url'],
+textarea,
+select {
+	font-family: inherit;
+	font-size: 1rem;
+	padding: var(--spacing-sm);
+	border: 1px solid var(--color-border-input);
+	border-radius: var(--radius-sm);
+	background: white;
+	color: var(--color-text-primary);
+	transition: border-color var(--transition-fast);
+	box-sizing: border-box;
+}
+
+input[type='text']:focus,
+input[type='email']:focus,
+input[type='password']:focus,
+input[type='number']:focus,
+input[type='search']:focus,
+input[type='tel']:focus,
+input[type='url']:focus,
+textarea:focus,
+select:focus {
+	outline: none;
+	border-color: var(--color-focus);
+}
+
+input[type='text']:disabled,
+input[type='email']:disabled,
+input[type='password']:disabled,
+input[type='number']:disabled,
+input[type='search']:disabled,
+input[type='tel']:disabled,
+input[type='url']:disabled,
+textarea:disabled,
+select:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+	background: #f5f5f5;
+}
+
+input[type='checkbox'],
+input[type='radio'] {
+	cursor: pointer;
+	margin-right: var(--spacing-sm);
+}
+
+input[type='checkbox']:disabled,
+input[type='radio']:disabled {
+	cursor: not-allowed;
+}
+
+/* Form Input Utility Classes */
+.input-mono {
+	font-family: monospace;
+}
+
+.input-full {
+	width: 100%;
+}
+
+/* ===================================================================
+   Label Styles
+   =================================================================== */
+
+label {
+	display: block;
+	font-weight: 500;
+	color: var(--color-text-primary);
+	margin-bottom: var(--spacing-sm);
+}
+
+.label-inline {
+	display: inline-flex;
+	align-items: center;
+	font-weight: 400;
+}
+
+.label-error {
+	color: var(--color-danger-600);
+}
+
+.label-error input[type='text'],
+.label-error input[type='email'],
+.label-error input[type='password'],
+.label-error input[type='number'] {
+	border-color: var(--color-danger-600);
+}
+
+/* ===================================================================
+   Utility Classes
+   =================================================================== */
+
+.info-card {
+	background: white;
+	border: 1px solid var(--color-border-default);
+	border-radius: var(--radius-lg);
+	padding: var(--spacing-xl);
+	margin: var(--spacing-lg) 0;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.info-card p {
+	margin: 0;
+}
+
+.step-section {
+	background: white;
+	border: 1px solid var(--color-border-default);
+	border-radius: var(--radius-lg);
+	padding: var(--spacing-xl);
+	margin: var(--spacing-xl) 0;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.step-section h3 {
+	margin-top: 0;
+}
+
+.alert-error {
+	padding: var(--spacing-2xl);
+	background: var(--color-danger-50);
+	border: 2px solid var(--color-danger-600);
+	border-radius: var(--radius-lg);
+}
+
+.alert-error h2 {
+	margin: 0 0 var(--spacing-lg) 0;
+	color: var(--color-danger-600);
+}
+
+.text-mono {
+	font-family: monospace;
+	font-size: 0.9em;
+	color: var(--color-gray-500);
+}
+
+.text-muted {
+	color: var(--color-text-muted);
+}
+
+.text-error {
+	color: var(--color-danger-600);
+}

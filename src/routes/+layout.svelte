@@ -3,6 +3,7 @@
 	import { resolve } from '$app/paths';
 	import { page } from '$app/stores';
 	import '$lib/styles/utilities.css';
+	import '$lib/styles/global.css';
 
 	let { children } = $props();
 </script>

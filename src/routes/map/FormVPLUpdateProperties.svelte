@@ -42,7 +42,7 @@
 		<input type="checkbox" bind:checked={active} />
 		Active
 	</label>
-	<label class={{ missing: !selectedFile }}>
+	<label class:label-error={!selectedFile}>
 		Select Data File
 		<button onclick={() => (showModal = true)}>Open File Selector</button>
 		<FileSelector
@@ -51,17 +51,17 @@
 			fileFilter={(name) => /\.csv$/.test(name)}
 		/>
 	</label>
-	<label class={{ missing: !layer_name }}>
+	<label class:label-error={!layer_name}>
 		Layer Name
-		<input type="text" bind:value={layer_name} />
+		<input type="text" class="input-full" bind:value={layer_name} />
 	</label>
-	<label class={{ missing: !id_field_tiles }}>
+	<label class:label-error={!id_field_tiles}>
 		ID Field (Tiles)
-		<input type="text" bind:value={id_field_tiles} />
+		<input type="text" class="input-full" bind:value={id_field_tiles} />
 	</label>
-	<label class={{ missing: !id_field_data }}>
+	<label class:label-error={!id_field_data}>
 		ID Field (Data)
-		<input type="text" bind:value={id_field_data} />
+		<input type="text" class="input-full" bind:value={id_field_data} />
 	</label>
 	<label>
 		<input type="checkbox" bind:checked={replace_properties} />
@@ -81,14 +81,5 @@
 	label {
 		display: block;
 		margin-bottom: 0.5rem;
-	}
-	label.missing {
-		color: #c00;
-	}
-	label.missing input[type='text'] {
-		border-color: #c00;
-	}
-	input[type='text'] {
-		width: 100%;
 	}
 </style>
