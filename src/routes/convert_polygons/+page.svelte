@@ -55,6 +55,7 @@
 
 	{#if inputFile && outputFilePath}
 		<Progress
+			title="Converting Polygons to Vector Tiles"
 			url="/api/convert/polygons"
 			params={{ input: inputFile.fullPath(), output: outputFilePath }}
 		/>
