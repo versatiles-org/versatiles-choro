@@ -174,7 +174,7 @@ describe('progressToStream', () => {
 
 	it('handles abort signal', async () => {
 		const progress = new SimpleProgress(async () => {
-			await new Promise((resolve) => setTimeout(resolve, 1000));
+			await new Promise((resolve) => setTimeout(resolve, 200));
 		});
 
 		const abortController = new AbortController();
