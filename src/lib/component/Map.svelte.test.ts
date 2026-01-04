@@ -6,13 +6,15 @@ import MapWrapper from './Map.test-wrapper.svelte';
 // Mock maplibre-gl
 vi.mock('maplibre-gl', () => ({
 	default: {
-		Map: vi.fn(() => ({
-			remove: vi.fn(),
-			setStyle: vi.fn(),
-			getCanvas: vi.fn(() => document.createElement('canvas')),
-			on: vi.fn(),
-			off: vi.fn()
-		}))
+		Map: vi.fn(function () {
+			return {
+				remove: vi.fn(),
+				setStyle: vi.fn(),
+				getCanvas: vi.fn(() => document.createElement('canvas')),
+				on: vi.fn(),
+				off: vi.fn()
+			};
+		})
 	}
 }));
 
