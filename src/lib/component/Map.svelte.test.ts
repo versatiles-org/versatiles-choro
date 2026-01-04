@@ -2,6 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render } from '@testing-library/svelte';
 import { tick } from 'svelte';
 import MapWrapper from './Map.test-wrapper.svelte';
+import type { InferOutput } from 'valibot';
+import type { TilesInitRequest } from '$lib/api/requests';
 
 // Mock maplibre-gl
 vi.mock('maplibre-gl', () => ({
@@ -142,5 +144,94 @@ describe('Map', () => {
 			const mapContainer = container.querySelector('.map-container');
 			expect(mapContainer).toBeInTheDocument();
 		}
+	});
+
+	it('calls getTileSource when overlay changes', async () => {
+		const { getTileSource } = await import('./map/tile_source');
+
+		const state = $state({
+			overlay: undefined as InferOutput<typeof TilesInitRequest> | undefined
+		});
+
+		render(MapWrapper, {
+			props: {
+				backgroundMap: 'Colorful',
+				get overlay() {
+					return state.overlay;
+				}
+			}
+		});
+
+		// Wait for map initialization
+		await tick();
+		await tick();
+
+		// Clear previous calls
+		vi.mocked(getTileSource).mockClear();
+
+		// Change overlay
+		state.overlay = {
+			vpl: { from_container: { filename: 'test1.versatiles' } }
+		};
+
+		// Wait for effect to run and async updateOverlay to complete
+		await tick();
+		await tick();
+
+		// Verify getTileSource was called with the new overlay
+		expect(getTileSource).toHaveBeenCalledWith({
+			vpl: { from_container: { filename: 'test1.versatiles' } }
+		});
+	});
+
+	it('calls getTileSource when overlay changes multiple times', async () => {
+		const { getTileSource } = await import('./map/tile_source');
+
+		const state = $state({
+			overlay: undefined as InferOutput<typeof TilesInitRequest> | undefined
+		});
+
+		render(MapWrapper, {
+			props: {
+				backgroundMap: 'Colorful',
+				get overlay() {
+					return state.overlay;
+				}
+			}
+		});
+
+		// Wait for map initialization
+		await tick();
+		await tick();
+
+		vi.mocked(getTileSource).mockClear();
+
+		// First overlay change
+		state.overlay = {
+			vpl: { from_container: { filename: 'test1.versatiles' } }
+		};
+
+		await tick();
+		await tick();
+
+		expect(getTileSource).toHaveBeenCalledTimes(1);
+		expect(getTileSource).toHaveBeenCalledWith({
+			vpl: { from_container: { filename: 'test1.versatiles' } }
+		});
+
+		vi.mocked(getTileSource).mockClear();
+
+		// Second overlay change
+		state.overlay = {
+			vpl: { from_container: { filename: 'test2.versatiles' } }
+		};
+
+		await tick();
+		await tick();
+
+		expect(getTileSource).toHaveBeenCalledTimes(1);
+		expect(getTileSource).toHaveBeenCalledWith({
+			vpl: { from_container: { filename: 'test2.versatiles' } }
+		});
 	});
 });
