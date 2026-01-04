@@ -21,7 +21,7 @@ export const GET: RequestHandler = withErrorHandling(async ({ request }) => {
 	const response = await fetch(url, { method: 'GET' });
 
 	if (!response.ok) {
-		return new Response('Tile not found', { status: 404 });
+		return new Response(`Tile not found for path=${path}`, { status: 404 });
 	}
 
 	// Return tile with proper headers
