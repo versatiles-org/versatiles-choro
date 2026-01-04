@@ -4,7 +4,12 @@ import pino from 'pino';
  * Configure Pino logger based on environment
  */
 const isDevelopment = process.env.NODE_ENV !== 'production';
-const logLevel = (process.env.LOG_LEVEL || (isDevelopment ? 'debug' : 'info')) as pino.Level;
+const isTest = process.env.NODE_ENV === 'test' || process.env.VITEST === 'true';
+
+// Disable logging during tests
+const logLevel = isTest
+	? 'silent'
+	: ((process.env.LOG_LEVEL || (isDevelopment ? 'debug' : 'info')) as pino.Level);
 
 /**
  * Base logger instance
