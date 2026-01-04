@@ -36,7 +36,6 @@
 		<Progress
 			url="/api/download/test-data"
 			title="Download Progress"
-			params={{}}
 			onComplete={handleDownloadComplete}
 		/>
 	{/if}

@@ -12,7 +12,7 @@
 	}: {
 		url: T;
 		title?: string;
-		params: ApiRequestType<T>;
+		params?: ApiRequestType<T>;
 		onComplete?: () => void;
 	} = $props();
 
