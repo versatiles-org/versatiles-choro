@@ -4,6 +4,7 @@ import { tick } from 'svelte';
 import MapWrapper from './Map.test-wrapper.svelte';
 import type { InferOutput } from 'valibot';
 import type { TilesInitRequest } from '$lib/api/requests';
+import { getTileSource, TileSource } from './map/tile_source';
 
 // Mock maplibre-gl
 vi.mock('maplibre-gl', () => ({
@@ -74,13 +75,13 @@ describe('Map', () => {
 		expect(container).toBeInTheDocument();
 	});
 
-	it('accepts overlay prop', () => {
+	it('accepts overlay prop', async () => {
 		const { container } = render(MapWrapper, {
 			props: {
 				backgroundMap: 'Colorful',
-				overlay: {
+				overlay_source: await getTileSource({
 					vpl: { from_container: { filename: 'test.versatiles' } }
-				}
+				})
 			}
 		});
 
@@ -150,14 +151,14 @@ describe('Map', () => {
 		const { getTileSource } = await import('./map/tile_source');
 
 		const state = $state({
-			overlay: undefined as InferOutput<typeof TilesInitRequest> | undefined
+			overlay_source: undefined as TileSource | undefined
 		});
 
 		render(MapWrapper, {
 			props: {
 				backgroundMap: 'Colorful',
-				get overlay() {
-					return state.overlay;
+				get overlay_source() {
+					return state.overlay_source;
 				}
 			}
 		});
@@ -170,9 +171,9 @@ describe('Map', () => {
 		vi.mocked(getTileSource).mockClear();
 
 		// Change overlay
-		state.overlay = {
+		state.overlay_source = await getTileSource({
 			vpl: { from_container: { filename: 'test1.versatiles' } }
-		};
+		});
 
 		// Wait for effect to run and async updateOverlay to complete
 		await tick();
@@ -188,14 +189,14 @@ describe('Map', () => {
 		const { getTileSource } = await import('./map/tile_source');
 
 		const state = $state({
-			overlay: undefined as InferOutput<typeof TilesInitRequest> | undefined
+			overlay_source: undefined as TileSource | undefined
 		});
 
 		render(MapWrapper, {
 			props: {
 				backgroundMap: 'Colorful',
-				get overlay() {
-					return state.overlay;
+				get overlay_source() {
+					return state.overlay_source;
 				}
 			}
 		});
@@ -207,9 +208,9 @@ describe('Map', () => {
 		vi.mocked(getTileSource).mockClear();
 
 		// First overlay change
-		state.overlay = {
+		state.overlay_source = await getTileSource({
 			vpl: { from_container: { filename: 'test1.versatiles' } }
-		};
+		});
 
 		await tick();
 		await tick();
@@ -222,9 +223,9 @@ describe('Map', () => {
 		vi.mocked(getTileSource).mockClear();
 
 		// Second overlay change
-		state.overlay = {
+		state.overlay_source = await getTileSource({
 			vpl: { from_container: { filename: 'test2.versatiles' } }
-		};
+		});
 
 		await tick();
 		await tick();

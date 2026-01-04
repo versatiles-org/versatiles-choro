@@ -10,12 +10,21 @@
 	import FormVPLFromContainer from './FormVPLFromContainer.svelte';
 	import FormVPLUpdateProperties from './FormVPLUpdateProperties.svelte';
 	import type { VPLParamFromContainer, VPLParamUpdateProperties } from '$lib/api/vpl';
+	import { getTileSource, TileSource } from '$lib/component/map/tile_source';
+	import type { TileJSONSpecificationVector } from '@versatiles/style';
 
 	let from_container: InferOutput<typeof VPLParamFromContainer> | undefined = $state();
 	let update_properties: InferOutput<typeof VPLParamUpdateProperties> | undefined = $state();
 
-	let overlay: InferOutput<typeof TilesInitRequest> | undefined = $derived(
-		from_container ? { vpl: { from_container, update_properties } } : undefined
+	let overlay_source: TileSource | undefined = $derived(
+		from_container ? await getTileSource({ vpl: { from_container, update_properties } }) : undefined
+	);
+
+	let tilejson: TileJSONSpecificationVector | undefined = $derived(
+		overlay_source?.tileJson ?? undefined
+	);
+	let layer_names: string[] | undefined = $derived(
+		tilejson?.vector_layers.map((layer) => layer.id)
 	);
 </script>
 
@@ -25,12 +34,12 @@
 			<FormVPLFromContainer bind:params={from_container} />
 		</Frame>
 		<Frame title="Numeric Data" Icon={IconVector}>
-			<FormVPLUpdateProperties bind:params={update_properties} />
+			<FormVPLUpdateProperties bind:params={update_properties} {layer_names} />
 		</Frame>
 		<Frame title="Design" Icon={IconDesign} borderBottom={false}></Frame>
 	</Sidebar>
 	<div class="map-container">
-		<Map backgroundMap="GrayBright" {overlay} inspectOverlay={true}></Map>
+		<Map backgroundMap="GrayBright" {overlay_source} inspectOverlay={true}></Map>
 	</div>
 </div>
 

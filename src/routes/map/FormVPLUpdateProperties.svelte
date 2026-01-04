@@ -6,8 +6,12 @@
 	import type { InferOutput } from 'valibot';
 
 	let {
-		params = $bindable()
-	}: { params: InferOutput<typeof VPLParamUpdateProperties> | undefined } = $props();
+		params = $bindable(),
+		layer_names
+	}: {
+		params: InferOutput<typeof VPLParamUpdateProperties> | undefined;
+		layer_names: string[] | undefined;
+	} = $props();
 
 	let active = $state(true);
 	let showModal = $state(false);
@@ -42,41 +46,51 @@
 		<input type="checkbox" bind:checked={active} />
 		Active
 	</label>
-	<label class:label-error={!selectedFile}>
-		Select Data File:<br />
-		{selectedFile ? selectedFile.getName() : ''}<br />
-		<button onclick={() => (showModal = true)}>Select File</button>
-		<FileSelector
-			bind:showModal
-			bind:file={selectedFile}
-			fileFilter={(name) => /\.[ct]sv$/.test(name)}
-		/>
-	</label>
-	{#if selectedFile}
-		<label class:label-error={!layer_name}>
-			Layer Name
-			<input type="text" class="input-full" bind:value={layer_name} />
+	{#if !active}
+		<p class="text-sm text-gray-500 italic">Inactive - no data will be added.</p>
+	{:else}
+		<label class:label-error={!selectedFile}>
+			Select Data File:<br />
+			{selectedFile ? selectedFile.getName() : ''}<br />
+			<button onclick={() => (showModal = true)}>Select File</button>
+			<FileSelector
+				bind:showModal
+				bind:file={selectedFile}
+				fileFilter={(name) => /\.[ct]sv$/.test(name)}
+			/>
 		</label>
-		<label class:label-error={!id_field_tiles}>
-			ID Field (Tiles)
-			<input type="text" class="input-full" bind:value={id_field_tiles} />
-		</label>
-		<label class:label-error={!id_field_data}>
-			ID Field (Data)
-			<input type="text" class="input-full" bind:value={id_field_data} />
-		</label>
-		<label>
-			<input type="checkbox" bind:checked={replace_properties} />
-			Replace Properties
-		</label>
-		<label>
-			<input type="checkbox" bind:checked={remove_non_matching} />
-			Remove Non-Matching Feature
-		</label>
-		<label>
-			<input type="checkbox" bind:checked={include_id} />
-			Include ID
-		</label>
+		{#if selectedFile}
+			{#if layer_names}
+				<label class:label-error={!layer_name}>
+					Layer Name
+					<select class="input-full" bind:value={layer_name}>
+						{#each layer_names as name, index (name)}
+							<option value={name} selected={index === 0}>{name}</option>
+						{/each}
+					</select>
+				</label>
+			{/if}
+			<label class:label-error={!id_field_tiles}>
+				ID Field (Tiles)
+				<input type="text" class="input-full" bind:value={id_field_tiles} />
+			</label>
+			<label class:label-error={!id_field_data}>
+				ID Field (Data)
+				<input type="text" class="input-full" bind:value={id_field_data} />
+			</label>
+			<label>
+				<input type="checkbox" bind:checked={replace_properties} />
+				Replace Properties
+			</label>
+			<label>
+				<input type="checkbox" bind:checked={remove_non_matching} />
+				Remove Non-Matching Feature
+			</label>
+			<label>
+				<input type="checkbox" bind:checked={include_id} />
+				Include ID
+			</label>
+		{/if}
 	{/if}
 </Foldable>
 

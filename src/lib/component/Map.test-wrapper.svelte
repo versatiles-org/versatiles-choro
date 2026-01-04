@@ -1,18 +1,17 @@
 <script lang="ts">
 	import Map from './Map.svelte';
 	import type { BackgroundMap } from './map/style_background';
-	import type { InferOutput } from 'valibot';
-	import type { TilesInitRequest } from '$lib/api/requests';
+	import type { TileSource } from './map/tile_source';
 
 	let {
 		backgroundMap = undefined,
 		inspectOverlay = false,
-		overlay = undefined
+		overlay_source = undefined
 	}: {
 		backgroundMap?: BackgroundMap;
 		inspectOverlay?: boolean;
-		overlay?: InferOutput<typeof TilesInitRequest>;
+		overlay_source?: TileSource;
 	} = $props();
 </script>
 
-<Map {backgroundMap} {inspectOverlay} {overlay} />
+<Map {backgroundMap} {inspectOverlay} {overlay_source} />

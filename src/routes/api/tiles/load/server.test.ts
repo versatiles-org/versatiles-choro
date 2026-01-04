@@ -80,7 +80,7 @@ describe('GET /api/tiles/load', () => {
 		const response = await GET(mockEvent);
 
 		expect(response.headers.get('content-type')).toBe('application/x-protobuf');
-		expect(response.headers.get('cache-control')).toBe('public, max-age=31536000, immutable');
+		expect(response.headers.get('cache-control')).toBe('private, max-age=0, must-revalidate');
 		expect(response.headers.get('content-length')).toBe('4');
 	});
 

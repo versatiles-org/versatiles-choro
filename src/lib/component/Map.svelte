@@ -3,7 +3,7 @@
 	import type { InferOutput } from 'valibot';
 	import type { TilesInitRequest } from '$lib/api/requests';
 	import { createBackgroundStyle, type BackgroundMap } from './map/style_background';
-	import { getTileSource } from './map/tile_source';
+	import { getTileSource, TileSource } from './map/tile_source';
 	import { overlayStyles } from './map/style';
 	import { Inspector } from './map/Inspector.svelte.ts';
 
@@ -11,11 +11,11 @@
 	let {
 		backgroundMap,
 		inspectOverlay = false,
-		overlay
+		overlay_source
 	}: {
 		backgroundMap?: BackgroundMap;
 		inspectOverlay?: boolean;
-		overlay?: InferOutput<typeof TilesInitRequest>;
+		overlay_source?: TileSource;
 	} = $props();
 
 	// --- State ---------------------------------------------------------------
@@ -69,7 +69,7 @@
 	$effect(() => {
 		// Track map, overlay, and backgroundStyle as dependencies
 		const currentMap = map;
-		const currentOverlay = overlay;
+		const currentOverlay = overlay_source;
 		const currentBackgroundStyle = backgroundStyle;
 
 		if (!currentMap) return;
@@ -84,9 +84,9 @@
 	});
 
 	async function updateOverlay() {
-		if (!map || !overlay) return;
+		if (!map || !overlay_source) return;
 
-		const source = await getTileSource(overlay);
+		const source = overlay_source;
 		const overlayStyle = source.getStyle();
 		const overlayLayerIds = overlayStyle.layers?.map((layer) => layer.id) ?? [];
 		const style = overlayStyles(backgroundStyle, overlayStyle);

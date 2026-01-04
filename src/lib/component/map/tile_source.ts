@@ -4,7 +4,7 @@ import { getInspectorStyle } from './style';
 import { TilesInitRequest, TilesInitResponse } from '$lib/api/requests';
 import * as v from 'valibot';
 
-class TileSource {
+export class TileSource {
 	prefix: string;
 	tileJson: TileJSONSpecificationVector | null = null;
 	constructor(prefix: string) {
