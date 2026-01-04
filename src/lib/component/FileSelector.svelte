@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Dialog from './Dialog.svelte';
-	import { FsDirectory, getRootDirectory } from '$lib/api/filesystem.svelte';
+	import { FsDirectory, FsFile, getRootDirectory } from '$lib/api/filesystem.svelte';
 
 	let {
 		initialDirectory,
@@ -11,7 +11,7 @@
 	}: {
 		initialDirectory?: FsDirectory;
 		showModal: boolean;
-		file: string | undefined;
+		file: FsFile | undefined;
 		fileFilter?: (name: string) => boolean;
 		title?: string;
 	} = $props();
@@ -39,7 +39,7 @@
 					<button
 						class={{ file: true, disabled: fileFilter && !fileFilter(child.getName()) }}
 						onclick={() => {
-							file = child.fullPath();
+							file = child;
 							showModal = false;
 						}}>{child.getName()}</button
 					>

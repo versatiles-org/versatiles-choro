@@ -3,11 +3,12 @@
 	import FileSelector from '$lib/component/FileSelector.svelte';
 	import FileSaver from '$lib/component/FileSaver.svelte';
 	import Progress from '$lib/component/Progress.svelte';
+	import type { FsFile } from '$lib/api/filesystem.svelte';
 
-	let showInputModal = $state(true);
+	let showInputModal = $state(false);
 	let showOutputModal = $state(false);
-	let inputFile: string | undefined = $state(undefined);
-	let outputFile: string | undefined = $state(undefined);
+	let inputFile: FsFile | undefined = $state(undefined);
+	let outputFile: FsFile | undefined = $state(undefined);
 
 	// Workflow orchestration: automatically transition to output modal after input file is selected
 	$effect(() => {
@@ -45,7 +46,8 @@
 		<FileSaver
 			bind:showModal={showOutputModal}
 			bind:filepath={outputFile}
-			defaultFilename="output"
+			initialDirectory={inputFile.getDirectory()}
+			defaultFilename={inputFile.getName().replace(/\.[^/.]+$/, '')}
 			defaultExtension=".versatiles"
 			title="Save Output File"
 		/>

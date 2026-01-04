@@ -39,6 +39,12 @@ export class FsFile {
 		this.directory = directory;
 		this.size = size;
 	}
+	getDirectory(): FsDirectory {
+		return this.directory;
+	}
+	getSize(): number {
+		return this.size;
+	}
 	fullPath(): string {
 		return cleanPath(this.directory.fullPath() + '/' + this.name);
 	}
