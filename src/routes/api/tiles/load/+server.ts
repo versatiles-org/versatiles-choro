@@ -31,7 +31,8 @@ export const GET: RequestHandler = withErrorHandling(async ({ request }) => {
 		status: response.status,
 		headers: {
 			'content-type': response.headers.get('content-type') || 'application/octet-stream',
-			'cache-control': 'public, max-age=31536000, immutable',
+			'cache-control': 'private, max-age=0, must-revalidate',
+			expires: new Date().toUTCString(),
 			'content-length': String(buffer.length)
 		}
 	});
