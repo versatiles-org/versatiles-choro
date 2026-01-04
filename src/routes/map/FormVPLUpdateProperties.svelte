@@ -2,6 +2,7 @@
 	import type { VPLParamUpdateProperties } from '$lib/api/vpl';
 	import FileSelector from '$lib/component/FileSelector.svelte';
 	import Foldable from '$lib/component/SidebarFoldable.svelte';
+	import type { FsFile } from '$lib/api/filesystem.svelte';
 	import type { InferOutput } from 'valibot';
 
 	let {
@@ -10,7 +11,7 @@
 
 	let active = $state(true);
 	let showModal = $state(false);
-	let data_source_path: string | undefined = $state();
+	let selectedFile: FsFile | undefined = $state();
 	let layer_name: string | undefined = $state();
 	let id_field_tiles: string | undefined = $state();
 	let id_field_data: string | undefined = $state();
@@ -20,9 +21,9 @@
 
 	// Bindable output pattern: aggregate internal form state into params for parent
 	$effect(() => {
-		if (active && data_source_path && layer_name && id_field_tiles && id_field_data) {
+		if (active && selectedFile && layer_name && id_field_tiles && id_field_data) {
 			params = {
-				data_source_path,
+				data_source_path: selectedFile.fullPath(),
 				layer_name,
 				id_field_tiles,
 				id_field_data,
@@ -41,12 +42,12 @@
 		<input type="checkbox" bind:checked={active} />
 		Active
 	</label>
-	<label class={{ missing: !data_source_path }}>
+	<label class={{ missing: !selectedFile }}>
 		Select Data File
 		<button onclick={() => (showModal = true)}>Open File Selector</button>
 		<FileSelector
 			bind:showModal
-			bind:file={data_source_path}
+			bind:file={selectedFile}
 			fileFilter={(name) => /\.csv$/.test(name)}
 		/>
 	</label>

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import FileSelector from './FileSelector.svelte';
-	import type { FsDirectory } from '$lib/api/filesystem.svelte';
+	import type { FsDirectory, FsFile } from '$lib/api/filesystem.svelte';
 
 	let {
 		initialDirectory = undefined,
@@ -11,7 +11,7 @@
 	}: {
 		initialDirectory?: FsDirectory;
 		showModal?: boolean;
-		file?: string | undefined;
+		file?: FsFile | undefined;
 		fileFilter?: (name: string) => boolean;
 		title?: string;
 	} = $props();

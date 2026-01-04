@@ -8,11 +8,11 @@
 	let showInputModal = $state(false);
 	let showOutputModal = $state(false);
 	let inputFile: FsFile | undefined = $state(undefined);
-	let outputFile: FsFile | undefined = $state(undefined);
+	let outputFilePath: string | undefined = $state(undefined);
 
 	// Workflow orchestration: automatically transition to output modal after input file is selected
 	$effect(() => {
-		if (inputFile && !outputFile) {
+		if (inputFile && !outputFilePath) {
 			showInputModal = false;
 			showOutputModal = true;
 		}
@@ -34,18 +34,18 @@
 		/>
 	{/if}
 
-	{#if inputFile && !outputFile}
+	{#if inputFile && !outputFilePath}
 		<div class="step-section">
 			<h3>Step 2: Choose Output Location</h3>
 			<div class="info-card">
-				<p><strong>Input file:</strong> {inputFile}</p>
+				<p><strong>Input file:</strong> {inputFile.fullPath()}</p>
 			</div>
 			<p>Select where to save the generated vector tiles (.versatiles file).</p>
 			<button onclick={() => (showOutputModal = true)}>Choose Output Location</button>
 		</div>
 		<FileSaver
 			bind:showModal={showOutputModal}
-			bind:filepath={outputFile}
+			bind:filepath={outputFilePath}
 			initialDirectory={inputFile.getDirectory()}
 			defaultFilename={inputFile.getName().replace(/\.[^/.]+$/, '')}
 			defaultExtension=".versatiles"
@@ -53,7 +53,10 @@
 		/>
 	{/if}
 
-	{#if inputFile && outputFile}
-		<Progress url="/api/convert/polygons" params={{ input: inputFile, output: outputFile }} />
+	{#if inputFile && outputFilePath}
+		<Progress
+			url="/api/convert/polygons"
+			params={{ input: inputFile.fullPath(), output: outputFilePath }}
+		/>
 	{/if}
 </PageContainer>

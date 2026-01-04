@@ -109,7 +109,7 @@ describe('GET /api/tiles/load', () => {
 
 		expect(response.status).toBe(404);
 		const text = await response.text();
-		expect(text).toBe('Tile not found');
+		expect(text).toBe('Tile not found for path=10/512/384');
 	});
 
 	it('returns 404 on internal server error', async () => {

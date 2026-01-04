@@ -1,15 +1,16 @@
-<script lang="ts">
+<script lang="ts" generics="T extends ApiRoute">
 	import Progress from './Progress.svelte';
+	import type { ApiRoute, ApiRequestType } from '$lib/api/routes';
 
 	let {
 		url,
 		title = 'Progress',
-		params = {},
+		params,
 		onComplete = undefined
 	}: {
-		url: string;
+		url: T;
 		title?: string;
-		params?: Record<string, unknown>;
+		params: ApiRequestType<T>;
 		onComplete?: () => void;
 	} = $props();
 </script>

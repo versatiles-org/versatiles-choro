@@ -1,17 +1,18 @@
-<script lang="ts">
+<script lang="ts" generics="T extends ApiRoute">
 	import { ProgressStatus } from '$lib/api/basics';
+	import { type ApiRoute, type ApiRequestType } from '$lib/api/routes';
 	import Dialog from './Dialog.svelte';
 	import * as v from 'valibot';
 
 	let {
 		url,
 		title = 'Progress',
-		params = {},
+		params,
 		onComplete
 	}: {
-		url: string;
+		url: T;
 		title?: string;
-		params?: Record<string, unknown>;
+		params: ApiRequestType<T>;
 		onComplete?: () => void;
 	} = $props();
 
