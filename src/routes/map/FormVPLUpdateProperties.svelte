@@ -37,44 +37,47 @@
 	});
 </script>
 
-<Foldable title="Add data">
+<Foldable title="Add Data" open={true}>
 	<label>
 		<input type="checkbox" bind:checked={active} />
 		Active
 	</label>
 	<label class:label-error={!selectedFile}>
-		Select Data File
-		<button onclick={() => (showModal = true)}>Open File Selector</button>
+		Select Data File:<br />
+		{selectedFile ? selectedFile.getName() : ''}<br />
+		<button onclick={() => (showModal = true)}>Select File</button>
 		<FileSelector
 			bind:showModal
 			bind:file={selectedFile}
-			fileFilter={(name) => /\.csv$/.test(name)}
+			fileFilter={(name) => /\.[ct]sv$/.test(name)}
 		/>
 	</label>
-	<label class:label-error={!layer_name}>
-		Layer Name
-		<input type="text" class="input-full" bind:value={layer_name} />
-	</label>
-	<label class:label-error={!id_field_tiles}>
-		ID Field (Tiles)
-		<input type="text" class="input-full" bind:value={id_field_tiles} />
-	</label>
-	<label class:label-error={!id_field_data}>
-		ID Field (Data)
-		<input type="text" class="input-full" bind:value={id_field_data} />
-	</label>
-	<label>
-		<input type="checkbox" bind:checked={replace_properties} />
-		Replace Properties
-	</label>
-	<label>
-		<input type="checkbox" bind:checked={remove_non_matching} />
-		Remove Non-Matching Feature
-	</label>
-	<label>
-		<input type="checkbox" bind:checked={include_id} />
-		Include ID
-	</label>
+	{#if selectedFile}
+		<label class:label-error={!layer_name}>
+			Layer Name
+			<input type="text" class="input-full" bind:value={layer_name} />
+		</label>
+		<label class:label-error={!id_field_tiles}>
+			ID Field (Tiles)
+			<input type="text" class="input-full" bind:value={id_field_tiles} />
+		</label>
+		<label class:label-error={!id_field_data}>
+			ID Field (Data)
+			<input type="text" class="input-full" bind:value={id_field_data} />
+		</label>
+		<label>
+			<input type="checkbox" bind:checked={replace_properties} />
+			Replace Properties
+		</label>
+		<label>
+			<input type="checkbox" bind:checked={remove_non_matching} />
+			Remove Non-Matching Feature
+		</label>
+		<label>
+			<input type="checkbox" bind:checked={include_id} />
+			Include ID
+		</label>
+	{/if}
 </Foldable>
 
 <style>

@@ -23,10 +23,11 @@
 	});
 </script>
 
-<Foldable title="Add data">
+<Foldable title="Open Vector Tiles" open={true}>
 	<label>
-		Select Map Data
-		<button onclick={() => (showModal = true)}>Open File Selector</button>
+		Select Container File:<br />
+		{selectedFile ? selectedFile.getName() : ''}<br />
+		<button onclick={() => (showModal = true)}>Select File</button>
 		<FileSelector
 			bind:showModal
 			bind:file={selectedFile}

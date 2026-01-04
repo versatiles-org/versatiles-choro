@@ -21,10 +21,10 @@
 
 <div class="wrapper">
 	<Sidebar>
-		<Frame title="Input file" Icon={IconFile}>
+		<Frame title="Vector Data" Icon={IconFile}>
 			<FormVPLFromContainer bind:params={from_container} />
 		</Frame>
-		<Frame title="Data Processing" Icon={IconVector}>
+		<Frame title="Numeric Data" Icon={IconVector}>
 			<FormVPLUpdateProperties bind:params={update_properties} />
 		</Frame>
 		<Frame title="Design" Icon={IconDesign} borderBottom={false}></Frame>
