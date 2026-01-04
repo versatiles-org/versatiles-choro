@@ -67,10 +67,15 @@
 
 	// Legitimate side effect: updates MapLibre map style when overlay or background changes
 	$effect(() => {
-		if (!map) return;
-		if (!overlay) {
+		// Track map, overlay, and backgroundStyle as dependencies
+		const currentMap = map;
+		const currentOverlay = overlay;
+		const currentBackgroundStyle = backgroundStyle;
+
+		if (!currentMap) return;
+		if (!currentOverlay) {
 			inspector?.detach();
-			map.setStyle(backgroundStyle);
+			currentMap.setStyle(currentBackgroundStyle);
 			return;
 		}
 
