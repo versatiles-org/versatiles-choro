@@ -15,7 +15,7 @@
 		"dev": "mkdir -p data && DATA_PATH=data vite dev",
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
-		"lint": "eslint .",
+		"lint": "eslint --cache --concurrency auto .",
 		"prepare": "husky",
 		"preview": "vite preview",
 		"test:unit": "vitest",

@@ -2,6 +2,7 @@ coverage
 data
 node_modules
 temp
+.eslintcache
 
 # Output
 .svelte-kit
