@@ -107,7 +107,7 @@ export function logError(error: unknown, context?: string): void {
 					...logContext,
 					statusCode: error.statusCode,
 					message: error.message,
-					stack: error.stack,
+					stack: error.stack?.split('\n'),
 					cause: error.cause
 				},
 				'Programming error'
@@ -118,7 +118,7 @@ export function logError(error: unknown, context?: string): void {
 			{
 				...logContext,
 				message: error.message,
-				stack: error.stack,
+				stack: error.stack?.split('\n'),
 				name: error.name
 			},
 			'Unexpected error'
