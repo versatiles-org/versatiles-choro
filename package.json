@@ -14,7 +14,7 @@
 		"cli": "tsx ./src/cli.ts",
 		"dev": "mkdir -p data && DATA_PATH=data vite dev",
 		"format": "prettier --write .",
-		"format:check": "prettier --check .",
+		"format:check": "prettier --check --cache --cache-location .prettiercache .",
 		"lint": "eslint --cache --concurrency auto .",
 		"prepare": "husky",
 		"preview": "vite preview",
