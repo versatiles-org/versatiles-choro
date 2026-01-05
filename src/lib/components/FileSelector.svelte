@@ -24,7 +24,7 @@
 	});
 </script>
 
-<Dialog bind:showModal width="80vw">
+<Dialog bind:showModal width="600px">
 	<div class="file-selector">
 		<h3>{title}</h3>
 		<p>{dir.fullPath()}</p>

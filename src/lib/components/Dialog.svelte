@@ -141,7 +141,7 @@
 <style>
 	dialog {
 		width: var(--dialog-width, 32em);
-		max-width: 80%;
+		max-width: 80vw;
 		border-radius: 0.2em;
 		border: none;
 		padding: 1em;
