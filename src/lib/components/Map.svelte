@@ -129,9 +129,8 @@
 		position: absolute;
 		top: 10px;
 		right: 10px;
-		max-width: 350px;
-		max-height: 300px;
-		overflow: auto;
+		width: 300px;
+		overflow: hidden;
 		background: var(--color-bg-primary);
 		border: 1px solid var(--color-border-light);
 		border-radius: var(--radius-sm);
@@ -148,12 +147,13 @@
 	.inspector-panel td {
 		padding: 2px 4px;
 		vertical-align: top;
+		width: 50%;
 	}
 	.inspector-panel .prop-name {
 		font-weight: 500;
 		color: var(--color-text-secondary);
-		white-space: nowrap;
 		padding-right: 0.75rem;
+		text-overflow: ellipsis;
 	}
 	.inspector-panel .prop-value {
 		color: var(--color-text-primary);
