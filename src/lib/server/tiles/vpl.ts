@@ -6,7 +6,7 @@ import type {
 	VPLParamFromContainer,
 	VPLParamMetaUpdate,
 	VPLParamUpdateProperties
-} from '$lib/api/vpl';
+} from '$lib/api/schemas';
 import { resolve_data } from '$lib/server/filesystem/filesystem';
 import * as v from 'valibot';
 

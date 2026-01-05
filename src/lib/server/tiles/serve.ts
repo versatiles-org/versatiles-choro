@@ -3,7 +3,7 @@ import { randomUUID } from 'crypto';
 import type * as v from 'valibot';
 import { buildVPL } from './vpl';
 import { loggers } from '../logger/index.js';
-import type { VPLParam } from '$lib/api/vpl';
+import type { VPLParam } from '$lib/api/schemas';
 
 // Singleton TileServer instance
 let globalServer: TileServer | null = null;

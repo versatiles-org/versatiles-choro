@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import type { InferOutput } from 'valibot';
-	import type { TilesInitRequest } from '$lib/api/requests';
-	import { createBackgroundStyle, type BackgroundMap } from './map/style_background';
-	import { getTileSource, TileSource } from './map/tile_source';
+	import type { TilesInitRequest } from '$lib/api/schemas';
+	import { createBackgroundStyle, type BackgroundMap } from './map/style-background';
+	import { getTileSource, TileSource } from './map/tile-source';
 	import { overlayStyles } from './map/style';
 	import { Inspector } from './map/Inspector.svelte.ts';
 

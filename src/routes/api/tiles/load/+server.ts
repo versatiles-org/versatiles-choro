@@ -1,4 +1,4 @@
-import { TilesLoadRequest } from '$lib/api/requests';
+import { TilesLoadRequest } from '$lib/api/schemas';
 import { getTileServerPort } from '$lib/server/tiles/serve';
 import type { RequestHandler } from './$types';
 import * as v from 'valibot';

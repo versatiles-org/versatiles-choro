@@ -1,4 +1,4 @@
-import type FileSelector from '$lib/component/FileSelector.svelte';
+import type FileSelector from '$lib/components/FileSelector.svelte';
 
 export interface FileSelectorState {
 	fileName: string;

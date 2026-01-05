@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { createBackgroundStyle, type BackgroundMap } from './style_background';
+import { createBackgroundStyle, type BackgroundMap } from './style-background';
 
 // Mock @versatiles/style
 vi.mock('@versatiles/style', () => ({

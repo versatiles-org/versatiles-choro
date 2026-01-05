@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { getTileSource } from './tile_source';
+import { getTileSource } from './tile-source';
 import type { TileJSONSpecificationVector } from '@versatiles/style';
 
 // Mock window.location before importing module

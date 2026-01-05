@@ -8,7 +8,7 @@ import {
 	buildVPLUpdateProperties
 } from './vpl';
 import * as v from 'valibot';
-import type { VPLParam } from '$lib/api/vpl';
+import type { VPLParam } from '$lib/api/schemas';
 
 vi.mock('$lib/server/filesystem/filesystem', () => ({
 	resolve_data: (path: string) => 'data/' + path,

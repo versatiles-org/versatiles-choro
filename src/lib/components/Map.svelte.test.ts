@@ -3,8 +3,8 @@ import { render } from '@testing-library/svelte';
 import { tick } from 'svelte';
 import MapWrapper from './Map.test-wrapper.svelte';
 import type { InferOutput } from 'valibot';
-import type { TilesInitRequest } from '$lib/api/requests';
-import { getTileSource, TileSource } from './map/tile_source';
+import type { TilesInitRequest } from '$lib/api/schemas';
+import { getTileSource, TileSource } from './map/tile-source';
 
 // Mock maplibre-gl
 vi.mock('maplibre-gl', () => ({
@@ -25,7 +25,7 @@ vi.mock('maplibre-gl', () => ({
 }));
 
 // Mock tile source
-vi.mock('./map/tile_source', () => ({
+vi.mock('./map/tile-source', () => ({
 	getTileSource: vi.fn(async () => ({
 		getStyle: vi.fn(() => ({
 			version: 8,
@@ -148,7 +148,7 @@ describe('Map', () => {
 	});
 
 	it('calls getTileSource when overlay changes', async () => {
-		const { getTileSource } = await import('./map/tile_source');
+		const { getTileSource } = await import('./map/tile-source');
 
 		const state = $state({
 			overlay_source: undefined as TileSource | undefined
@@ -186,7 +186,7 @@ describe('Map', () => {
 	});
 
 	it('calls getTileSource when overlay changes multiple times', async () => {
-		const { getTileSource } = await import('./map/tile_source');
+		const { getTileSource } = await import('./map/tile-source');
 
 		const state = $state({
 			overlay_source: undefined as TileSource | undefined

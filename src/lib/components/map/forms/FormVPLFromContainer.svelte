@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { VPLParamFromContainer } from '$lib/api/vpl';
-	import FileSelector from '$lib/component/FileSelector.svelte';
-	import Foldable from '$lib/component/SidebarFoldable.svelte';
+	import type { VPLParamFromContainer } from '$lib/api/schemas';
+	import FileSelector from '$lib/components/FileSelector.svelte';
+	import Foldable from '$lib/components/SidebarFoldable.svelte';
 	import type { FsFile } from '$lib/api/filesystem.svelte';
 	import type { InferOutput } from 'valibot';
 

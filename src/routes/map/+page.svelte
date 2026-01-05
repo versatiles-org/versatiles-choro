@@ -1,16 +1,15 @@
 <script lang="ts">
-	import type { TilesInitRequest } from '$lib/api/requests';
-	import Map from '$lib/component/Map.svelte';
+	import type { TilesInitRequest } from '$lib/api/schemas';
+	import Map from '$lib/components/Map.svelte';
 	import type { InferOutput } from 'valibot';
-	import Frame from '$lib/component/SidebarFrame.svelte';
-	import Sidebar from '$lib/component/Sidebar.svelte';
+	import Frame from '$lib/components/SidebarFrame.svelte';
+	import Sidebar from '$lib/components/Sidebar.svelte';
 	import IconFile from '@lucide/svelte/icons/file';
 	import IconVector from '@lucide/svelte/icons/hammer';
 	import IconDesign from '@lucide/svelte/icons/paintbrush';
-	import FormVPLFromContainer from './FormVPLFromContainer.svelte';
-	import FormVPLUpdateProperties from './FormVPLUpdateProperties.svelte';
-	import type { VPLParamFromContainer, VPLParamUpdateProperties } from '$lib/api/vpl';
-	import { getTileSource, TileSource } from '$lib/component/map/tile_source';
+	import { FormVPLFromContainer, FormVPLUpdateProperties } from '$lib/components/map/forms';
+	import type { VPLParamFromContainer, VPLParamUpdateProperties } from '$lib/api/schemas';
+	import { getTileSource, TileSource } from '$lib/components/map/tile-source';
 	import type { TileJSONSpecificationVector } from '@versatiles/style';
 
 	let from_container: InferOutput<typeof VPLParamFromContainer> | undefined = $state();

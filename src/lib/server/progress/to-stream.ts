@@ -1,4 +1,4 @@
-import type { ProgressStatus } from '$lib/api/basics';
+import type { ProgressStatus } from '$lib/api/schemas';
 import type { Progress } from './index';
 import type { InferInput } from 'valibot';
 

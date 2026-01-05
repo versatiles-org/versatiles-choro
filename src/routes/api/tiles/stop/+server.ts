@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import * as v from 'valibot';
-import { TilesStopRequest } from '$lib/api/requests';
+import { TilesStopRequest } from '$lib/api/schemas';
 import { removeTileSource } from '$lib/server/tiles/serve';
 import { withErrorHandling } from '$lib/server/errors/handler.js';
 

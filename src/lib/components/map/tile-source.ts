@@ -1,7 +1,7 @@
 import type { TileJSONSpecificationVector } from '@versatiles/style';
 import type { StyleSpecification } from 'maplibre-gl';
 import { getInspectorStyle } from './style';
-import { TilesInitRequest, TilesInitResponse } from '$lib/api/requests';
+import { TilesInitRequest, TilesInitResponse } from '$lib/api/schemas';
 import * as v from 'valibot';
 
 export class TileSource {

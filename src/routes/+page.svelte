@@ -6,21 +6,21 @@
 		title: string;
 		description: string;
 		icon: string;
-		href: '/download_test_data' | '/convert_polygons' | '/map';
+		href: '/download-test-data' | '/convert-polygons' | '/map';
 		color: string;
 	}[] = [
 		{
 			title: 'Download Test Data',
 			description: 'Download sample datasets to get started with choropleth mapping',
 			icon: '📥',
-			href: '/download_test_data',
+			href: '/download-test-data',
 			color: 'hsl(200, 70%, 50%)'
 		},
 		{
 			title: 'Convert Polygons',
 			description: 'Transform polygon data into optimized vector tiles for efficient rendering',
 			icon: '🔄',
-			href: '/convert_polygons',
+			href: '/convert-polygons',
 			color: 'hsl(280, 60%, 55%)'
 		},
 		{

@@ -3,7 +3,7 @@ import { convertPolygonsToVersatiles } from '$lib/server/convert/geometry';
 import { resolve } from 'path';
 import { downloadTestData } from '$lib/server/download/test-data';
 import { convertTiles } from '$lib/server/convert/tiles';
-import type { VPLParam } from '$lib/api/vpl';
+import type { VPLParam } from '$lib/api/schemas';
 import type { InferOutput } from 'valibot';
 import pjson from '../package.json' assert { type: 'json' };
 

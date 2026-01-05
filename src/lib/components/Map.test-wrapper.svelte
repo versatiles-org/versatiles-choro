@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Map from './Map.svelte';
-	import type { BackgroundMap } from './map/style_background';
-	import type { TileSource } from './map/tile_source';
+	import type { BackgroundMap } from './map/style-background';
+	import type { TileSource } from './map/tile-source';
 
 	let {
 		backgroundMap = undefined,

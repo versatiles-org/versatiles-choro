@@ -1,6 +1,6 @@
 <script lang="ts">
-	import PageContainer from '$lib/component/PageContainer.svelte';
-	import Progress from '$lib/component/Progress.svelte';
+	import PageContainer from '$lib/components/PageContainer.svelte';
+	import Progress from '$lib/components/Progress.svelte';
 	let running = $state(false);
 	let success = $state(false);
 
