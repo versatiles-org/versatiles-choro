@@ -13,7 +13,7 @@ vi.mock('$lib/server/filesystem/filesystem', () => ({
 }));
 
 import { getCSVFieldNames } from '$lib/server/csv/fields';
-import { resolve_data } from '$lib/server/filesystem/filesystem';
+import { resolveDataPath } from '$lib/server/filesystem/filesystem';
 import { FileSystemError } from '$lib/server/errors/errors';
 
 describe('POST /api/csv/fields', () => {
@@ -38,7 +38,7 @@ describe('POST /api/csv/fields', () => {
 
 	describe('Successful requests', () => {
 		it('should return field names for valid CSV file', async () => {
-			vi.mocked(resolve_data).mockReturnValue('/absolute/path/to/file.csv');
+			vi.mocked(resolveDataPath).mockReturnValue('/absolute/path/to/file.csv');
 			vi.mocked(getCSVFieldNames).mockReturnValue(['id', 'name', 'value']);
 
 			const mockEvent = createMockEvent({ filePath: '/data/file.csv' });
@@ -47,12 +47,12 @@ describe('POST /api/csv/fields', () => {
 			expect(response.status).toBe(200);
 			const data = await response.json();
 			expect(data).toEqual({ fields: ['id', 'name', 'value'] });
-			expect(resolve_data).toHaveBeenCalledWith('/data/file.csv');
+			expect(resolveDataPath).toHaveBeenCalledWith('/data/file.csv');
 			expect(getCSVFieldNames).toHaveBeenCalledWith('/absolute/path/to/file.csv');
 		});
 
 		it('should return field names for valid TSV file', async () => {
-			vi.mocked(resolve_data).mockReturnValue('/absolute/path/to/file.tsv');
+			vi.mocked(resolveDataPath).mockReturnValue('/absolute/path/to/file.tsv');
 			vi.mocked(getCSVFieldNames).mockReturnValue(['col1', 'col2', 'col3']);
 
 			const mockEvent = createMockEvent({ filePath: '/data/file.tsv' });
@@ -64,7 +64,7 @@ describe('POST /api/csv/fields', () => {
 		});
 
 		it('should return empty array for file with no fields', async () => {
-			vi.mocked(resolve_data).mockReturnValue('/absolute/path/to/empty.csv');
+			vi.mocked(resolveDataPath).mockReturnValue('/absolute/path/to/empty.csv');
 			vi.mocked(getCSVFieldNames).mockReturnValue([]);
 
 			const mockEvent = createMockEvent({ filePath: '/data/empty.csv' });
@@ -76,7 +76,7 @@ describe('POST /api/csv/fields', () => {
 		});
 
 		it('should handle field names with special characters', async () => {
-			vi.mocked(resolve_data).mockReturnValue('/absolute/path/to/special.csv');
+			vi.mocked(resolveDataPath).mockReturnValue('/absolute/path/to/special.csv');
 			vi.mocked(getCSVFieldNames).mockReturnValue(['ID_Field', 'Name-123', 'Value(USD)']);
 
 			const mockEvent = createMockEvent({ filePath: '/data/special.csv' });
@@ -94,7 +94,7 @@ describe('POST /api/csv/fields', () => {
 			const response = await POST(mockEvent);
 
 			expect(response.status).toBe(400);
-			expect(resolve_data).not.toHaveBeenCalled();
+			expect(resolveDataPath).not.toHaveBeenCalled();
 			expect(getCSVFieldNames).not.toHaveBeenCalled();
 		});
 
@@ -129,7 +129,7 @@ describe('POST /api/csv/fields', () => {
 
 	describe('File system errors', () => {
 		it('should handle file not found error', async () => {
-			vi.mocked(resolve_data).mockReturnValue('/absolute/path/to/missing.csv');
+			vi.mocked(resolveDataPath).mockReturnValue('/absolute/path/to/missing.csv');
 			vi.mocked(getCSVFieldNames).mockImplementation(() => {
 				throw new FileSystemError('File not found: /absolute/path/to/missing.csv');
 			});
@@ -141,7 +141,7 @@ describe('POST /api/csv/fields', () => {
 		});
 
 		it('should handle generic errors', async () => {
-			vi.mocked(resolve_data).mockReturnValue('/absolute/path/to/file.csv');
+			vi.mocked(resolveDataPath).mockReturnValue('/absolute/path/to/file.csv');
 			vi.mocked(getCSVFieldNames).mockImplementation(() => {
 				throw new Error('Unexpected error');
 			});
@@ -155,18 +155,18 @@ describe('POST /api/csv/fields', () => {
 
 	describe('Path resolution', () => {
 		it('should pass filePath to resolve_data', async () => {
-			vi.mocked(resolve_data).mockReturnValue('/absolute/path');
+			vi.mocked(resolveDataPath).mockReturnValue('/absolute/path');
 			vi.mocked(getCSVFieldNames).mockReturnValue(['field1']);
 
 			const mockEvent = createMockEvent({ filePath: '/relative/path.csv' });
 			await POST(mockEvent);
 
-			expect(resolve_data).toHaveBeenCalledWith('/relative/path.csv');
+			expect(resolveDataPath).toHaveBeenCalledWith('/relative/path.csv');
 		});
 
 		it('should use resolved path for getCSVFieldNames', async () => {
 			const absolutePath = '/absolute/data/path/file.csv';
-			vi.mocked(resolve_data).mockReturnValue(absolutePath);
+			vi.mocked(resolveDataPath).mockReturnValue(absolutePath);
 			vi.mocked(getCSVFieldNames).mockReturnValue(['id', 'value']);
 
 			const mockEvent = createMockEvent({ filePath: '/data/file.csv' });

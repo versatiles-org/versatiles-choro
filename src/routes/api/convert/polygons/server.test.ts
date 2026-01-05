@@ -18,7 +18,7 @@ vi.mock('$lib/server/progress', () => ({
 	progressToStream: vi.fn()
 }));
 
-import { resolve_data } from '$lib/server/filesystem/filesystem';
+import { resolveDataPath } from '$lib/server/filesystem/filesystem';
 import { convertPolygonsToVersatiles } from '$lib/server/convert/geometry';
 import { progressToStream } from '$lib/server/progress';
 
@@ -55,8 +55,8 @@ describe('POST /api/convert/polygons', () => {
 		const mockEvent = createMockEvent(requestBody);
 		await POST(mockEvent);
 
-		expect(resolve_data).toHaveBeenCalledWith('input.geojson');
-		expect(resolve_data).toHaveBeenCalledWith('output.versatiles');
+		expect(resolveDataPath).toHaveBeenCalledWith('input.geojson');
+		expect(resolveDataPath).toHaveBeenCalledWith('output.versatiles');
 		expect(convertPolygonsToVersatiles).toHaveBeenCalledWith(
 			'/resolved/input.geojson',
 			'/resolved/output.versatiles'
@@ -147,7 +147,7 @@ describe('POST /api/convert/polygons', () => {
 	});
 
 	it('handles path resolution errors', async () => {
-		vi.mocked(resolve_data).mockImplementation(() => {
+		vi.mocked(resolveDataPath).mockImplementation(() => {
 			throw new Error('Path traversal detected');
 		});
 

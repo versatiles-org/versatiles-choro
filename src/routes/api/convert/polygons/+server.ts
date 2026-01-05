@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types';
-import { resolve_data } from '$lib/server/filesystem/filesystem';
+import { resolveDataPath } from '$lib/server/filesystem/filesystem';
 import { convertPolygonsToVersatiles } from '$lib/server/convert/geometry';
 import * as v from 'valibot';
 import { ConvertPolygonsRequest } from '$lib/api/schemas';
@@ -8,6 +8,6 @@ import { withErrorHandling } from '$lib/server/errors/handler.js';
 
 export const POST: RequestHandler = withErrorHandling(async ({ request }) => {
 	const { input, output } = v.parse(ConvertPolygonsRequest, await request.json());
-	const progress = convertPolygonsToVersatiles(resolve_data(input), resolve_data(output));
+	const progress = convertPolygonsToVersatiles(resolveDataPath(input), resolveDataPath(output));
 	return progressToStream(progress, request.signal);
 });

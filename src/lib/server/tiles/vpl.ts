@@ -7,7 +7,7 @@ import type {
 	VPLParamMetaUpdate,
 	VPLParamUpdateProperties
 } from '$lib/api/schemas';
-import { resolve_data } from '$lib/server/filesystem/filesystem';
+import { resolveDataPath } from '$lib/server/filesystem/filesystem';
 import * as v from 'valibot';
 
 export function buildVPL(vpl: v.InferOutput<typeof VPLParam>): string {
@@ -29,7 +29,7 @@ export function buildVPL(vpl: v.InferOutput<typeof VPLParam>): string {
 }
 
 export function buildVPLFrom(p: v.InferOutput<typeof VPLParamFromContainer>): string {
-	return `from_container filename="${resolve_data(p.filename)}"`;
+	return `from_container filename="${resolveDataPath(p.filename)}"`;
 }
 
 export function buildVPLUpdateProperties(
@@ -37,7 +37,7 @@ export function buildVPLUpdateProperties(
 ): string | null {
 	const parts = [
 		'vector_update_properties',
-		`data_source_path="${p.data_source_path}"`,
+		`data_source_path="${resolveDataPath(p.data_source_path)}"`,
 		`layer_name="${p.layer_name}"`,
 		`id_field_tiles="${p.id_field_tiles}"`,
 		`id_field_data="${p.id_field_data}"`,

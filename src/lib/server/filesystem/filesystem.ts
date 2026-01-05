@@ -21,10 +21,10 @@ function resolvePath(basePath: string, ...pathSegment: string[]): string {
 	return resolved;
 }
 
-export function resolve_data(...pathSegment: string[]): string {
+export function resolveDataPath(...pathSegment: string[]): string {
 	return resolvePath(DATA_PATH, ...pathSegment);
 }
 
-export function resolve_temp(...pathSegment: string[]): string {
+export function resolveTempPath(...pathSegment: string[]): string {
 	return resolvePath(TEMP_PATH, ...pathSegment);
 }

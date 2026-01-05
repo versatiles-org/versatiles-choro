@@ -3,7 +3,7 @@ import { json } from '@sveltejs/kit';
 import * as v from 'valibot';
 import { GetCSVFieldsRequest } from '$lib/api/schemas';
 import { getCSVFieldNames } from '$lib/server/csv/fields';
-import { resolve_data } from '$lib/server/filesystem/filesystem';
+import { resolveDataPath } from '$lib/server/filesystem/filesystem';
 import { withErrorHandling } from '$lib/server/errors/handler.js';
 
 export const POST: RequestHandler = withErrorHandling(async ({ request }) => {
@@ -11,7 +11,7 @@ export const POST: RequestHandler = withErrorHandling(async ({ request }) => {
 	const { filePath } = v.parse(GetCSVFieldsRequest, await request.json());
 
 	// Resolve path securely (prevents directory traversal)
-	const absolutePath = resolve_data(filePath);
+	const absolutePath = resolveDataPath(filePath);
 
 	// Get field names from CSV/TSV file
 	const fields = getCSVFieldNames(absolutePath);

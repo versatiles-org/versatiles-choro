@@ -24,7 +24,7 @@ vi.mock('$lib/server/progress', () => ({
 }));
 
 import { mkdir } from 'fs/promises';
-import { resolve_data } from '$lib/server/filesystem/filesystem';
+import { resolveDataPath } from '$lib/server/filesystem/filesystem';
 import { downloadTestData } from '$lib/server/download/test-data';
 import { progressToStream } from '$lib/server/progress';
 
@@ -54,7 +54,7 @@ describe('POST /api/download/test-data', () => {
 		const mockEvent = createMockEvent();
 		await POST(mockEvent);
 
-		expect(resolve_data).toHaveBeenCalledWith('/test-data');
+		expect(resolveDataPath).toHaveBeenCalledWith('/test-data');
 		expect(mkdir).toHaveBeenCalledWith('/resolved/test-data', { recursive: true });
 	});
 
