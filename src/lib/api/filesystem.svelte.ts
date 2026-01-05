@@ -18,7 +18,7 @@ export class FsDirectory {
 			if (child.isDirectory) {
 				return new FsDirectory(child.name, this);
 			} else {
-				return new FsFile(child.name, this, child.size);
+				return new FsFile(child.name, this, child.size, child.mtime);
 			}
 		});
 	}
@@ -34,16 +34,21 @@ export class FsFile {
 	private name: string;
 	private directory: FsDirectory;
 	private size: number;
-	constructor(name: string, directory: FsDirectory, size: number) {
+	private mtime: number;
+	constructor(name: string, directory: FsDirectory, size: number, mtime: number) {
 		this.name = name;
 		this.directory = directory;
 		this.size = size;
+		this.mtime = mtime;
 	}
 	getDirectory(): FsDirectory {
 		return this.directory;
 	}
 	getSize(): number {
 		return this.size;
+	}
+	getMtime(): number {
+		return this.mtime;
 	}
 	fullPath(): string {
 		return cleanPath(this.directory.fullPath() + '/' + this.name);

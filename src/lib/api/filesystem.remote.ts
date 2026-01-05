@@ -14,7 +14,8 @@ export const getChildren = query(v.string(), async (path) => {
 			return {
 				name,
 				isDirectory: stats.isDirectory(),
-				size: stats.size
+				size: stats.size,
+				mtime: stats.mtime.getTime()
 			};
 		});
 });

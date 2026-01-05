@@ -22,6 +22,12 @@ vi.mock('$lib/api/filesystem.svelte', () => {
 		fullPath() {
 			return this.path + '/' + this.name;
 		}
+		getSize() {
+			return 1024;
+		}
+		getMtime() {
+			return Date.now();
+		}
 	}
 
 	class MockFsDirectory {
@@ -84,7 +90,7 @@ describe('FileSaver', () => {
 		expect(heading).toHaveTextContent('Save Test File');
 	});
 
-	it('displays current directory path', async () => {
+	it('displays breadcrumb navigation', async () => {
 		const state = $state({ showModal: true, filepath: undefined });
 
 		const { container } = render(FileSaverWrapper, {
@@ -106,7 +112,9 @@ describe('FileSaver', () => {
 
 		await tick();
 
-		expect(container.textContent).toContain('/home/user');
+		// Check for breadcrumb navigation element
+		const breadcrumbs = container.querySelector('.breadcrumbs');
+		expect(breadcrumbs).toBeInTheDocument();
 	});
 
 	it('shows filename input field', async () => {
@@ -452,7 +460,7 @@ describe('FileSaver', () => {
 		// Overwrite warning should be visible
 		const warning = container.querySelector('.overwrite-warning');
 		expect(warning).toBeInTheDocument();
-		expect(warning?.textContent).toContain('File already exists');
+		expect(warning?.textContent).toContain('already exists');
 	});
 
 	it('cancels overwrite warning', async () => {
@@ -535,12 +543,12 @@ describe('FileSaver', () => {
 		await fireEvent.click(saveButton);
 		await tick();
 
-		// Find and click the overwrite button in the warning
-		const overwriteButton = Array.from(container.querySelectorAll('.warning-actions button')).find(
-			(btn) => btn.textContent === 'Overwrite'
+		// Find and click the Replace button in the warning
+		const replaceButton = Array.from(container.querySelectorAll('.warning-actions button')).find(
+			(btn) => btn.textContent === 'Replace'
 		) as HTMLButtonElement;
 
-		await fireEvent.click(overwriteButton);
+		await fireEvent.click(replaceButton);
 		await tick();
 
 		// File should be saved and dialog closed
@@ -646,7 +654,7 @@ describe('FileSaver', () => {
 		await tick(); // Wait for loadDirectory
 
 		// Should show subdirectory
-		expect(container.textContent).toContain('subdir/');
+		expect(container.textContent).toContain('subdir');
 
 		// Should show existing files
 		expect(container.textContent).toContain('existing.txt');

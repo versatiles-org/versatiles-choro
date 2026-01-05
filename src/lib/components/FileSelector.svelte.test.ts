@@ -14,6 +14,12 @@ vi.mock('$lib/api/filesystem.svelte', () => {
 		fullPath() {
 			return this.path + '/' + this.name;
 		}
+		getSize() {
+			return 1024;
+		}
+		getMtime() {
+			return Date.now();
+		}
 	}
 
 	class MockFsDirectory {

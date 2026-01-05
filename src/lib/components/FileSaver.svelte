@@ -1,6 +1,17 @@
 <script lang="ts">
 	import Dialog from './Dialog.svelte';
 	import { FsDirectory, FsFile, getRootDirectory } from '$lib/api/filesystem.svelte';
+	import { formatFileSize, formatDate } from '$lib/utils/format';
+	import {
+		Folder,
+		File,
+		FileText,
+		FileImage,
+		FileCode,
+		ChevronRight,
+		House,
+		TriangleAlert
+	} from '@lucide/svelte';
 
 	let {
 		initialDirectory,
@@ -71,65 +82,135 @@
 	$effect(() => {
 		loadDirectory();
 	});
+
+	// Build breadcrumb path
+	function getBreadcrumbs(): FsDirectory[] {
+		const crumbs: FsDirectory[] = [];
+		let current: FsDirectory | null = dir;
+		while (current) {
+			crumbs.unshift(current);
+			current = current.getParent();
+		}
+		return crumbs;
+	}
+
+	// Get icon component based on file extension
+	function getFileIcon(filename: string) {
+		const ext = filename.split('.').pop()?.toLowerCase() ?? '';
+		const imageExts = ['png', 'jpg', 'jpeg', 'gif', 'svg', 'webp', 'ico'];
+		const codeExts = ['ts', 'js', 'svelte', 'json', 'css', 'html', 'tsx', 'jsx'];
+		const textExts = ['txt', 'md', 'csv', 'log'];
+
+		if (imageExts.includes(ext)) return FileImage;
+		if (codeExts.includes(ext)) return FileCode;
+		if (textExts.includes(ext)) return FileText;
+		return File;
+	}
 </script>
 
-<Dialog bind:showModal width="600px">
-	<div class="file-saver">
+<Dialog bind:showModal width="700px">
+	<div class="file-browser">
 		<h3>{title}</h3>
-		<p>{dir.fullPath()}</p>
 
-		<!-- Directory navigation -->
-		<div class="directory-list">
+		<!-- Breadcrumb navigation -->
+		<nav class="breadcrumbs">
+			{#each getBreadcrumbs() as crumb, i (crumb.fullPath())}
+				{#if i > 0}
+					<ChevronRight size={14} class="separator" />
+				{/if}
+				<button
+					class="breadcrumb"
+					class:current={crumb === dir}
+					onclick={() => (dir = crumb)}
+					disabled={crumb === dir}
+				>
+					{#if i === 0}
+						<House size={14} />
+					{:else}
+						{crumb.getName()}
+					{/if}
+				</button>
+			{/each}
+		</nav>
+
+		<!-- File list -->
+		<div class="file-list">
+			<div class="file-header">
+				<span class="col-icon"></span>
+				<span class="col-name">Name</span>
+				<span class="col-size">Size</span>
+				<span class="col-date">Modified</span>
+			</div>
+
 			{#if dir.getParent()}
-				<button class="button-ghost directory" onclick={() => (dir = dir.getParent()!)}>..</button>
+				<button class="file-row folder" onclick={() => (dir = dir.getParent()!)}>
+					<span class="col-icon"><Folder size={16} /></span>
+					<span class="col-name">..</span>
+					<span class="col-size"></span>
+					<span class="col-date"></span>
+				</button>
 			{/if}
+
 			{#each await dir.getChildren() as child (child)}
 				{#if child instanceof FsDirectory}
-					<button class="button-ghost directory" onclick={() => (dir = child)}
-						>{child.getName()}/</button
-					>
+					<button class="file-row folder" onclick={() => (dir = child)}>
+						<span class="col-icon"><Folder size={16} /></span>
+						<span class="col-name">{child.getName()}</span>
+						<span class="col-size"></span>
+						<span class="col-date"></span>
+					</button>
 				{:else}
-					<div class="existing-file">{child.getName()}</div>
+					{@const IconComponent = getFileIcon(child.getName())}
+					<div class="file-row file existing">
+						<span class="col-icon"><IconComponent size={16} /></span>
+						<span class="col-name">{child.getName()}</span>
+						<span class="col-size">{formatFileSize(child.getSize())}</span>
+						<span class="col-date">{formatDate(child.getMtime())}</span>
+					</div>
 				{/if}
 			{/each}
 		</div>
 
 		<!-- Filename input -->
-		<div class="filename-input">
-			<label for="filename">Filename:</label>
-			<input
-				id="filename"
-				type="text"
-				class="input-mono"
-				bind:value={filename}
-				placeholder="Enter filename"
-				onkeydown={(e) => {
-					if (e.key === 'Enter' && filename.trim()) {
-						handleSave();
-					}
-				}}
-			/>
-			{#if defaultExtension}
-				<span class="extension">{defaultExtension}</span>
-			{/if}
+		<div class="filename-section">
+			<label for="filename">Save as:</label>
+			<div class="filename-input">
+				<input
+					id="filename"
+					type="text"
+					class="input-mono"
+					bind:value={filename}
+					placeholder="Enter filename"
+					onkeydown={(e) => {
+						if (e.key === 'Enter' && filename.trim()) {
+							handleSave();
+						}
+					}}
+				/>
+				{#if defaultExtension}
+					<span class="extension">{defaultExtension}</span>
+				{/if}
+			</div>
 		</div>
 
 		<!-- Actions -->
 		<div class="actions">
 			<button class="button-secondary" onclick={() => (showModal = false)}>Cancel</button>
-			<button class="button-secondary" onclick={handleSave} disabled={!filename.trim()}>Save</button
-			>
+			<button class="button-primary" onclick={handleSave} disabled={!filename.trim()}>Save</button>
 		</div>
 
 		<!-- Overwrite warning -->
 		{#if showOverwriteWarning}
 			<div class="overwrite-warning">
-				<p><strong>Warning:</strong> File already exists. Do you want to overwrite it?</p>
+				<div class="warning-content">
+					<TriangleAlert size={20} />
+					<p>A file with this name already exists. Do you want to replace it?</p>
+				</div>
 				<div class="warning-actions">
 					<button class="button-secondary" onclick={() => (showOverwriteWarning = false)}
 						>Cancel</button
 					>
-					<button class="button-danger" onclick={confirmOverwriteAction}>Overwrite</button>
+					<button class="button-danger" onclick={confirmOverwriteAction}>Replace</button>
 				</div>
 			</div>
 		{/if}
@@ -137,82 +218,253 @@
 </Dialog>
 
 <style>
-	.file-saver {
+	.file-browser {
 		display: flex;
 		flex-direction: column;
-		gap: 1em;
+		gap: 1rem;
 	}
 
 	h3 {
 		margin: 0;
+		font-weight: 500;
 	}
 
-	p {
-		margin: 0;
-		font-family: monospace;
-		font-size: 0.9em;
+	/* Breadcrumbs */
+	.breadcrumbs {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+		padding: 0.5rem;
+		background: #f5f5f5;
+		border-radius: 4px;
+		overflow-x: auto;
+	}
+
+	.breadcrumbs :global(.separator) {
+		color: #999;
+		flex-shrink: 0;
+	}
+
+	.breadcrumb {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+		padding: 0.25rem 0.5rem;
+		border: none;
+		background: none;
+		border-radius: 3px;
+		cursor: pointer;
+		font-size: 0.85rem;
+		color: #0066cc;
+		white-space: nowrap;
+	}
+
+	.breadcrumb:hover:not(:disabled) {
+		background: #e0e0e0;
+	}
+
+	.breadcrumb.current {
+		color: #333;
+		cursor: default;
+	}
+
+	/* File list */
+	.file-list {
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		max-height: 300px;
+		overflow-y: auto;
+	}
+
+	.file-header {
+		display: grid;
+		grid-template-columns: 28px 1fr 80px 100px;
+		gap: 0.5rem;
+		padding: 0.5rem;
+		background: #f9f9f9;
+		border-bottom: 1px solid #ddd;
+		font-size: 0.75rem;
+		font-weight: 500;
+		color: #666;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		position: sticky;
+		top: 0;
+	}
+
+	.file-row {
+		display: grid;
+		grid-template-columns: 28px 1fr 80px 100px;
+		gap: 0.5rem;
+		padding: 0.5rem;
+		border: none;
+		background: none;
+		width: 100%;
+		text-align: left;
+		border-bottom: 1px solid #eee;
+	}
+
+	.file-row:last-child {
+		border-bottom: none;
+	}
+
+	button.file-row:hover {
+		background: #f0f7ff;
+		cursor: pointer;
+	}
+
+	.file-row.folder {
+		color: #0066cc;
+	}
+
+	.file-row.folder :global(svg) {
+		color: #f5a623;
+	}
+
+	.file-row.file :global(svg) {
 		color: #666;
 	}
 
-	.directory-list {
-		max-height: 300px;
-		overflow-y: auto;
-		border: 1px solid #ccc;
-		border-radius: 4px;
-		padding: 0.5em;
+	.file-row.existing {
+		opacity: 0.6;
 	}
 
-	.existing-file {
+	.col-icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.col-name {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		font-family:
+			system-ui,
+			-apple-system,
+			sans-serif;
+		font-size: 0.9rem;
+	}
+
+	.col-size,
+	.col-date {
 		font-family: monospace;
-		opacity: 0.5;
-		padding: 2px 4px;
+		font-size: 0.8rem;
+		color: #888;
+		text-align: right;
+	}
+
+	/* Filename input */
+	.filename-section {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.filename-section label {
+		font-weight: 500;
+		font-size: 0.9rem;
 	}
 
 	.filename-input {
 		display: flex;
 		align-items: center;
-		gap: 0.5em;
-	}
-
-	.filename-input label {
-		font-weight: bold;
-		white-space: nowrap;
+		gap: 0;
 	}
 
 	.filename-input input {
 		flex: 1;
+		padding: 0.5rem 0.75rem;
+		border: 1px solid #ddd;
+		border-radius: 4px 0 0 4px;
+		font-size: 0.9rem;
+	}
+
+	.filename-input input:focus {
+		outline: none;
+		border-color: #0066cc;
 	}
 
 	.extension {
+		padding: 0.5rem 0.75rem;
+		background: #f5f5f5;
+		border: 1px solid #ddd;
+		border-left: none;
+		border-radius: 0 4px 4px 0;
 		font-family: monospace;
+		font-size: 0.9rem;
 		color: #666;
-		white-space: nowrap;
 	}
 
+	/* Actions */
 	.actions {
 		display: flex;
-		gap: 0.5em;
+		gap: 0.5rem;
 		justify-content: flex-end;
 	}
 
+	.button-primary {
+		padding: 0.5rem 1rem;
+		background: #0066cc;
+		color: white;
+		border: none;
+		border-radius: 4px;
+		cursor: pointer;
+		font-weight: 500;
+	}
+
+	.button-primary:hover:not(:disabled) {
+		background: #0052a3;
+	}
+
+	.button-primary:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+
+	/* Overwrite warning */
 	.overwrite-warning {
-		margin-top: 1em;
-		padding: 1em;
-		background-color: #fff3cd;
+		padding: 1rem;
+		background: #fef3cd;
 		border: 1px solid #ffc107;
 		border-radius: 4px;
 	}
 
-	.overwrite-warning p {
-		margin: 0 0 1em 0;
+	.warning-content {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.75rem;
+		margin-bottom: 1rem;
+	}
+
+	.warning-content :global(svg) {
 		color: #856404;
-		font-family: inherit;
-		font-size: inherit;
+		flex-shrink: 0;
+		margin-top: 0.1rem;
+	}
+
+	.warning-content p {
+		margin: 0;
+		color: #856404;
 	}
 
 	.warning-actions {
 		display: flex;
-		gap: 0.5em;
+		gap: 0.5rem;
 		justify-content: flex-end;
+	}
+
+	.button-danger {
+		padding: 0.5rem 1rem;
+		background: #dc3545;
+		color: white;
+		border: none;
+		border-radius: 4px;
+		cursor: pointer;
+		font-weight: 500;
+	}
+
+	.button-danger:hover {
+		background: #c82333;
 	}
 </style>
