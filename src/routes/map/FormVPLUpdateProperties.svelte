@@ -23,6 +23,45 @@
 	let remove_non_matching: boolean | undefined = $state();
 	let include_id: boolean | undefined = $state();
 
+	// CSV field detection state
+	let availableFields: string[] = $state([]);
+	let loadingFields: boolean = $state(false);
+	let fieldsError: string | undefined = $state();
+
+	// Fetch CSV field names when file is selected
+	$effect(() => {
+		if (selectedFile) {
+			loadingFields = true;
+			fieldsError = undefined;
+
+			fetch('/api/csv/fields', {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({ filePath: selectedFile.fullPath() })
+			})
+				.then(async (res) => {
+					if (!res.ok) {
+						throw new Error(`Failed to fetch fields: ${res.statusText}`);
+					}
+					return res.json();
+				})
+				.then((data) => {
+					availableFields = data.fields;
+					loadingFields = false;
+				})
+				.catch((err) => {
+					fieldsError = err.message;
+					loadingFields = false;
+					availableFields = [];
+				});
+		} else {
+			availableFields = [];
+			loadingFields = false;
+			fieldsError = undefined;
+			id_field_data = undefined;
+		}
+	});
+
 	// Bindable output pattern: aggregate internal form state into params for parent
 	$effect(() => {
 		if (active && selectedFile && layer_name && id_field_tiles && id_field_data) {
@@ -76,7 +115,21 @@
 			</label>
 			<label class:label-error={!id_field_data}>
 				ID Field (Data)
-				<input type="text" class="input-full" bind:value={id_field_data} />
+				{#if loadingFields}
+					<span class="text-sm text-gray-500 italic">Loading fields...</span>
+				{:else if fieldsError}
+					<span class="text-sm text-red-600">Error: {fieldsError}</span>
+					<input type="text" class="input-full" bind:value={id_field_data} />
+				{:else if availableFields.length > 0}
+					<select class="input-full" bind:value={id_field_data}>
+						<option value="">-- Select field --</option>
+						{#each availableFields as field (field)}
+							<option value={field}>{field}</option>
+						{/each}
+					</select>
+				{:else}
+					<input type="text" class="input-full" bind:value={id_field_data} />
+				{/if}
 			</label>
 			<label>
 				<input type="checkbox" bind:checked={replace_properties} />

@@ -24,3 +24,7 @@ export const TilesLoadRequest = v.object({
 export const TilesStopRequest = v.object({
 	id: TileSourceId
 });
+
+export const GetCSVFieldsRequest = v.object({
+	filePath: Path
+});
