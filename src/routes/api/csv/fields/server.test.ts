@@ -9,7 +9,7 @@ vi.mock('$lib/server/csv/fields', () => ({
 
 // Mock the filesystem module
 vi.mock('$lib/server/filesystem/filesystem', () => ({
-	resolve_data: vi.fn()
+	resolveDataPath: vi.fn()
 }));
 
 import { getCSVFieldNames } from '$lib/server/csv/fields';
@@ -154,7 +154,7 @@ describe('POST /api/csv/fields', () => {
 	});
 
 	describe('Path resolution', () => {
-		it('should pass filePath to resolve_data', async () => {
+		it('should pass filePath to resolveDataPath', async () => {
 			vi.mocked(resolveDataPath).mockReturnValue('/absolute/path');
 			vi.mocked(getCSVFieldNames).mockReturnValue(['field1']);
 

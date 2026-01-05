@@ -11,8 +11,8 @@ import * as v from 'valibot';
 import type { VPLParam } from '$lib/api/schemas';
 
 vi.mock('$lib/server/filesystem/filesystem', () => ({
-	resolve_data: (path: string) => 'data/' + path,
-	resolve_temp: (path: string) => 'temp/' + path
+	resolveDataPath: (path: string) => 'data/' + path,
+	resolveTempPath: (path: string) => 'temp/' + path
 }));
 
 describe('buildVPLUpdateProperties', () => {
@@ -24,7 +24,7 @@ describe('buildVPLUpdateProperties', () => {
 			id_field_data: 'data_id'
 		});
 		expect(res).toBe(
-			'vector_update_properties data_source_path="data.csv" layer_name="mylayer" id_field_tiles="tile_id" id_field_data="data_id"'
+			'vector_update_properties data_source_path="data/data.csv" layer_name="mylayer" id_field_tiles="tile_id" id_field_data="data_id"'
 		);
 	});
 	it('includes replace_properties and include_id when true, omits remove_non_matching when false', () => {
@@ -155,7 +155,7 @@ describe('buildVPL', () => {
 		} as v.InferOutput<typeof VPLParam>;
 		const expected = [
 			'from_container filename="data/input.versatiles"',
-			'   | vector_update_properties data_source_path="data.csv" layer_name="mylayer" id_field_tiles="tile_id" id_field_data="data_id" replace_properties="true" remove_non_matching="true" include_id="true"',
+			'   | vector_update_properties data_source_path="data/data.csv" layer_name="mylayer" id_field_tiles="tile_id" id_field_data="data_id" replace_properties="true" remove_non_matching="true" include_id="true"',
 			'   | vector_filter_layers filter="a,b" invert="true"',
 			'   | vector_filter_properties regex="^foo"',
 			'   | filter min_zoom="3" max_zoom="10" bounds="1,2,3,4"',

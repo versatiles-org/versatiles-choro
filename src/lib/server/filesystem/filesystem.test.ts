@@ -34,7 +34,7 @@ describe('Filesystem Utilities', () => {
 		}
 	});
 
-	describe('resolve_data', () => {
+	describe('resolveDataPath', () => {
 		it('resolves paths within the data directory', () => {
 			const result = resolveDataPath('test.txt');
 
@@ -122,7 +122,7 @@ describe('Filesystem Utilities', () => {
 		});
 	});
 
-	describe('resolve_temp', () => {
+	describe('resolveTempPath', () => {
 		it('resolves paths within the temp directory', () => {
 			const result = resolveTempPath('temp-file.tmp');
 

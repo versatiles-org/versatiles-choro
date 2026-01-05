@@ -5,7 +5,7 @@ import { SimpleProgress } from '$lib/server/progress/simple';
 
 // Mock filesystem utilities
 vi.mock('$lib/server/filesystem/filesystem', () => ({
-	resolve_data: vi.fn((path: string) => `/resolved/${path}`)
+	resolveDataPath: vi.fn((path: string) => `/resolved/${path}`)
 }));
 
 // Mock conversion module

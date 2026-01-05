@@ -10,7 +10,7 @@ vi.mock('fs/promises', () => ({
 
 // Mock filesystem utilities
 vi.mock('$lib/server/filesystem/filesystem', () => ({
-	resolve_data: vi.fn((path: string) => `/resolved${path}`)
+	resolveDataPath: vi.fn((path: string) => `/resolved${path}`)
 }));
 
 // Mock download module
