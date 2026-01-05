@@ -14,7 +14,7 @@
 		tilejson: TileJSONSpecificationVector | undefined;
 	} = $props();
 
-	let active = $state(true);
+	let active = $state(false);
 	let showModal = $state(false);
 	let selectedFile: FsFile | undefined = $state();
 	let layer_name: string | undefined = $state();
