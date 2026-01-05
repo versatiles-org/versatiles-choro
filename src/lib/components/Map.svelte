@@ -4,16 +4,21 @@
 	import { TileSource } from './map/tile-source';
 	import { overlayStyles } from './map/style';
 	import { Inspector } from './map/Inspector.svelte.ts';
+	import type { ChoroplethParams } from './map/color-schemes';
 
 	// --- Props  --------------------------------------------------------------
 	let {
 		backgroundMap,
 		inspectOverlay = false,
-		overlay_source
+		overlay_source,
+		choropleth,
+		choroplethLayerName
 	}: {
 		backgroundMap?: BackgroundMap;
 		inspectOverlay?: boolean;
 		overlay_source?: TileSource;
+		choropleth?: ChoroplethParams;
+		choroplethLayerName?: string;
 	} = $props();
 
 	// --- State ---------------------------------------------------------------
@@ -71,6 +76,8 @@
 		const currentBackgroundStyle = backgroundStyle;
 		const currentInspectOverlay = inspectOverlay;
 		const currentInspector = inspector;
+		const currentChoropleth = choropleth;
+		const currentChoroplethLayerName = choroplethLayerName;
 
 		if (!currentMap) return;
 		if (!currentOverlay) {
@@ -79,8 +86,19 @@
 			return;
 		}
 
-		// Overlay present: update style & inspection handlers
-		const overlayStyle = currentOverlay.getStyle();
+		// Determine which overlay style to use
+		let overlayStyle;
+		if (currentChoropleth && currentChoroplethLayerName) {
+			// Use choropleth style when configured
+			overlayStyle = currentOverlay.getChoroplethStyle(
+				currentChoroplethLayerName,
+				currentChoropleth
+			);
+		} else {
+			// Fall back to inspector style
+			overlayStyle = currentOverlay.getStyle();
+		}
+
 		const overlayLayerIds = overlayStyle.layers?.map((layer) => layer.id) ?? [];
 		const style = overlayStyles(currentBackgroundStyle, overlayStyle);
 

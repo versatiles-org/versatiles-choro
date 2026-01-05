@@ -1,8 +1,9 @@
 import type { TileJSONSpecificationVector } from '@versatiles/style';
 import type { StyleSpecification } from 'maplibre-gl';
-import { getInspectorStyle } from './style';
+import { getChoroplethStyle, getInspectorStyle } from './style';
 import { TilesInitRequest, TilesInitResponse } from '$lib/api/schemas';
 import * as v from 'valibot';
+import type { ChoroplethParams } from './color-schemes';
 
 export class TileSource {
 	prefix: string;
@@ -36,6 +37,14 @@ export class TileSource {
 	}
 	getBounds(): [number, number, number, number] | undefined {
 		return this.tileJson?.bounds;
+	}
+	getChoroplethStyle(layerName: string, params: ChoroplethParams): StyleSpecification {
+		if (!this.tileJson) {
+			throw new Error('TileSource not initialized');
+		}
+		const style = getChoroplethStyle(this.tileJson, layerName, params);
+		style.layers = style.layers?.filter((layer) => layer.type !== 'background');
+		return style;
 	}
 }
 

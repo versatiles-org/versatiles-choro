@@ -1,11 +1,13 @@
 import { Color, type TileJSONSpecificationVector, type VectorLayer } from '@versatiles/style';
 import type {
 	CircleLayerSpecification,
+	DataDrivenPropertyValueSpecification,
 	FillLayerSpecification,
 	LineLayerSpecification,
 	StyleSpecification,
 	VectorSourceSpecification
 } from 'maplibre-gl';
+import { COLOR_SCHEMES, type ChoroplethParams } from './color-schemes';
 
 export function overlayStyles(
 	style1: StyleSpecification,
@@ -102,5 +104,78 @@ export function getInspectorStyle(spec: TileJSONSpecificationVector): StyleSpeci
 			[sourceName]: source
 		},
 		layers: [...layers.fill, ...layers.line, ...layers.point]
+	};
+}
+
+/**
+ * Creates a choropleth style for a specific layer with data-driven fill colors.
+ */
+export function getChoroplethStyle(
+	spec: TileJSONSpecificationVector,
+	layerName: string,
+	choropleth: ChoroplethParams
+): StyleSpecification {
+	const sourceName = 'vectorSource';
+	const colors = COLOR_SCHEMES[choropleth.colorScheme];
+
+	// Build interpolation stops from color scheme
+	const colorStops: (number | string)[] = [];
+	const range = choropleth.max - choropleth.min;
+
+	colors.forEach((color, index) => {
+		const value = choropleth.min + (range * index) / (colors.length - 1);
+		colorStops.push(value, color);
+	});
+
+	// Create fill-color expression with interpolation
+	const fillColor: DataDrivenPropertyValueSpecification<string> = [
+		'interpolate',
+		['linear'],
+		['get', choropleth.field],
+		...colorStops
+	];
+
+	const layers: (FillLayerSpecification | LineLayerSpecification)[] = [];
+
+	// Add choropleth fill layer for the target layer
+	layers.push({
+		id: `${sourceName}-${layerName}-choropleth`,
+		'source-layer': layerName,
+		source: sourceName,
+		type: 'fill',
+		filter: ['==', '$type', 'Polygon'],
+		paint: {
+			'fill-color': fillColor,
+			'fill-opacity': 0.7,
+			'fill-antialias': true
+		}
+	});
+
+	// Add outline layer for clarity
+	layers.push({
+		id: `${sourceName}-${layerName}-outline`,
+		'source-layer': layerName,
+		source: sourceName,
+		type: 'line',
+		filter: ['==', '$type', 'Polygon'],
+		paint: {
+			'line-color': '#333333',
+			'line-width': 0.5,
+			'line-opacity': 0.5
+		}
+	});
+
+	const source: VectorSourceSpecification = { tiles: spec.tiles, type: 'vector' };
+	if (spec.minzoom != null) source.minzoom = spec.minzoom;
+	if (spec.maxzoom != null) source.maxzoom = spec.maxzoom;
+	if (spec.attribution != null) source.attribution = spec.attribution;
+	if (spec.scheme != null) source.scheme = spec.scheme;
+
+	return {
+		version: 8,
+		sources: {
+			[sourceName]: source
+		},
+		layers
 	};
 }

@@ -7,14 +7,20 @@
 	import IconFile from '@lucide/svelte/icons/file';
 	import IconVector from '@lucide/svelte/icons/hammer';
 	import IconDesign from '@lucide/svelte/icons/paintbrush';
-	import { FormVPLFromContainer, FormVPLUpdateProperties } from '$lib/components/map/forms';
+	import {
+		FormVPLFromContainer,
+		FormVPLUpdateProperties,
+		FormChoropleth
+	} from '$lib/components/map/forms';
 	import type { VPLParamFromContainer, VPLParamUpdateProperties } from '$lib/api/schemas';
 	import { getTileSource, TileSource } from '$lib/components/map/tile-source';
 	import type { TileJSONSpecificationVector } from '@versatiles/style';
+	import type { ChoroplethParams } from '$lib/components/map/color-schemes';
 
 	let from_container: InferOutput<typeof VPLParamFromContainer> | undefined = $state();
 	let update_properties: InferOutput<typeof VPLParamUpdateProperties> | undefined = $state();
 	let inspectOverlay: boolean = $state(true);
+	let choropleth: ChoroplethParams | undefined = $state();
 
 	let overlay_source: TileSource | undefined = $derived(
 		from_container ? await getTileSource({ vpl: { from_container, update_properties } }) : undefined
@@ -34,6 +40,11 @@
 			<FormVPLUpdateProperties bind:params={update_properties} {tilejson} />
 		</Frame>
 		<Frame title="Design" Icon={IconDesign} borderBottom={false}>
+			<FormChoropleth
+				bind:params={choropleth}
+				{tilejson}
+				layerName={update_properties?.layer_name}
+			/>
 			<label class="checkbox-label">
 				<input type="checkbox" bind:checked={inspectOverlay} />
 				Inspector Mode
@@ -41,7 +52,13 @@
 		</Frame>
 	</Sidebar>
 	<div class="map-container">
-		<Map backgroundMap="GrayBright" {overlay_source} {inspectOverlay}></Map>
+		<Map
+			backgroundMap="GrayBright"
+			{overlay_source}
+			{inspectOverlay}
+			{choropleth}
+			choroplethLayerName={update_properties?.layer_name}
+		></Map>
 	</div>
 </div>
 
