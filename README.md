@@ -260,3 +260,124 @@ flowchart TD
   classDef service fill:#f0e6ff,stroke:#8f66ff,color:#3a1f8f;
   classDef data fill:#ffeaea,stroke:#ff7f7f,color:#5a0000;
 ```
+
+---
+
+## Folder Structure
+
+The project follows SvelteKit conventions with a modular organization:
+
+```
+src/
+├── lib/                          # Reusable library code
+│   ├── api/                      # API layer
+│   │   ├── schemas/              # Valibot schemas for type-safe validation
+│   │   │   ├── basics.ts         # Core types (UUID, Path, ProgressStatus)
+│   │   │   ├── vpl.ts            # VPL (VersaTiles Processing Language) params
+│   │   │   ├── requests.ts       # API request/response schemas
+│   │   │   └── routes.ts         # Type-safe route definitions
+│   │   ├── filesystem.svelte.ts  # Client-side filesystem abstraction
+│   │   └── filesystem.remote.ts  # SvelteKit query for server filesystem access
+│   │
+│   ├── components/               # Svelte components
+│   │   ├── Dialog.svelte         # Modal dialog with accessibility
+│   │   ├── ErrorBoundary.svelte  # Error handling wrapper
+│   │   ├── FileSelector.svelte   # File browser dialog
+│   │   ├── FileSaver.svelte      # File save dialog
+│   │   ├── Map.svelte            # MapLibre map component
+│   │   ├── PageContainer.svelte  # Page layout wrapper
+│   │   ├── Progress.svelte       # Streaming progress indicator
+│   │   ├── Sidebar.svelte        # Side panel container
+│   │   ├── SidebarFoldable.svelte # Collapsible sidebar section
+│   │   ├── SidebarFrame.svelte   # Sidebar content frame with icon
+│   │   └── map/                  # Map-related utilities
+│   │       ├── forms/            # VPL configuration forms
+│   │       │   ├── FormVPLFromContainer.svelte
+│   │       │   └── FormVPLUpdateProperties.svelte
+│   │       ├── style.ts          # Map styling utilities
+│   │       ├── style-background.ts # Background style generation
+│   │       ├── tile-source.ts    # Tile source management
+│   │       ├── map-utils.ts      # Map helper functions
+│   │       └── Inspector.svelte.ts # Map feature inspector
+│   │
+│   ├── server/                   # Server-only code (Node.js)
+│   │   ├── convert/              # Data conversion
+│   │   │   ├── geometry.ts       # GeoJSON → vector tiles
+│   │   │   ├── tiles.ts          # VPL-based tile conversion
+│   │   │   └── utils.ts          # Conversion utilities
+│   │   ├── csv/                  # CSV/TSV processing
+│   │   │   └── fields.ts         # Field extraction
+│   │   ├── download/             # File downloading
+│   │   │   └── test-data.ts      # Sample data downloader
+│   │   ├── errors/               # Error handling
+│   │   │   ├── errors.ts         # Custom error classes
+│   │   │   └── handler.ts        # Request error middleware
+│   │   ├── filesystem/           # Filesystem operations
+│   │   │   └── filesystem.ts     # Path resolution with security
+│   │   ├── logger/               # Logging (Pino-based)
+│   │   │   └── logger.ts
+│   │   ├── progress/             # Progress tracking system
+│   │   │   ├── simple.ts         # Basic progress tracker
+│   │   │   ├── spawn.ts          # Process spawn progress
+│   │   │   ├── concatenate.ts    # Chained progress
+│   │   │   ├── callback.ts       # Callback-based progress
+│   │   │   ├── to-stream.ts      # Progress → NDJSON stream
+│   │   │   └── types.ts          # Progress type definitions
+│   │   ├── spawn/                # Process spawning
+│   │   │   └── spawn.ts          # tippecanoe/versatiles wrappers
+│   │   ├── tiles/                # Tile server management
+│   │   │   ├── serve.ts          # Tile server singleton
+│   │   │   └── vpl.ts            # VPL command builder
+│   │   └── utils/                # Server utilities
+│   │       └── types.ts
+│   │
+│   ├── styles/                   # Global CSS
+│   │   ├── global.css
+│   │   └── utilities.css
+│   │
+│   ├── utils/                    # Shared utilities
+│   │   ├── id.ts                 # UUID generation
+│   │   └── file-selector.ts      # File selection helpers
+│   │
+│   └── test/                     # Test utilities
+│       └── utils.ts
+│
+├── routes/                       # SvelteKit routes (file-based routing)
+│   ├── +layout.svelte            # Root layout with navigation
+│   ├── +page.svelte              # Home page with feature cards
+│   ├── api/                      # API endpoints
+│   │   ├── convert/polygons/     # POST: Convert GeoJSON → .versatiles
+│   │   ├── csv/fields/           # POST: Extract CSV field names
+│   │   ├── download/test-data/   # POST: Download sample datasets
+│   │   └── tiles/                # Tile server endpoints
+│   │       ├── init/             # POST: Initialize tile source
+│   │       ├── load/             # GET: Load tile data
+│   │       └── stop/             # POST: Stop tile source
+│   ├── convert-polygons/         # Polygon conversion page
+│   ├── download-test-data/       # Test data download page
+│   └── map/                      # Interactive map page
+│       ├── +layout.svelte
+│       ├── +page.svelte
+│       └── +page.ts
+│
+├── app.html                      # HTML template
+├── app.d.ts                      # Global TypeScript definitions
+└── cli.ts                        # CLI entrypoint
+```
+
+### Naming Conventions
+
+| Type              | Convention                        | Example                   |
+|-------------------|-----------------------------------|---------------------------|
+| Svelte components | PascalCase                        | `FileSelector.svelte`     |
+| TypeScript files  | kebab-case                        | `tile-source.ts`          |
+| Test files        | `*.test.ts` or `*.svelte.test.ts` | `Map.svelte.test.ts`      |
+| Route folders     | kebab-case                        | `convert-polygons/`       |
+| Barrel exports    | `index.ts` in each module         | `server/convert/index.ts` |
+
+### Import Aliases
+
+- `$lib/` → `src/lib/`
+- `$lib/api/schemas` → Valibot schemas
+- `$lib/components/` → Svelte components
+- `$lib/server/` → Server-only code
