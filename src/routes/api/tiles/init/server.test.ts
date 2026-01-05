@@ -139,7 +139,5 @@ describe('POST /api/tiles/init', () => {
 
 		const mockEvent = createMockEvent(vplParams);
 		await POST(mockEvent);
-
-		expect(console.log).toHaveBeenCalledWith('Initializing tile source with params:', vplParams);
 	});
 });

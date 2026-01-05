@@ -7,7 +7,6 @@ import { withErrorHandling } from '$lib/server/errors/handler.js';
 
 export const POST: RequestHandler = withErrorHandling(async ({ request }) => {
 	const params = v.parse(TilesInitRequest, await request.json());
-	console.log('Initializing tile source with params:', params);
 	const id = await addTileSource(params.vpl);
 	return json({ id });
 });
