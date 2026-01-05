@@ -17,36 +17,11 @@ export function formatFileSize(bytes: number): string {
 }
 
 /**
- * Format a timestamp to a relative or short date string.
+ * Format a timestamp to a date string.
  * @param timestamp - Unix timestamp in milliseconds
  * @returns A formatted date string
  */
 export function formatDate(timestamp: number): string {
 	const date = new Date(timestamp);
-	const now = new Date();
-	const diffMs = now.getTime() - date.getTime();
-	const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-	// Today: show time
-	if (diffDays === 0) {
-		return date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
-	}
-
-	// Yesterday
-	if (diffDays === 1) {
-		return 'Yesterday';
-	}
-
-	// Within last 7 days: show day name
-	if (diffDays < 7) {
-		return date.toLocaleDateString(undefined, { weekday: 'short' });
-	}
-
-	// Within same year: show month and day
-	if (date.getFullYear() === now.getFullYear()) {
-		return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-	}
-
-	// Different year: show full date
-	return date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+	return date.toISOString().replace('T', ' ').replace(/\..+/, '');
 }
