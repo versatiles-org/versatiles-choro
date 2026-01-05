@@ -17,7 +17,7 @@
 
 <div
 	class="frame"
-	style:border-bottom={borderBottom ? '1px solid var(--color-border, #ddd)' : 'none'}
+	style:border-bottom={borderBottom ? '1px solid var(--color-border-light)' : 'none'}
 >
 	<h4><Icon style="vertical-align: -0.3em;" strokeWidth={1.5} /> {title}</h4>
 	<div class="content">

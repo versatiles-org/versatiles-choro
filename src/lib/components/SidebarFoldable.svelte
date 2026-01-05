@@ -47,10 +47,10 @@
 
 <style>
 	.foldable {
-		--foldable-border: var(--color-border, #ddd);
-		--foldable-bg: var(--color-bg, #f8f9fa);
-		--foldable-header-bg: var(--color-header-bg, #eee);
-		--foldable-radius: 4px;
+		--foldable-border: var(--color-border-light);
+		--foldable-bg: var(--color-bg-subtle);
+		--foldable-header-bg: var(--color-bg-muted);
+		--foldable-radius: var(--radius-sm);
 		margin: 0.2rem 0.2rem 0.2rem 1rem;
 		box-sizing: border-box;
 	}
@@ -72,7 +72,7 @@
 		box-sizing: border-box;
 	}
 	.header:focus-visible {
-		outline: 2px solid #2684ff;
+		outline: 2px solid var(--color-focus);
 		outline-offset: 2px;
 	}
 	.header:disabled {

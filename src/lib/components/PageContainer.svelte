@@ -23,20 +23,20 @@
 	.page-container {
 		height: 100%;
 		overflow-y: auto;
-		background: linear-gradient(135deg, hsl(220, 40%, 98%) 0%, hsl(220, 40%, 96%) 100%);
+		background: linear-gradient(135deg, var(--color-bg-subtle) 0%, var(--color-bg-muted) 100%);
 	}
 
 	.page-header {
-		background: white;
-		border-bottom: 2px solid hsl(220, 30%, 90%);
+		background: var(--color-bg-primary);
+		border-bottom: 2px solid var(--color-border-default);
 		padding: 2rem;
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+		box-shadow: var(--shadow-button);
 	}
 
 	.page-header h1 {
 		margin: 0;
 		font-size: 2rem;
-		color: hsl(220, 20%, 20%);
+		color: var(--color-text-primary);
 		font-weight: 600;
 	}
 

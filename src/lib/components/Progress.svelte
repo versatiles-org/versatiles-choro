@@ -110,7 +110,7 @@
 		width: 100%;
 		margin-bottom: 4px;
 		font-size: 14px;
-		color: hsl(220, 20%, 20%);
+		color: var(--color-text-primary);
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -120,15 +120,15 @@
 		position: relative;
 		width: 100%;
 		height: 24px;
-		background-color: hsl(220, 100%, 70%);
-		border-radius: 8px;
+		background-color: var(--color-progress-bg);
+		border-radius: var(--radius-lg);
 		overflow: hidden;
 		transition: opacity 0.5s ease-out;
 	}
 
 	.progress-bar {
 		height: 100%;
-		background-color: hsl(220, 100%, 40%);
+		background-color: var(--color-progress-fill);
 		transition: width 0.2s ease-in-out;
 	}
 
@@ -143,8 +143,8 @@
 		justify-content: center;
 		padding: 0;
 		font-size: 14px;
-		color: #ffffff;
-		text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+		color: var(--color-progress-text);
+		text-shadow: 1px 1px 2px var(--color-backdrop);
 		pointer-events: none;
 	}
 

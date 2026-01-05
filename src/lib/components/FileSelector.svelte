@@ -148,13 +148,13 @@
 		align-items: center;
 		gap: 0.25rem;
 		padding: 0.5rem;
-		background: #f5f5f5;
-		border-radius: 4px;
+		background: var(--color-bg-muted);
+		border-radius: var(--radius-sm);
 		overflow-x: auto;
 	}
 
 	.breadcrumbs :global(.separator) {
-		color: #999;
+		color: var(--color-icon-separator);
 		flex-shrink: 0;
 	}
 
@@ -168,37 +168,41 @@
 		border-radius: 3px;
 		cursor: pointer;
 		font-size: 0.85rem;
-		color: #0066cc;
+		color: var(--color-link);
 		white-space: nowrap;
 	}
 
 	.breadcrumb:hover:not(:disabled) {
-		background: #e0e0e0;
+		background: var(--color-bg-hover);
 	}
 
 	.breadcrumb.current {
-		color: #333;
+		color: var(--color-text-primary);
 		cursor: default;
 	}
 
 	/* File list */
 	.file-list {
-		border: 1px solid #ddd;
-		border-radius: 4px;
+		border: 1px solid var(--color-border-light);
+		border-radius: var(--radius-sm);
 		max-height: 400px;
 		overflow-y: auto;
 	}
 
-	.file-header {
+	.file-header,
+	.file-row {
 		display: grid;
-		grid-template-columns: 28px 1fr 80px 100px;
+		grid-template-columns: 28px 1fr 80px 200px;
 		gap: 0.5rem;
 		padding: 0.5rem;
-		background: #f9f9f9;
-		border-bottom: 1px solid #ddd;
+	}
+
+	.file-header {
+		background: var(--color-bg-subtle);
+		border-bottom: 1px solid var(--color-border-light);
 		font-size: 0.75rem;
 		font-weight: 500;
-		color: #666;
+		color: var(--color-text-muted);
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
 		position: sticky;
@@ -206,16 +210,12 @@
 	}
 
 	.file-row {
-		display: grid;
-		grid-template-columns: 28px 1fr 80px 100px;
-		gap: 0.5rem;
-		padding: 0.5rem;
 		border: none;
 		background: none;
 		width: 100%;
 		text-align: left;
 		cursor: pointer;
-		border-bottom: 1px solid #eee;
+		border-bottom: 1px solid var(--color-border-lighter);
 	}
 
 	.file-row:last-child {
@@ -223,19 +223,19 @@
 	}
 
 	.file-row:hover:not(.disabled) {
-		background: #f0f7ff;
+		background: var(--color-bg-highlight);
 	}
 
 	.file-row.folder {
-		color: #0066cc;
+		color: var(--color-link);
 	}
 
 	.file-row.folder :global(svg) {
-		color: #f5a623;
+		color: var(--color-icon-folder);
 	}
 
 	.file-row.file :global(svg) {
-		color: #666;
+		color: var(--color-icon-file);
 	}
 
 	.file-row.disabled {
@@ -258,13 +258,14 @@
 			-apple-system,
 			sans-serif;
 		font-size: 0.9rem;
+		color: var(--color-text-primary);
 	}
 
 	.col-size,
 	.col-date {
 		font-family: monospace;
 		font-size: 0.8rem;
-		color: #888;
+		color: var(--color-text-muted);
 		text-align: right;
 	}
 

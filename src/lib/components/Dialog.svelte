@@ -142,12 +142,12 @@
 	dialog {
 		width: var(--dialog-width, 32em);
 		max-width: 80vw;
-		border-radius: 0.2em;
+		border-radius: var(--radius-md);
 		border: none;
 		padding: 1em;
 	}
 	dialog::backdrop {
-		background: rgba(0, 0, 0, 0.3);
+		background: var(--color-backdrop);
 	}
 	dialog[open] {
 		animation: zoom 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);

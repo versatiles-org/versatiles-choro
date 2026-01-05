@@ -235,13 +235,13 @@
 		align-items: center;
 		gap: 0.25rem;
 		padding: 0.5rem;
-		background: #f5f5f5;
-		border-radius: 4px;
+		background: var(--color-bg-muted);
+		border-radius: var(--radius-sm);
 		overflow-x: auto;
 	}
 
 	.breadcrumbs :global(.separator) {
-		color: #999;
+		color: var(--color-icon-separator);
 		flex-shrink: 0;
 	}
 
@@ -255,23 +255,23 @@
 		border-radius: 3px;
 		cursor: pointer;
 		font-size: 0.85rem;
-		color: #0066cc;
+		color: var(--color-link);
 		white-space: nowrap;
 	}
 
 	.breadcrumb:hover:not(:disabled) {
-		background: #e0e0e0;
+		background: var(--color-bg-hover);
 	}
 
 	.breadcrumb.current {
-		color: #333;
+		color: var(--color-text-primary);
 		cursor: default;
 	}
 
 	/* File list */
 	.file-list {
-		border: 1px solid #ddd;
-		border-radius: 4px;
+		border: 1px solid var(--color-border-light);
+		border-radius: var(--radius-sm);
 		max-height: 300px;
 		overflow-y: auto;
 	}
@@ -281,11 +281,11 @@
 		grid-template-columns: 28px 1fr 80px 100px;
 		gap: 0.5rem;
 		padding: 0.5rem;
-		background: #f9f9f9;
-		border-bottom: 1px solid #ddd;
+		background: var(--color-bg-subtle);
+		border-bottom: 1px solid var(--color-border-light);
 		font-size: 0.75rem;
 		font-weight: 500;
-		color: #666;
+		color: var(--color-text-muted);
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
 		position: sticky;
@@ -301,7 +301,7 @@
 		background: none;
 		width: 100%;
 		text-align: left;
-		border-bottom: 1px solid #eee;
+		border-bottom: 1px solid var(--color-border-lighter);
 	}
 
 	.file-row:last-child {
@@ -309,20 +309,20 @@
 	}
 
 	button.file-row:hover {
-		background: #f0f7ff;
+		background: var(--color-bg-highlight);
 		cursor: pointer;
 	}
 
 	.file-row.folder {
-		color: #0066cc;
+		color: var(--color-link);
 	}
 
 	.file-row.folder :global(svg) {
-		color: #f5a623;
+		color: var(--color-icon-folder);
 	}
 
 	.file-row.file :global(svg) {
-		color: #666;
+		color: var(--color-icon-file);
 	}
 
 	.file-row.existing {
@@ -350,7 +350,7 @@
 	.col-date {
 		font-family: monospace;
 		font-size: 0.8rem;
-		color: #888;
+		color: var(--color-text-muted);
 		text-align: right;
 	}
 
@@ -375,25 +375,25 @@
 	.filename-input input {
 		flex: 1;
 		padding: 0.5rem 0.75rem;
-		border: 1px solid #ddd;
-		border-radius: 4px 0 0 4px;
+		border: 1px solid var(--color-border-light);
+		border-radius: var(--radius-sm) 0 0 var(--radius-sm);
 		font-size: 0.9rem;
 	}
 
 	.filename-input input:focus {
 		outline: none;
-		border-color: #0066cc;
+		border-color: var(--color-focus);
 	}
 
 	.extension {
 		padding: 0.5rem 0.75rem;
-		background: #f5f5f5;
-		border: 1px solid #ddd;
+		background: var(--color-bg-muted);
+		border: 1px solid var(--color-border-light);
 		border-left: none;
-		border-radius: 0 4px 4px 0;
+		border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 		font-family: monospace;
 		font-size: 0.9rem;
-		color: #666;
+		color: var(--color-text-muted);
 	}
 
 	/* Actions */
@@ -403,31 +403,12 @@
 		justify-content: flex-end;
 	}
 
-	.button-primary {
-		padding: 0.5rem 1rem;
-		background: #0066cc;
-		color: white;
-		border: none;
-		border-radius: 4px;
-		cursor: pointer;
-		font-weight: 500;
-	}
-
-	.button-primary:hover:not(:disabled) {
-		background: #0052a3;
-	}
-
-	.button-primary:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
-	}
-
 	/* Overwrite warning */
 	.overwrite-warning {
 		padding: 1rem;
-		background: #fef3cd;
-		border: 1px solid #ffc107;
-		border-radius: 4px;
+		background: var(--color-warning-50);
+		border: 1px solid var(--color-warning-500);
+		border-radius: var(--radius-sm);
 	}
 
 	.warning-content {
@@ -438,33 +419,19 @@
 	}
 
 	.warning-content :global(svg) {
-		color: #856404;
+		color: var(--color-warning-text);
 		flex-shrink: 0;
 		margin-top: 0.1rem;
 	}
 
 	.warning-content p {
 		margin: 0;
-		color: #856404;
+		color: var(--color-warning-text);
 	}
 
 	.warning-actions {
 		display: flex;
 		gap: 0.5rem;
 		justify-content: flex-end;
-	}
-
-	.button-danger {
-		padding: 0.5rem 1rem;
-		background: #dc3545;
-		color: white;
-		border: none;
-		border-radius: 4px;
-		cursor: pointer;
-		font-weight: 500;
-	}
-
-	.button-danger:hover {
-		background: #c82333;
 	}
 </style>

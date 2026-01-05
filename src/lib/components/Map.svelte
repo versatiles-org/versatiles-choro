@@ -140,7 +140,7 @@
 		left: 0;
 		max-width: 300px;
 		overflow: auto;
-		background: rgba(255, 255, 255, 0.8);
+		background: var(--color-overlay-light);
 		font-size: 10px;
 		padding: 5px;
 	}
@@ -163,10 +163,10 @@
 		left: 50%;
 		transform: translate(-50%, -50%);
 		padding: 1rem;
-		background: rgba(255, 255, 255, 0.9);
-		border-radius: 4px;
+		background: var(--color-overlay-lighter);
+		border-radius: var(--radius-sm);
 	}
 	.map-error {
-		color: red;
+		color: var(--color-danger-500);
 	}
 </style>

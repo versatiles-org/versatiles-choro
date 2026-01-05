@@ -12,26 +12,66 @@
 	--color-success-600: hsl(140, 60%, 40%);
 
 	/* Color Palette - Danger */
-	--color-danger-50: #fee;
-	--color-danger-500: #dc3545;
-	--color-danger-600: #c33;
-	--color-danger-700: #a22;
+	--color-danger-50: hsl(0, 100%, 97%);
+	--color-danger-500: hsl(354, 70%, 55%);
+	--color-danger-600: hsl(354, 70%, 45%);
+	--color-danger-700: hsl(354, 70%, 35%);
+
+	/* Color Palette - Warning */
+	--color-warning-50: hsl(45, 100%, 90%);
+	--color-warning-500: hsl(45, 100%, 50%);
+	--color-warning-600: hsl(45, 100%, 45%);
+	--color-warning-text: hsl(45, 65%, 30%);
 
 	/* Neutral Colors */
-	--color-gray-300: #f0f0f0;
-	--color-gray-400: #ccc;
-	--color-gray-600: hsl(220, 20%, 70%);
+	--color-gray-50: hsl(0, 0%, 98%);
+	--color-gray-100: hsl(0, 0%, 96%);
+	--color-gray-200: hsl(0, 0%, 93%);
+	--color-gray-300: hsl(0, 0%, 88%);
+	--color-gray-400: hsl(0, 0%, 80%);
+	--color-gray-500: hsl(0, 0%, 60%);
+	--color-gray-600: hsl(0, 0%, 40%);
 
 	/* Text Colors */
 	--color-text-primary: hsl(220, 20%, 20%);
 	--color-text-secondary: hsl(220, 20%, 30%);
 	--color-text-tertiary: hsl(220, 20%, 35%);
-	--color-text-muted: hsl(220, 20%, 40%);
+	--color-text-muted: hsl(220, 20%, 55%);
 
-	/* Semantic Colors */
+	/* Link Colors */
+	--color-link: hsl(214, 100%, 40%);
+	--color-link-hover: hsl(214, 100%, 32%);
+
+	/* Background Colors */
+	--color-bg-primary: hsl(0, 0%, 100%);
+	--color-bg-muted: hsl(0, 0%, 96%);
+	--color-bg-subtle: hsl(0, 0%, 98%);
+	--color-bg-hover: hsl(0, 0%, 88%);
+	--color-bg-highlight: hsl(214, 100%, 97%);
+
+	/* Border Colors */
 	--color-border-default: hsl(220, 30%, 90%);
-	--color-border-input: #ccc;
-	--color-focus: #4a90e2;
+	--color-border-light: hsl(0, 0%, 87%);
+	--color-border-lighter: hsl(0, 0%, 93%);
+	--color-border-input: hsl(0, 0%, 80%);
+
+	/* Icon Colors */
+	--color-icon-folder: hsl(37, 91%, 55%);
+	--color-icon-file: hsl(0, 0%, 40%);
+	--color-icon-separator: hsl(0, 0%, 60%);
+
+	/* Focus */
+	--color-focus: hsl(214, 80%, 55%);
+
+	/* Overlay */
+	--color-backdrop: hsla(0, 0%, 0%, 0.3);
+	--color-overlay-light: hsla(0, 0%, 100%, 0.8);
+	--color-overlay-lighter: hsla(0, 0%, 100%, 0.9);
+
+	/* Progress bar */
+	--color-progress-bg: hsl(220, 100%, 70%);
+	--color-progress-fill: hsl(220, 100%, 40%);
+	--color-progress-text: hsl(0, 0%, 100%);
 
 	/* Spacing */
 	--spacing-sm: 0.5rem;
@@ -153,7 +193,7 @@ button:focus-visible {
 }
 
 .button-secondary:not(:disabled):hover {
-	background: #e0e0e0;
+	background: var(--color-bg-hover);
 }
 
 .button-danger {
@@ -241,7 +281,7 @@ textarea:disabled,
 select:disabled {
 	opacity: 0.6;
 	cursor: not-allowed;
-	background: #f5f5f5;
+	background: var(--color-bg-muted);
 }
 
 input[type='checkbox'],

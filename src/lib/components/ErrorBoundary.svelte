@@ -81,7 +81,7 @@
 
 	.error-message {
 		margin: 0 0 1rem 0;
-		color: #600;
+		color: var(--color-danger-700);
 		font-weight: 500;
 	}
 
@@ -91,18 +91,18 @@
 
 	summary {
 		cursor: pointer;
-		color: #600;
+		color: var(--color-danger-700);
 		font-weight: 500;
 	}
 
 	.error-stack {
 		margin: 0.5rem 0 0 0;
 		padding: 1rem;
-		background: #fff;
-		border: 1px solid #c33;
-		border-radius: 4px;
+		background: var(--color-bg-primary);
+		border: 1px solid var(--color-danger-600);
+		border-radius: var(--radius-sm);
 		overflow-x: auto;
 		font-size: 0.875rem;
-		color: #600;
+		color: var(--color-danger-700);
 	}
 </style>
