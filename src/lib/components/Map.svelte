@@ -103,11 +103,8 @@
 		<div class="map-error">Error: {loadError}</div>
 	{/if}
 </div>
-{#if inspectOverlay && inspector && inspector.mousePosition && inspector.selectedProperties.length > 0}
-	<div
-		class="inspector-panel"
-		style="left: {inspector.mousePosition.x + 15}px; top: {inspector.mousePosition.y + 15}px;"
-	>
+{#if inspectOverlay && inspector && inspector.selectedProperties.length > 0}
+	<div class="inspector-panel">
 		<table>
 			<tbody>
 				{#each inspector.selectedProperties as prop, propIndex (propIndex)}
@@ -130,6 +127,8 @@
 	}
 	.inspector-panel {
 		position: absolute;
+		top: 10px;
+		right: 10px;
 		max-width: 350px;
 		max-height: 300px;
 		overflow: auto;
