@@ -6,7 +6,7 @@
 	"scripts": {
 		"analyze": "npm run build && open stats.html",
 		"build-cli": "rollup -c ./rollup.config.cli.ts",
-		"build-svelte": "svelte-kit sync && vite build",
+		"build-svelte": "svelte-kit sync && vite build -l warn",
 		"build": "npm run build-svelte && npm run build-cli",
 		"check-svelte:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"check-svelte": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
