@@ -15,7 +15,7 @@
 <div class="app-container">
 	<nav>
 		{#if $page.url.pathname !== resolve('/')}
-			<a href={resolve('/')}>Home</a>
+			<a href={resolve('/')} data-sveltekit-reload>Home</a>
 		{/if}
 	</nav>
 	<main>

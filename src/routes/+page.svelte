@@ -1,5 +1,14 @@
 <script lang="ts">
-	const features = [
+	import { resolve } from '$app/paths';
+	import type { ResolvedPathname } from '$app/types';
+
+	const features: {
+		title: string;
+		description: string;
+		icon: string;
+		href: '/download_test_data' | '/convert_polygons' | '/map';
+		color: string;
+	}[] = [
 		{
 			title: 'Download Test Data',
 			description: 'Download sample datasets to get started with choropleth mapping',
@@ -32,8 +41,12 @@
 
 	<div class="features">
 		{#each features as feature (feature.href)}
-			<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-			<a href={feature.href} class="card" style="--card-color: {feature.color}">
+			<a
+				href={resolve(feature.href)}
+				class="card"
+				style="--card-color: {feature.color}"
+				data-sveltekit-reload
+			>
 				<div class="icon">{feature.icon}</div>
 				<h2>{feature.title}</h2>
 				<p>{feature.description}</p>
