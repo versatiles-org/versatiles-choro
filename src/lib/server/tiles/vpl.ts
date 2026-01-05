@@ -43,7 +43,9 @@ export function buildVPLUpdateProperties(
 		`id_field_data="${p.id_field_data}"`,
 		p.replace_properties ? `replace_properties="${p.replace_properties}"` : null,
 		p.remove_non_matching ? `remove_non_matching="${p.remove_non_matching}"` : null,
-		p.include_id ? `include_id="${p.include_id}"` : null
+		p.include_id ? `include_id="${p.include_id}"` : null,
+		p.field_separator ? `field_separator="${p.field_separator}"` : null,
+		p.decimal_separator ? `decimal_separator="${p.decimal_separator}"` : null
 	].filter(Boolean);
 	return parts.join(' ');
 }

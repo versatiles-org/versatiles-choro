@@ -34,7 +34,9 @@ export const VPLParamUpdateProperties = v.object({
 	id_field_data: v.string(),
 	replace_properties: v.optional(v.boolean()),
 	remove_non_matching: v.optional(v.boolean()),
-	include_id: v.optional(v.boolean())
+	include_id: v.optional(v.boolean()),
+	field_separator: v.optional(v.string()),
+	decimal_separator: v.optional(v.string())
 });
 
 export const VPLParam = v.object({

@@ -23,6 +23,8 @@
 	let replace_properties: boolean | undefined = $state();
 	let remove_non_matching: boolean | undefined = $state();
 	let include_id: boolean | undefined = $state();
+	let field_separator: string | undefined = $state();
+	let decimal_separator: string | undefined = $state();
 
 	// CSV field detection state
 	let availableFields: string[] = $state([]);
@@ -89,7 +91,9 @@
 				id_field_data,
 				replace_properties,
 				remove_non_matching,
-				include_id
+				include_id,
+				field_separator,
+				decimal_separator
 			};
 		} else {
 			params = undefined;
@@ -117,6 +121,23 @@
 			/>
 		</label>
 		{#if selectedFile}
+			<label>
+				Field Separator
+				<select class="input-full" bind:value={field_separator}>
+					<option value={undefined} selected>auto</option>
+					<option value=",">comma (,)</option>
+					<option value=";">semicolon (;)</option>
+					<option value="\t">tab (\t)</option>
+				</select>
+			</label>
+			<label>
+				Decimal Separator
+				<select class="input-full" bind:value={decimal_separator}>
+					<option value={undefined} selected>auto</option>
+					<option value=".">dot (.)</option>
+					<option value=",">comma (,)</option>
+				</select>
+			</label>
 			{#if layer_names}
 				<label class:label-error={!layer_name}>
 					Layer Name
