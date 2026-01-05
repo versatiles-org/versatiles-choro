@@ -4,13 +4,14 @@
 	import Foldable from '$lib/component/SidebarFoldable.svelte';
 	import type { FsFile } from '$lib/api/filesystem.svelte';
 	import type { InferOutput } from 'valibot';
+	import type { TileJSONSpecificationVector } from '@versatiles/style';
 
 	let {
 		params = $bindable(),
-		layer_names
+		tilejson
 	}: {
 		params: InferOutput<typeof VPLParamUpdateProperties> | undefined;
-		layer_names: string[] | undefined;
+		tilejson: TileJSONSpecificationVector | undefined;
 	} = $props();
 
 	let active = $state(true);
@@ -27,6 +28,22 @@
 	let availableFields: string[] = $state([]);
 	let loadingFields: boolean = $state(false);
 	let fieldsError: string | undefined = $state();
+
+	let layer_names: string[] = $derived.by(() => {
+		return tilejson?.vector_layers.map((layer) => layer.id) ?? [];
+	});
+
+	// Derive tile field names from selected layer in tilejson
+	let availableTileFields: string[] = $derived.by(() => {
+		if (!tilejson || !layer_name) return [];
+
+		const selectedLayer = tilejson.vector_layers.find((layer) => layer.id === layer_name);
+
+		if (!selectedLayer) return [];
+
+		// Extract field names (keys) from the fields Record
+		return Object.keys(selectedLayer.fields);
+	});
 
 	// Fetch CSV field names when file is selected
 	$effect(() => {
@@ -111,7 +128,16 @@
 			{/if}
 			<label class:label-error={!id_field_tiles}>
 				ID Field (Tiles)
-				<input type="text" class="input-full" bind:value={id_field_tiles} />
+				{#if availableTileFields.length > 0}
+					<select class="input-full" bind:value={id_field_tiles}>
+						<option value="">-- Select field --</option>
+						{#each availableTileFields as field (field)}
+							<option value={field}>{field}</option>
+						{/each}
+					</select>
+				{:else}
+					<input type="text" class="input-full" bind:value={id_field_tiles} />
+				{/if}
 			</label>
 			<label class:label-error={!id_field_data}>
 				ID Field (Data)

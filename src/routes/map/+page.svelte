@@ -23,9 +23,6 @@
 	let tilejson: TileJSONSpecificationVector | undefined = $derived(
 		overlay_source?.tileJson ?? undefined
 	);
-	let layer_names: string[] | undefined = $derived(
-		tilejson?.vector_layers.map((layer) => layer.id)
-	);
 </script>
 
 <div class="wrapper">
@@ -34,7 +31,7 @@
 			<FormVPLFromContainer bind:params={from_container} />
 		</Frame>
 		<Frame title="Numeric Data" Icon={IconVector}>
-			<FormVPLUpdateProperties bind:params={update_properties} {layer_names} />
+			<FormVPLUpdateProperties bind:params={update_properties} {tilejson} />
 		</Frame>
 		<Frame title="Design" Icon={IconDesign} borderBottom={false}></Frame>
 	</Sidebar>
