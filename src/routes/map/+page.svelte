@@ -14,6 +14,7 @@
 
 	let from_container: InferOutput<typeof VPLParamFromContainer> | undefined = $state();
 	let update_properties: InferOutput<typeof VPLParamUpdateProperties> | undefined = $state();
+	let inspectOverlay: boolean = $state(true);
 
 	let overlay_source: TileSource | undefined = $derived(
 		from_container ? await getTileSource({ vpl: { from_container, update_properties } }) : undefined
@@ -32,10 +33,15 @@
 		<Frame title="Numeric Data" Icon={IconVector}>
 			<FormVPLUpdateProperties bind:params={update_properties} {tilejson} />
 		</Frame>
-		<Frame title="Design" Icon={IconDesign} borderBottom={false}></Frame>
+		<Frame title="Design" Icon={IconDesign} borderBottom={false}>
+			<label class="checkbox-label">
+				<input type="checkbox" bind:checked={inspectOverlay} />
+				Inspector Mode
+			</label>
+		</Frame>
 	</Sidebar>
 	<div class="map-container">
-		<Map backgroundMap="GrayBright" {overlay_source} inspectOverlay={true}></Map>
+		<Map backgroundMap="GrayBright" {overlay_source} {inspectOverlay}></Map>
 	</div>
 </div>
 

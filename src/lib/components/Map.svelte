@@ -1,9 +1,7 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import type { InferOutput } from 'valibot';
-	import type { TilesInitRequest } from '$lib/api/schemas';
 	import { createBackgroundStyle, type BackgroundMap } from './map/style-background';
-	import { getTileSource, TileSource } from './map/tile-source';
+	import { TileSource } from './map/tile-source';
 	import { overlayStyles } from './map/style';
 	import { Inspector } from './map/Inspector.svelte.ts';
 
@@ -67,39 +65,34 @@
 
 	// Legitimate side effect: updates MapLibre map style when overlay or background changes
 	$effect(() => {
-		// Track map, overlay, and backgroundStyle as dependencies
+		// Track dependencies
 		const currentMap = map;
 		const currentOverlay = overlay_source;
 		const currentBackgroundStyle = backgroundStyle;
+		const currentInspectOverlay = inspectOverlay;
+		const currentInspector = inspector;
 
 		if (!currentMap) return;
 		if (!currentOverlay) {
-			inspector?.detach();
+			currentInspector?.detach();
 			currentMap.setStyle(currentBackgroundStyle);
 			return;
 		}
 
 		// Overlay present: update style & inspection handlers
-		updateOverlay();
-	});
-
-	async function updateOverlay() {
-		if (!map || !overlay_source) return;
-
-		const source = overlay_source;
-		const overlayStyle = source.getStyle();
+		const overlayStyle = currentOverlay.getStyle();
 		const overlayLayerIds = overlayStyle.layers?.map((layer) => layer.id) ?? [];
-		const style = overlayStyles(backgroundStyle, overlayStyle);
+		const style = overlayStyles(currentBackgroundStyle, overlayStyle);
 
 		// Remove previous inspection handlers and apply new style
-		inspector?.detach();
+		currentInspector?.detach();
 
-		if (inspectOverlay && overlayLayerIds.length > 0) {
-			inspector?.attach(overlayLayerIds);
+		if (currentInspectOverlay && overlayLayerIds.length > 0) {
+			currentInspector?.attach(overlayLayerIds);
 		}
 
-		map.setStyle(style);
-	}
+		currentMap.setStyle(style);
+	});
 </script>
 
 <div bind:this={container} class="map-container">
@@ -110,20 +103,21 @@
 		<div class="map-error">Error: {loadError}</div>
 	{/if}
 </div>
-{#if inspectOverlay && inspector}
-	<div id="info">
-		{#each inspector.selectedProperties as properties, index (index)}
-			<table>
-				<tbody>
-					{#each properties as prop, index (index)}
-						<tr>
-							<td>{prop.name}:</td>
-							<td>{prop.value}</td>
-						</tr>
-					{/each}
-				</tbody>
-			</table>
-		{/each}
+{#if inspectOverlay && inspector && inspector.mousePosition && inspector.selectedProperties.length > 0}
+	<div
+		class="inspector-panel"
+		style="left: {inspector.mousePosition.x + 15}px; top: {inspector.mousePosition.y + 15}px;"
+	>
+		<table>
+			<tbody>
+				{#each inspector.selectedProperties as prop, propIndex (propIndex)}
+					<tr>
+						<td class="prop-name">{prop.name}</td>
+						<td class="prop-value">{prop.value}</td>
+					</tr>
+				{/each}
+			</tbody>
+		</table>
 	</div>
 {/if}
 
@@ -134,27 +128,37 @@
 		height: 100%;
 		min-height: 300px;
 	}
-	#info {
+	.inspector-panel {
 		position: absolute;
-		top: 0;
-		left: 0;
-		max-width: 300px;
+		max-width: 350px;
+		max-height: 300px;
 		overflow: auto;
-		background: var(--color-overlay-light);
-		font-size: 10px;
-		padding: 5px;
+		background: var(--color-bg-primary);
+		border: 1px solid var(--color-border-light);
+		border-radius: var(--radius-sm);
+		box-shadow: var(--shadow-lg);
+		font-size: 11px;
+		padding: 0.5rem;
+		pointer-events: none;
+		z-index: 1000;
 	}
-	#info table {
+	.inspector-panel table {
 		border-collapse: collapse;
-		margin-bottom: 10px;
+		width: 100%;
 	}
-	#info td {
-		padding: 0px 5px;
+	.inspector-panel td {
+		padding: 2px 4px;
 		vertical-align: top;
 	}
-	#info td:first-child {
-		text-align: left;
-		font-weight: bold;
+	.inspector-panel .prop-name {
+		font-weight: 500;
+		color: var(--color-text-secondary);
+		white-space: nowrap;
+		padding-right: 0.75rem;
+	}
+	.inspector-panel .prop-value {
+		color: var(--color-text-primary);
+		word-break: break-word;
 	}
 	.map-loading,
 	.map-error {

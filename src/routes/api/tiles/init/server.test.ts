@@ -127,17 +127,4 @@ describe('POST /api/tiles/init', () => {
 
 		expect(response.status).toBe(500);
 	});
-
-	it('logs initialization params', async () => {
-		vi.mocked(addTileSource).mockResolvedValue('test-id');
-
-		const vplParams = {
-			vpl: {
-				from_container: { filename: 'test.versatiles' }
-			}
-		};
-
-		const mockEvent = createMockEvent(vplParams);
-		await POST(mockEvent);
-	});
 });
