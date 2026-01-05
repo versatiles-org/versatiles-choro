@@ -12,6 +12,7 @@
 		House,
 		TriangleAlert
 	} from '@lucide/svelte';
+	import '$lib/styles/file-browser.css';
 
 	let {
 		initialDirectory,
@@ -218,94 +219,9 @@
 </Dialog>
 
 <style>
+	/* FileSaver-specific styles */
 	.file-browser {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-	}
-
-	h3 {
-		margin: 0;
-		font-weight: 500;
-	}
-
-	/* Breadcrumbs */
-	.breadcrumbs {
-		display: flex;
-		align-items: center;
-		gap: 0.25rem;
-		padding: 0.5rem;
-		background: var(--color-bg-muted);
-		border-radius: var(--radius-sm);
-		overflow-x: auto;
-	}
-
-	.breadcrumbs :global(.separator) {
-		color: var(--color-icon-separator);
-		flex-shrink: 0;
-	}
-
-	.breadcrumb {
-		display: flex;
-		align-items: center;
-		gap: 0.25rem;
-		padding: 0.25rem 0.5rem;
-		border: none;
-		background: none;
-		border-radius: 3px;
-		cursor: pointer;
-		font-size: 0.85rem;
-		color: var(--color-link);
-		white-space: nowrap;
-	}
-
-	.breadcrumb:hover:not(:disabled) {
-		background: var(--color-bg-hover);
-	}
-
-	.breadcrumb.current {
-		color: var(--color-text-primary);
-		cursor: default;
-	}
-
-	/* File list */
-	.file-list {
-		border: 1px solid var(--color-border-light);
-		border-radius: var(--radius-sm);
-		max-height: 300px;
-		overflow-y: auto;
-	}
-
-	.file-header,
-	.file-row {
-		display: grid;
-		grid-template-columns: 28px 1fr 80px 200px;
-		gap: 0.5rem;
-		padding: 0.5rem;
-	}
-
-	.file-header {
-		background: var(--color-bg-subtle);
-		border-bottom: 1px solid var(--color-border-light);
-		font-size: 0.75rem;
-		font-weight: 500;
-		color: var(--color-text-muted);
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		position: sticky;
-		top: 0;
-	}
-
-	.file-row {
-		border: none;
-		background: none;
-		width: 100%;
-		text-align: left;
-		border-bottom: 1px solid var(--color-border-lighter);
-	}
-
-	.file-row:last-child {
-		border-bottom: none;
+		--file-list-max-height: 300px;
 	}
 
 	button.file-row:hover {
@@ -313,45 +229,8 @@
 		cursor: pointer;
 	}
 
-	.file-row.folder {
-		color: var(--color-link);
-	}
-
-	.file-row.folder :global(svg) {
-		color: var(--color-icon-folder);
-	}
-
-	.file-row.file :global(svg) {
-		color: var(--color-icon-file);
-	}
-
 	.file-row.existing {
 		opacity: 0.6;
-	}
-
-	.col-icon {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	.col-name {
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-		font-family:
-			system-ui,
-			-apple-system,
-			sans-serif;
-		font-size: 0.9rem;
-	}
-
-	.col-size,
-	.col-date {
-		font-family: monospace;
-		font-size: 0.8rem;
-		color: var(--color-text-muted);
-		text-align: right;
 	}
 
 	/* Filename input */
@@ -394,13 +273,6 @@
 		font-family: monospace;
 		font-size: 0.9rem;
 		color: var(--color-text-muted);
-	}
-
-	/* Actions */
-	.actions {
-		display: flex;
-		gap: 0.5rem;
-		justify-content: flex-end;
 	}
 
 	/* Overwrite warning */
