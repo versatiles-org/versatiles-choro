@@ -21,7 +21,12 @@
 			Download sample GeoJSON polygon data to test the choropleth mapping functionality. This will
 			fetch test datasets and save them to your local filesystem.
 		</p>
-		<button class:button-success={success} onclick={() => (running = true)} disabled={running}>
+		<button
+			class="button"
+			class:button-success={success}
+			onclick={() => (running = true)}
+			disabled={running}
+		>
 			{#if running}
 				Downloading...
 			{:else if success}

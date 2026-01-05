@@ -102,7 +102,7 @@
 			<span class="progress-percentage">{percentage.toFixed(0)}%</span>
 		</div>
 	</div>
-	<button onclick={() => controller.abort()}>Abort</button>
+	<button class="button button-secondary" onclick={() => controller.abort()}>Abort</button>
 </Dialog>
 
 <style>

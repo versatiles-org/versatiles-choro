@@ -195,8 +195,8 @@
 
 		<!-- Actions -->
 		<div class="actions">
-			<button class="button-secondary" onclick={() => (showModal = false)}>Cancel</button>
-			<button class="button-primary" onclick={handleSave} disabled={!filename.trim()}>Save</button>
+			<button class="button button-secondary" onclick={() => (showModal = false)}>Cancel</button>
+			<button class="button" onclick={handleSave} disabled={!filename.trim()}>Save</button>
 		</div>
 
 		<!-- Overwrite warning -->
@@ -207,10 +207,10 @@
 					<p>A file with this name already exists. Do you want to replace it?</p>
 				</div>
 				<div class="warning-actions">
-					<button class="button-secondary" onclick={() => (showOverwriteWarning = false)}
+					<button class="button button-secondary" onclick={() => (showOverwriteWarning = false)}
 						>Cancel</button
 					>
-					<button class="button-danger" onclick={confirmOverwriteAction}>Replace</button>
+					<button class="button button-danger" onclick={confirmOverwriteAction}>Replace</button>
 				</div>
 			</div>
 		{/if}
@@ -276,11 +276,15 @@
 		overflow-y: auto;
 	}
 
-	.file-header {
+	.file-header,
+	.file-row {
 		display: grid;
-		grid-template-columns: 28px 1fr 80px 100px;
+		grid-template-columns: 28px 1fr 80px 200px;
 		gap: 0.5rem;
 		padding: 0.5rem;
+	}
+
+	.file-header {
 		background: var(--color-bg-subtle);
 		border-bottom: 1px solid var(--color-border-light);
 		font-size: 0.75rem;
@@ -293,10 +297,6 @@
 	}
 
 	.file-row {
-		display: grid;
-		grid-template-columns: 28px 1fr 80px 100px;
-		gap: 0.5rem;
-		padding: 0.5rem;
 		border: none;
 		background: none;
 		width: 100%;

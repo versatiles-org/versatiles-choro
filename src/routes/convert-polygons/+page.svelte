@@ -24,7 +24,7 @@
 		<div class="step-section">
 			<h3>Step 1: Select Input File</h3>
 			<p>Choose a GeoJSON file containing polygon data to convert into optimized vector tiles.</p>
-			<button onclick={() => (showInputModal = true)}>Select GeoJSON File</button>
+			<button class="button" onclick={() => (showInputModal = true)}>Select GeoJSON File</button>
 		</div>
 		<FileSelector
 			bind:showModal={showInputModal}
@@ -41,7 +41,8 @@
 				<p><strong>Input file:</strong> {inputFile.fullPath()}</p>
 			</div>
 			<p>Select where to save the generated vector tiles (.versatiles file).</p>
-			<button onclick={() => (showOutputModal = true)}>Choose Output Location</button>
+			<button class="button" onclick={() => (showOutputModal = true)}>Choose Output Location</button
+			>
 		</div>
 		<FileSaver
 			bind:showModal={showOutputModal}

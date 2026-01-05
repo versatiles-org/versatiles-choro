@@ -108,7 +108,8 @@
 		<label class:label-error={!selectedFile}>
 			Select Data File:<br />
 			{selectedFile ? selectedFile.getName() : ''}<br />
-			<button onclick={() => (showModal = true)}>Select File</button>
+			<button class="button button-secondary" onclick={() => (showModal = true)}>Select File</button
+			>
 			<FileSelector
 				bind:showModal
 				bind:file={selectedFile}

@@ -125,7 +125,7 @@
 
 		<!-- Actions -->
 		<div class="actions">
-			<button class="button-secondary" onclick={() => (showModal = false)}>Cancel</button>
+			<button class="button button-secondary" onclick={() => (showModal = false)}>Cancel</button>
 		</div>
 	</div>
 </Dialog>

@@ -58,7 +58,7 @@
 						<pre class="error-stack">{errorInfo}</pre>
 					</details>
 				{/if}
-				<button class="button-danger" onclick={reset}>Try again</button>
+				<button class="button button-danger" onclick={reset}>Try again</button>
 			</div>
 		</div>
 	{/if}
