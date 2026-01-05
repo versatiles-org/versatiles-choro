@@ -69,6 +69,8 @@
 	grid-template-columns: 28px 1fr 80px 200px;
 	gap: 0.5rem;
 	padding: 0.5rem;
+	width: 100%;
+	box-sizing: border-box;
 }
 
 .file-browser .file-header {
@@ -81,12 +83,12 @@
 	letter-spacing: 0.05em;
 	position: sticky;
 	top: 0;
+	z-index: 1;
 }
 
 .file-browser .file-row {
 	border: none;
 	background: none;
-	width: 100%;
 	text-align: left;
 	border-bottom: 1px solid var(--color-border-lighter);
 }
