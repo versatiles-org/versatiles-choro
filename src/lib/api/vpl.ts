@@ -28,7 +28,7 @@ export const VPLParamFilterProperties = v.object({
 });
 
 export const VPLParamUpdateProperties = v.object({
-	data_source_path: v.string(),
+	data_source_path: Path,
 	layer_name: v.string(),
 	id_field_tiles: v.string(),
 	id_field_data: v.string(),

@@ -136,7 +136,7 @@
 						{/each}
 					</select>
 				{:else}
-					<input type="text" class="input-full" bind:value={id_field_tiles} />
+					<span class="text-sm text-gray-500 italic">No fields available for selected layer.</span>
 				{/if}
 			</label>
 			<label class:label-error={!id_field_data}>
