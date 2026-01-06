@@ -47,6 +47,9 @@ RUN if [ "$BUILD_FROM_SOURCE" = "true" ]; then \
        /app/node_modules/@versatiles/versatiles-rs/; \
   fi
 
+# Sync SvelteKit types (needed for build-lib which reads tsconfig.json)
+RUN npx svelte-kit sync
+
 # Build the application and prune dev dependencies
 RUN npm run build && npm prune --omit=dev
 
