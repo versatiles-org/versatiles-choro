@@ -12,6 +12,7 @@ RUN mkdir -p /built-module && touch /built-module/.placeholder && \
     apk add --no-cache git musl-dev nodejs npm python3 make g++ && \
     export CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER=gcc && \
     export CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_LINKER=gcc && \
+    export RUSTFLAGS="-C target-feature=-crt-static" && \
     git clone --depth 1 https://github.com/versatiles-org/versatiles-rs.git /versatiles-rs && \
     cd /versatiles-rs/versatiles_node && \
     npm install && \
