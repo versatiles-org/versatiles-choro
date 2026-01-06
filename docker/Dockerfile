@@ -50,12 +50,19 @@ RUN if [ "$BUILD_FROM_SOURCE" = "true" ]; then \
 # Sync SvelteKit types (needed for build-lib which reads tsconfig.json)
 RUN npx svelte-kit sync
 
+# Save native module before prune (npm prune removes optional dependencies)
+RUN cp -r /app/node_modules/@versatiles/versatiles-rs /tmp/versatiles-rs-backup
+
 # Build the application and prune dev dependencies
 RUN npm run build && npm prune --omit=dev
 
-# Re-copy the built native module after prune (npm prune removes orphaned packages)
+# Restore native module after prune
+RUN mkdir -p /app/node_modules/@versatiles && \
+  cp -r /tmp/versatiles-rs-backup /app/node_modules/@versatiles/versatiles-rs && \
+  rm -rf /tmp/versatiles-rs-backup
+
+# Re-copy the built native module if building from source
 RUN if [ "$BUILD_FROM_SOURCE" = "true" ]; then \
-    mkdir -p /app/node_modules/@versatiles/versatiles-rs && \
     cp /tmp/built-module/*.js /tmp/built-module/*.cjs /tmp/built-module/*.d.ts \
        /tmp/built-module/*.node /tmp/built-module/package.json \
        /app/node_modules/@versatiles/versatiles-rs/; \
