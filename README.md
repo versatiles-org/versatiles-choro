@@ -32,6 +32,7 @@ https://github.com/versatiles-org/versatiles-choro/pkgs/container/versatiles-cho
 To start the WebUI locally, run:
 
 ```bash
+docker pull ghcr.io/versatiles-org/versatiles-choro:latest
 docker run -it -p 3000:3000 ghcr.io/versatiles-org/versatiles-choro:latest
 ```
 
