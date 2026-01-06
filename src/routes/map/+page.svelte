@@ -26,7 +26,13 @@
 		from_container ? await getTileSource({ vpl: { from_container, update_properties } }) : undefined
 	);
 
-	let tilejson: TileJSONSpecificationVector | undefined = $derived(
+	let tilejson_raw: TileJSONSpecificationVector | undefined = $derived(
+		from_container
+			? ((await getTileSource({ vpl: { from_container } })).tileJson ?? undefined)
+			: undefined
+	);
+
+	let tilejson_filtered: TileJSONSpecificationVector | undefined = $derived(
 		overlay_source?.tileJson ?? undefined
 	);
 </script>
@@ -37,12 +43,12 @@
 			<FormVPLFromContainer bind:params={from_container} />
 		</Frame>
 		<Frame title="Numeric Data" Icon={IconVector}>
-			<FormVPLUpdateProperties bind:params={update_properties} {tilejson} />
+			<FormVPLUpdateProperties bind:params={update_properties} tilejson={tilejson_raw} />
 		</Frame>
 		<Frame title="Design" Icon={IconDesign} borderBottom={false}>
 			<FormChoropleth
 				bind:params={choropleth}
-				{tilejson}
+				tilejson={tilejson_filtered}
 				layerName={update_properties?.layer_name}
 			/>
 			<label class="checkbox-label">
