@@ -87,12 +87,13 @@ RUN apk add --no-cache tini sqlite-libs
 
 WORKDIR /app
 
-COPY package-lock.json package.json ./
+COPY package-lock.json package.json /app/
 
 COPY --from=tippecanoe /usr/local/bin/tippecanoe /usr/local/bin/
 
-COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/build ./build
+COPY --from=build /app/node_modules /app/
+COPY --from=build /app/build /app/
+COPY --from=build /app/build-lib /app/
 COPY --from=build --chmod=755 /app/build-cli/cli.mjs /app/build-cli/cli
 
 # kill npm cache + root npm dir in the final stage
