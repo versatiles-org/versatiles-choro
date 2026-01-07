@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
+	import { onDestroy } from 'svelte';
 	import { createBackgroundStyle, type BackgroundMap } from './map/style-background';
 	import { TileSource } from './map/tile-source';
 	import { overlayStyles } from './map/style';
@@ -23,17 +23,16 @@
 	} = $props();
 
 	// --- State ---------------------------------------------------------------
-	let container: HTMLDivElement | null = null;
-	let canvas: HTMLCanvasElement | null = null;
-	let map: maplibre.Map | null = null;
+	let container: HTMLDivElement | null = $state(null);
+	let map: maplibre.Map | null = $state(null);
 
 	// Derived background style so changes to backgroundMap are reflected
 	let backgroundStyle = $derived(createBackgroundStyle(backgroundMap));
 	let inspector: Inspector | null = $state(null);
 
-	// --- Lifecycle: onMount that auto-cleans ---------------------------------
-	onMount(async () => {
-		if (!container) return;
+	// --- Lifecycle: Initialize map when container becomes available ----------
+	$effect(() => {
+		if (!container || map) return;
 
 		const bounds: maplibre.LngLatBoundsLike = [-23.895, 34.9, 45.806, 71.352];
 
@@ -44,10 +43,9 @@
 		});
 
 		inspector = new Inspector(map);
-		canvas = map.getCanvas();
 	});
 
-	// cleanup (runs automatically when dependencies change or component unmounts)
+	// cleanup on unmount
 	onDestroy(() => {
 		inspector?.detach();
 		inspector = null;
