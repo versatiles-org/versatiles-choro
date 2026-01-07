@@ -7,6 +7,10 @@ on:
     types:
       - completed
 
+permissions:
+  contents: read
+  packages: write
+
 env:
   IMAGE: ghcr.io/versatiles-org/versatiles-choro
   BUILD_FROM_SOURCE: false
