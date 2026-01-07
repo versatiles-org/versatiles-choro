@@ -59,6 +59,11 @@
 			title="Converting Polygons to Vector Tiles"
 			url="/api/convert/polygons"
 			params={{ input: inputFile.fullPath(), output: outputFilePath }}
+			onComplete={() => {
+				// Reset state after completion
+				inputFile = undefined;
+				outputFilePath = undefined;
+			}}
 		/>
 	{/if}
 </PageContainer>
