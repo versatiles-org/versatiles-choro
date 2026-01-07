@@ -8,3 +8,5 @@ static/
 build/
 build-cli/
 build-lib/
+playwright-report/
+test-results/

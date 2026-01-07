@@ -37,8 +37,9 @@ export default defineConfig(
 	{
 		ignores: [
 			'.svelte-kit/**',
-			'build/**',
 			'build-lib/**',
+			'build/**',
+			'playwright.config.ts',
 			'rollup.config.*.ts',
 			'src/lib/choro/bundle-entry.ts'
 		]
