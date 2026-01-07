@@ -5,6 +5,7 @@
 	import { overlayStyles } from './map/style';
 	import { Inspector } from './map/Inspector.svelte.ts';
 	import type { ChoroplethParams } from './map/color-schemes';
+	import maplibre from 'maplibre-gl';
 
 	// --- Props  --------------------------------------------------------------
 	let {
@@ -24,9 +25,7 @@
 	// --- State ---------------------------------------------------------------
 	let container: HTMLDivElement | null = null;
 	let canvas: HTMLCanvasElement | null = null;
-	let map: import('maplibre-gl').Map | null = null;
-	let isLoading = $state(true);
-	let loadError = $state<string | null>(null);
+	let map: maplibre.Map | null = null;
 
 	// Derived background style so changes to backgroundMap are reflected
 	let backgroundStyle = $derived(createBackgroundStyle(backgroundMap));
@@ -34,30 +33,18 @@
 
 	// --- Lifecycle: onMount that auto-cleans ---------------------------------
 	onMount(async () => {
-		try {
-			if (!container) return;
+		if (!container) return;
 
-			isLoading = true;
+		const bounds: maplibre.LngLatBoundsLike = [-23.895, 34.9, 45.806, 71.352];
 
-			// Dynamic import - loads MapLibre only when component mounts
-			const maplibreModule = await import('maplibre-gl');
-			const maplibre = maplibreModule.default;
+		map = new maplibre.Map({
+			container,
+			style: backgroundStyle,
+			bounds
+		});
 
-			const bounds: import('maplibre-gl').LngLatBoundsLike = [-23.895, 34.9, 45.806, 71.352];
-
-			map = new maplibre.Map({
-				container,
-				style: backgroundStyle,
-				bounds
-			});
-
-			inspector = new Inspector(map);
-			canvas = map.getCanvas();
-			isLoading = false;
-		} catch (error) {
-			loadError = error instanceof Error ? error.message : 'Failed to load map';
-			isLoading = false;
-		}
+		inspector = new Inspector(map);
+		canvas = map.getCanvas();
 	});
 
 	// cleanup (runs automatically when dependencies change or component unmounts)
@@ -113,14 +100,7 @@
 	});
 </script>
 
-<div bind:this={container} class="map-container">
-	{#if isLoading}
-		<div class="map-loading">Loading map...</div>
-	{/if}
-	{#if loadError}
-		<div class="map-error">Error: {loadError}</div>
-	{/if}
-</div>
+<div bind:this={container} class="map-container"></div>
 {#if inspectOverlay && inspector && inspector.selectedProperties.length > 0}
 	<div class="inspector-panel">
 		<table>
@@ -176,18 +156,5 @@
 	.inspector-panel .prop-value {
 		color: var(--color-text-primary);
 		word-break: break-word;
-	}
-	.map-loading,
-	.map-error {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		padding: 1rem;
-		background: var(--color-overlay-lighter);
-		border-radius: var(--radius-sm);
-	}
-	.map-error {
-		color: var(--color-danger-500);
 	}
 </style>

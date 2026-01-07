@@ -53,18 +53,6 @@ describe('Map', () => {
 		expect(mapContainer).toBeInTheDocument();
 	});
 
-	it('shows loading state initially', () => {
-		const { container } = render(MapWrapper, {
-			props: {
-				backgroundMap: 'Gray'
-			}
-		});
-
-		const loading = container.querySelector('.map-loading');
-		expect(loading).toBeInTheDocument();
-		expect(loading).toHaveTextContent('Loading map...');
-	});
-
 	it('accepts backgroundMap prop', () => {
 		const { container } = render(MapWrapper, {
 			props: {
