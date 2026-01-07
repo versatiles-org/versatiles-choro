@@ -8,7 +8,7 @@
 		"build-cli": "rollup -c ./rollup.config.cli.ts",
 		"build-lib": "rollup -c ./rollup.config.lib.ts",
 		"build-svelte": "svelte-kit sync && vite build -l warn",
-		"build": " npm run build-lib && npm run build-svelte && npm run build-cli",
+		"build": "npm run build-svelte && npm run build-lib && npm run build-cli",
 		"check-svelte:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"check-svelte": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check": "npm run lint && npm run check-svelte && npm run test && npm run build && npm run format:check",
