@@ -34,6 +34,32 @@ echo "$output" | grep -q "CLI for VersaTiles Choro" || error "description line m
 
 
 
+# Test CLI data conversion workflow
+temp_dir=$(mktemp -d)
+cleanup_temp() {
+  rm -rf "$temp_dir"
+}
+trap cleanup_temp EXIT
+
+log_test "downloading test data"
+docker run --rm -v "$temp_dir:/data" "$image_tag" cli download-test-data /data || error "downloading test data failed"
+
+[ -f "$temp_dir/3_kreise.geojson" ] || error "3_kreise.geojson not found after download"
+
+log_test "converting 3_kreise.geojson to versatiles"
+docker run --rm -v "$temp_dir:/data" "$image_tag" cli polygons2tiles /data/3_kreise.geojson /data/3_kreise.versatiles || error "converting to versatiles failed"
+
+[ -f "$temp_dir/3_kreise.versatiles" ] || error "3_kreise.versatiles not found after conversion"
+
+file_size=$(stat -f%z "$temp_dir/3_kreise.versatiles" 2>/dev/null || stat -c%s "$temp_dir/3_kreise.versatiles" 2>/dev/null)
+[ "$file_size" -gt 1300000 ] || error "3_kreise.versatiles seems too small: $file_size bytes"
+
+# Reset trap for server tests
+trap - EXIT
+cleanup_temp
+
+
+
 # Test the server of the VersaTiles Choro Docker image
 log_test "starting server"
 container_id=$(docker run --rm -d -p 3000:3000 "$image_tag")
