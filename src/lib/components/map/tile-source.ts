@@ -52,7 +52,11 @@ export async function getTileSource(
 	init: v.InferInput<typeof TilesInitRequest>
 ): Promise<TileSource> {
 	const req = v.parse(TilesInitRequest, init);
-	const res = await fetch('/api/tiles/init', { body: JSON.stringify(req), method: 'POST' });
+	const res = await fetch('/api/tiles/init', {
+		body: JSON.stringify(req),
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' }
+	});
 	if (!res.ok) {
 		throw new Error(`Failed to initialize tile server: ${await res.text()}`);
 	}

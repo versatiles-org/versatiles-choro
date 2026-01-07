@@ -68,7 +68,10 @@ describe('getTileSource', () => {
 
 		expect(fetchMock).toHaveBeenCalledWith('/api/tiles/init', {
 			body: JSON.stringify(init),
-			method: 'POST'
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			}
 		});
 	});
 
