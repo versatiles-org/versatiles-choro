@@ -35,7 +35,13 @@ export default defineConfig(
 	...ts.configs.recommended,
 	prettier,
 	{
-		ignores: ['.svelte-kit/**', 'build/**', 'rollup.config.*.ts', 'src/lib/choro/bundle-entry.ts']
+		ignores: [
+			'.svelte-kit/**',
+			'build/**',
+			'build-lib/**',
+			'rollup.config.*.ts',
+			'src/lib/choro/bundle-entry.ts'
+		]
 	},
 	...svelte.configs.recommended,
 	...svelte.configs.prettier,
