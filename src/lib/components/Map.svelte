@@ -5,7 +5,7 @@
 	import { overlayStyles } from './map/style';
 	import { Inspector } from './map/Inspector.svelte.ts';
 	import type { ChoroplethParams } from './map/color-schemes';
-	import maplibre from 'maplibre-gl';
+	import { Map as maplibreMap, type LngLatBoundsLike } from 'maplibre-gl';
 
 	// --- Props  --------------------------------------------------------------
 	let {
@@ -24,7 +24,7 @@
 
 	// --- State ---------------------------------------------------------------
 	let container: HTMLDivElement | null = $state(null);
-	let map: maplibre.Map | null = $state(null);
+	let map: maplibreMap | null = $state(null);
 
 	// Derived background style so changes to backgroundMap are reflected
 	let backgroundStyle = $derived(createBackgroundStyle(backgroundMap));
@@ -34,9 +34,9 @@
 	$effect(() => {
 		if (!container || map) return;
 
-		const bounds: maplibre.LngLatBoundsLike = [-23.895, 34.9, 45.806, 71.352];
+		const bounds: LngLatBoundsLike = [-23.895, 34.9, 45.806, 71.352];
 
-		map = new maplibre.Map({
+		map = new maplibreMap({
 			container,
 			style: backgroundStyle,
 			bounds
