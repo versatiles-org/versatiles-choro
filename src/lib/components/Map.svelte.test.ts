@@ -7,22 +7,24 @@ import type { TilesInitRequest } from '$lib/api/schemas';
 import { getTileSource, TileSource } from './map/tile-source';
 
 // Mock maplibre-gl
-vi.mock('maplibre-gl', () => ({
-	default: {
-		Map: vi.fn(function () {
-			return {
-				remove: vi.fn(),
-				setStyle: vi.fn(),
-				getCanvas: vi.fn(() => ({
-					style: {},
-					getContext: vi.fn(() => null)
-				})),
-				on: vi.fn(),
-				off: vi.fn()
-			};
-		})
-	}
-}));
+vi.mock('maplibre-gl', () => {
+	const MockMap = vi.fn(function () {
+		return {
+			remove: vi.fn(),
+			setStyle: vi.fn(),
+			getCanvas: vi.fn(() => ({
+				style: {},
+				getContext: vi.fn(() => null)
+			})),
+			on: vi.fn(),
+			off: vi.fn()
+		};
+	});
+	return {
+		Map: MockMap,
+		default: { Map: MockMap }
+	};
+});
 
 // Mock tile source
 vi.mock('./map/tile-source', () => ({
