@@ -1,23 +1,40 @@
 import { defineConfig, devices } from '@playwright/test';
 
+// All available browser projects
+const allProjects = [
+	{
+		name: 'chromium',
+		use: { ...devices['Desktop Chrome'] }
+	},
+	{
+		name: 'firefox',
+		use: { ...devices['Desktop Firefox'] }
+	},
+	{
+		name: 'webkit',
+		use: { ...devices['Desktop Safari'] }
+	}
+];
+
+// Filter projects if PLAYWRIGHT_PROJECT env var is set (for CI matrix)
+const selectedProject = process.env.PLAYWRIGHT_PROJECT;
+const projects = selectedProject
+	? allProjects.filter((p) => p.name === selectedProject)
+	: allProjects;
+
 export default defineConfig({
 	testDir: './tests/e2e',
 	fullyParallel: true,
 	forbidOnly: !!process.env.CI,
 	retries: process.env.CI ? 2 : 0,
 	workers: process.env.CI ? 1 : undefined,
-	reporter: 'html',
+	reporter: process.env.CI ? 'github' : 'html',
 	use: {
 		baseURL: 'http://localhost:4173',
 		trace: 'on-first-retry',
 		screenshot: 'only-on-failure'
 	},
-	projects: [
-		{
-			name: 'chromium',
-			use: { ...devices['Desktop Chrome'] }
-		}
-	],
+	projects,
 	webServer: {
 		command: 'npm run build && npm run preview',
 		url: 'http://localhost:4173',
