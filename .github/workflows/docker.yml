@@ -9,6 +9,7 @@ on:
 
 env:
   IMAGE: ghcr.io/versatiles-org/versatiles-choro
+  BUILD_FROM_SOURCE: false
 
 jobs:
   build-amd64:
@@ -37,7 +38,7 @@ jobs:
         with:
           context: .
           file: docker/Dockerfile
-          build-args: BUILD_FROM_SOURCE=true
+          build-args: BUILD_FROM_SOURCE=${{ env.BUILD_FROM_SOURCE }}
           platforms: linux/amd64
           pull: true
           load: true
@@ -53,7 +54,7 @@ jobs:
         with:
           context: .
           file: docker/Dockerfile
-          build-args: BUILD_FROM_SOURCE=true
+          build-args: BUILD_FROM_SOURCE=${{ env.BUILD_FROM_SOURCE }}
           platforms: linux/amd64
           push: true
           tags: ${{ env.IMAGE }}:amd64
@@ -85,7 +86,7 @@ jobs:
         with:
           context: .
           file: docker/Dockerfile
-          build-args: BUILD_FROM_SOURCE=true
+          build-args: BUILD_FROM_SOURCE=${{ env.BUILD_FROM_SOURCE }}
           platforms: linux/arm64
           pull: true
           load: true
@@ -101,7 +102,7 @@ jobs:
         with:
           context: .
           file: docker/Dockerfile
-          build-args: BUILD_FROM_SOURCE=true
+          build-args: BUILD_FROM_SOURCE=${{ env.BUILD_FROM_SOURCE }}
           platforms: linux/arm64
           push: true
           tags: ${{ env.IMAGE }}:arm64
