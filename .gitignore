@@ -4,6 +4,7 @@ coverage
 data
 node_modules
 temp
+test-data
 
 # Output
 .svelte-kit
