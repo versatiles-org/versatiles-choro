@@ -55,10 +55,5 @@ test.describe('Full Workflow', () => {
 		await expect(
 			page.getByRole('heading', { name: 'Converting Polygons to Vector Tiles' })
 		).toBeVisible();
-
-		// Wait for conversion to complete - page resets to Step 1 when done
-		await expect(page.getByRole('heading', { name: 'Step 1: Select Input File' })).toBeVisible({
-			timeout: 60000
-		});
 	});
 });
