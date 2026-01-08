@@ -93,7 +93,7 @@ COPY --from=tippecanoe /usr/local/bin/tippecanoe /usr/local/bin/
 
 COPY --from=build /app/node_modules /app/node_modules
 COPY --from=build /app/build /app/build
-COPY --from=build /app/build-lib /app/build-lib
+COPY --from=build /app/build-lib/choro-lib.js /app/build-lib/choro-lib.js
 COPY --from=build --chmod=755 /app/build-cli/cli.mjs /app/build-cli/cli
 
 # kill npm cache + root npm dir in the final stage

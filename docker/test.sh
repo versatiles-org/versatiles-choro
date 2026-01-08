@@ -17,6 +17,12 @@ error() {
 
 
 
+# Test that build-lib/choro-lib.js exists in the image
+log_test "checking build-lib/choro-lib.js exists"
+docker run --rm "$image_tag" test -f /app/build-lib/choro-lib.js || error "build-lib/choro-lib.js not found in image"
+
+
+
 # Test the CLI of the VersaTiles Choro Docker image
 log_test "getting CLI version"
 result=$(docker run "$image_tag" cli -V) || error "getting CLI version failed"

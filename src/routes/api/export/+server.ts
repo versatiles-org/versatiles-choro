@@ -50,13 +50,13 @@ export const POST: RequestHandler = withErrorHandling(async ({ request }) => {
 	await writeFile(join(outputDir, 'config.json'), JSON.stringify(config, null, 2));
 
 	// 3. Copy choro-lib.js from build output
-	const choroLibSource = join(process.cwd(), 'build-choro', 'choro-lib.js');
+	const choroLibSource = join(process.cwd(), 'build-lib', 'choro-lib.js');
 	try {
 		await access(choroLibSource);
 		await copyFile(choroLibSource, join(outputDir, 'choro-lib.js'));
 	} catch {
 		throw new Error(
-			'choro-lib.js not found. Please run "npm run build-choro" first to build the library.'
+			'choro-lib.js not found. Please run "npm run build-lib" first to build the library.'
 		);
 	}
 
