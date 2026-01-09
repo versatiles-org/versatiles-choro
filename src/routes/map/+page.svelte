@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { TilesInitRequest } from '$lib/api/schemas';
 	import Map from '$lib/components/Map.svelte';
 	import type { InferOutput } from 'valibot';
 	import Frame from '$lib/components/SidebarFrame.svelte';
@@ -18,6 +17,8 @@
 	import type { TileJSONSpecificationVector } from '@versatiles/style';
 	import type { ChoroplethParams } from '$lib/components/map/color-schemes';
 	import FileSaver from '$lib/components/FileSaver.svelte';
+	import Progress from '$lib/components/Progress.svelte';
+	import type { ExportRequest } from '$lib/api/schemas';
 
 	let from_container: InferOutput<typeof VPLParamFromContainer> | undefined = $state();
 	let update_properties: InferOutput<typeof VPLParamUpdateProperties> | undefined = $state();
@@ -41,56 +42,29 @@
 	// Export functionality
 	let showExportDialog = $state(false);
 	let exportPath: string | undefined = $state();
-	let isExporting = $state(false);
-	let exportError: string | null = $state(null);
 
 	// Determine if export is possible
 	let canExport = $derived(
 		from_container && choropleth && update_properties?.layer_name && tilejson_filtered
 	);
 
-	async function handleExport() {
-		if (!exportPath || !canExport) return;
-		if (!from_container || !choropleth || !update_properties?.layer_name || !tilejson_filtered)
-			return;
-
-		isExporting = true;
-		exportError = null;
-
-		try {
-			const response = await fetch('/api/export', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
+	// Build export params when ready
+	let exportParams: InferOutput<typeof ExportRequest> | undefined = $derived(
+		exportPath && from_container && choropleth && update_properties?.layer_name && tilejson_filtered
+			? {
 					vpl: { from_container, update_properties },
 					choropleth,
 					layerName: update_properties.layer_name,
 					backgroundStyle: 'GrayBright',
 					outputPath: exportPath,
 					tilejson: tilejson_filtered
-				})
-			});
+				}
+			: undefined
+	);
 
-			if (!response.ok) {
-				const error = await response.json();
-				throw new Error(error.message || 'Export failed');
-			}
-
-			// Reset export path after successful export
-			exportPath = undefined;
-		} catch (e) {
-			exportError = e instanceof Error ? e.message : 'Export failed';
-		} finally {
-			isExporting = false;
-		}
+	function handleExportComplete() {
+		exportPath = undefined;
 	}
-
-	// Trigger export when path is selected
-	$effect(() => {
-		if (exportPath && canExport) {
-			handleExport();
-		}
-	});
 </script>
 
 <div class="wrapper">
@@ -113,19 +87,12 @@
 			</label>
 		</Frame>
 		<Frame title="Export" Icon={IconExport} borderBottom={false}>
-			<button
-				class="export-button"
-				onclick={() => (showExportDialog = true)}
-				disabled={!canExport || isExporting}
-			>
+			<button class="export-button" onclick={() => (showExportDialog = true)} disabled={!canExport}>
 				<IconExport size={16} />
-				{isExporting ? 'Exporting...' : 'Export Map'}
+				Export Map
 			</button>
 			{#if !canExport}
 				<p class="export-hint">Configure vector data, numeric data, and design to enable export.</p>
-			{/if}
-			{#if exportError}
-				<p class="export-error">{exportError}</p>
 			{/if}
 		</Frame>
 	</Sidebar>
@@ -148,6 +115,15 @@
 	title="Export Choropleth Map"
 	confirmOverwrite={false}
 />
+
+{#if exportParams}
+	<Progress
+		url="/api/export"
+		title="Exporting Map"
+		params={exportParams}
+		onComplete={handleExportComplete}
+	/>
+{/if}
 
 <style>
 	.wrapper {
@@ -184,10 +160,5 @@
 		margin-top: 0.5rem;
 		font-size: 0.8rem;
 		color: var(--color-text-muted);
-	}
-	.export-error {
-		margin-top: 0.5rem;
-		font-size: 0.8rem;
-		color: var(--color-danger-500);
 	}
 </style>

@@ -1,5 +1,6 @@
 import * as v from 'valibot';
 import { ConvertPolygonsRequest } from './requests';
+import { ExportRequest } from './export';
 
 /**
  * Schema for endpoints that don't require request parameters
@@ -12,7 +13,8 @@ const EmptyRequest = v.object({});
  */
 export const API_ROUTES = {
 	'/api/convert/polygons': ConvertPolygonsRequest,
-	'/api/download/test-data': EmptyRequest
+	'/api/download/test-data': EmptyRequest,
+	'/api/export': ExportRequest
 } as const;
 
 /**
