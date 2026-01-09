@@ -32,7 +32,7 @@ const EXPECTED_DOWNLOADED_FILES = [
 	'test-data/73111-01-01-5-Einkommen.tsv'
 ];
 
-const EXPECTED_CONVERTED_FILE = 'test-data/5_gemeinden.versatiles';
+const EXPECTED_CONVERTED_FILE = 'test-data/3_kreise.versatiles';
 
 const EXPECTED_EXPORT_FILES = [
 	'choropleth-export/choro-lib.js',
@@ -109,8 +109,8 @@ test.describe('Full Workflow', () => {
 		await expect(page.getByRole('heading', { name: 'Select Input File (GeoJSON)' })).toBeVisible();
 		await page.getByRole('button', { name: 'test-data' }).click();
 
-		// Step 9: Click on "5_gemeinden.geojson" file
-		await page.getByRole('button', { name: '5_gemeinden.geojson' }).click();
+		// Step 9: Click on "3_kreise.geojson" file (smaller file for faster CI)
+		await page.getByRole('button', { name: '3_kreise.geojson' }).click();
 
 		// Step 10: FileSaver popup should appear automatically, click "Save"
 		await expect(page.getByRole('heading', { name: 'Save Output File' })).toBeVisible();
@@ -128,10 +128,10 @@ test.describe('Full Workflow', () => {
 		).toBeVisible();
 
 		// Wait for progress dialog to disappear (conversion complete)
-		// CI runners (especially Firefox/WebKit) can be slower, allow up to 120 seconds
+		// Converting 3_kreise.geojson (~400 features) should complete within 60 seconds
 		await expect(
 			page.getByRole('heading', { name: 'Converting Polygons to Vector Tiles' })
-		).not.toBeVisible({ timeout: 120000 });
+		).not.toBeVisible({ timeout: 60000 });
 
 		// Verify: Converted .versatiles file was created
 		const filesAfterConversion = listFiles(DATA_DIR);
@@ -155,8 +155,8 @@ test.describe('Full Workflow', () => {
 		await expect(page.locator('dialog h3:has-text("Select File")').first()).toBeVisible();
 		await page.locator('dialog button:has-text("test-data")').first().click();
 
-		// Step 16: Select 5_gemeinden.versatiles
-		await page.locator('dialog button:has-text("5_gemeinden.versatiles")').first().click();
+		// Step 16: Select 3_kreise.versatiles
+		await page.locator('dialog button:has-text("3_kreise.versatiles")').first().click();
 
 		// Wait for dialog to close and tile source to load
 		await page.waitForTimeout(2000);
@@ -171,10 +171,8 @@ test.describe('Full Workflow', () => {
 			.click();
 
 		// Step 19: Navigate and select the TSV file
-		// Use the visible dialog (the one that's open)
 		const visibleDialog = page.locator('dialog:visible');
 		await expect(visibleDialog.locator('h3:has-text("Select File")')).toBeVisible();
-		// Navigate to test-data only if there's an enabled folder button (not already in that folder)
 		const testDataFolderButton = visibleDialog.locator('button.folder:has-text("test-data")');
 		if (await testDataFolderButton.isVisible({ timeout: 500 }).catch(() => false)) {
 			await testDataFolderButton.click();
@@ -184,13 +182,13 @@ test.describe('Full Workflow', () => {
 		// Wait for dialog to close and CSV fields to load
 		await page.waitForTimeout(2000);
 
-		// Step 20: Select Layer Name (required to properly bind the value)
-		await page.locator('label:has-text("Layer Name") select').selectOption('5_gemeinden');
+		// Step 20: Select Layer Name (required for choropleth)
+		await page.locator('label:has-text("Layer Name") select').selectOption('3_kreise');
 
-		// Step 21: Set ID Field (Tiles) to "AGS" - find by label text
+		// Step 21: Set ID Field (Tiles) to "AGS"
 		await page.locator('label:has-text("ID Field (Tiles)") select').selectOption('AGS');
 
-		// Step 22: Set ID Field (Data) to "Schlüssel"
+		// Step 22: Set ID Field (Data) to "Schlüssel" (won't match kreise but allows export)
 		await page.locator('label:has-text("ID Field (Data)") select').selectOption('Schlüssel');
 
 		// Wait for Svelte reactivity to update the params and propagate to parent
@@ -204,17 +202,17 @@ test.describe('Full Workflow', () => {
 			timeout: 10000
 		});
 
-		// Step 25: Set Value Field to "Lohnsteuer/EW"
-		await page.locator('label:has-text("Value Field") select').selectOption('Lohnsteuer/EW');
+		// Step 25: Set Value Field to first available field from the TSV
+		await page.locator('label:has-text("Value Field") select').selectOption({ index: 1 });
 
 		// Step 26: Set Color Scheme to "inferno"
 		await page.locator('label:has-text("Color Scheme") select').selectOption('inferno');
 
-		// Step 27: Set Min value to 30000
-		await page.locator('label:has-text("Min") input[type="number"]').fill('30000');
+		// Step 27: Set Min value to 0
+		await page.locator('label:has-text("Min") input[type="number"]').fill('0');
 
-		// Step 28: Set Max value to 50000
-		await page.locator('label:has-text("Max") input[type="number"]').fill('50000');
+		// Step 28: Set Max value to 100
+		await page.locator('label:has-text("Max") input[type="number"]').fill('100');
 
 		// Step 29: Wait for Export button to be enabled (canExport should be true now)
 		await expect(page.getByRole('button', { name: 'Export Map' })).toBeEnabled({ timeout: 10000 });
