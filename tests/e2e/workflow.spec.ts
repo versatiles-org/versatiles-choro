@@ -128,9 +128,10 @@ test.describe('Full Workflow', () => {
 		).toBeVisible();
 
 		// Wait for progress dialog to disappear (conversion complete)
+		// CI runners (especially Firefox/WebKit) can be slower, allow up to 120 seconds
 		await expect(
 			page.getByRole('heading', { name: 'Converting Polygons to Vector Tiles' })
-		).not.toBeVisible({ timeout: 60000 });
+		).not.toBeVisible({ timeout: 120000 });
 
 		// Verify: Converted .versatiles file was created
 		const filesAfterConversion = listFiles(DATA_DIR);
