@@ -12,7 +12,12 @@ export function progressToStream(progress: Progress, signal: AbortSignal): Respo
 		start(controller) {
 			function send(obj: InferInput<typeof ProgressStatus>) {
 				if (finished) return;
-				controller.enqueue(encoder.encode(JSON.stringify(obj) + '\n'));
+				try {
+					controller.enqueue(encoder.encode(JSON.stringify(obj) + '\n'));
+				} catch {
+					// Controller may already be closed
+					finished = true;
+				}
 			}
 			progress.onProgress((progress) => send({ event: 'progress', progress }));
 			progress.onMessage((message) => send({ event: 'message', message }));
@@ -21,12 +26,20 @@ export function progressToStream(progress: Progress, signal: AbortSignal): Respo
 				.then(() => {
 					send({ event: 'done' });
 					finished = true;
-					controller.close();
+					try {
+						controller.close();
+					} catch {
+						// Controller may already be closed
+					}
 				})
 				.catch((err) => {
 					send({ event: 'error', error: String(err) });
 					finished = true;
-					controller.close();
+					try {
+						controller.close();
+					} catch {
+						// Controller may already be closed
+					}
 				});
 		}
 	});
