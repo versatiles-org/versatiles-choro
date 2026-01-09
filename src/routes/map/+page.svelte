@@ -101,7 +101,7 @@
 		<Frame title="Numeric Data" Icon={IconVector}>
 			<FormVPLUpdateProperties bind:params={update_properties} tilejson={tilejson_raw} />
 		</Frame>
-		<Frame title="Design" Icon={IconDesign} borderBottom={false}>
+		<Frame title="Design" Icon={IconDesign}>
 			<FormChoropleth
 				bind:params={choropleth}
 				tilejson={tilejson_filtered}
@@ -111,25 +111,22 @@
 				<input type="checkbox" bind:checked={inspectOverlay} />
 				Inspector Mode
 			</label>
-
-			<div class="export-section">
-				<button
-					class="export-button"
-					onclick={() => (showExportDialog = true)}
-					disabled={!canExport || isExporting}
-				>
-					<IconExport size={16} />
-					{isExporting ? 'Exporting...' : 'Export Map'}
-				</button>
-				{#if !canExport}
-					<p class="export-hint">
-						Configure vector data, numeric data, and design to enable export.
-					</p>
-				{/if}
-				{#if exportError}
-					<p class="export-error">{exportError}</p>
-				{/if}
-			</div>
+		</Frame>
+		<Frame title="Export" Icon={IconExport} borderBottom={false}>
+			<button
+				class="export-button"
+				onclick={() => (showExportDialog = true)}
+				disabled={!canExport || isExporting}
+			>
+				<IconExport size={16} />
+				{isExporting ? 'Exporting...' : 'Export Map'}
+			</button>
+			{#if !canExport}
+				<p class="export-hint">Configure vector data, numeric data, and design to enable export.</p>
+			{/if}
+			{#if exportError}
+				<p class="export-error">{exportError}</p>
+			{/if}
 		</Frame>
 	</Sidebar>
 	<div class="map-container">
@@ -160,11 +157,6 @@
 	.map-container {
 		flex: 1;
 		position: relative;
-	}
-	.export-section {
-		margin-top: 1rem;
-		padding-top: 1rem;
-		border-top: 1px solid var(--color-border-light);
 	}
 	.export-button {
 		display: flex;
