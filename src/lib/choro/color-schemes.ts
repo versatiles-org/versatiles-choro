@@ -71,4 +71,5 @@ export interface ChoroplethParams {
 	colorScheme: ColorSchemeName;
 	min: number;
 	max: number;
+	tooltipTemplate?: string;
 }

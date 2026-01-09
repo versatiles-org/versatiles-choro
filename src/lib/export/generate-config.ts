@@ -26,6 +26,7 @@ export interface ExportConfig {
 		min: number;
 		max: number;
 		colors: string[];
+		tooltipTemplate?: string;
 	};
 	background: {
 		style: BackgroundMap;
@@ -76,7 +77,8 @@ export function generateConfig(params: GenerateConfigParams): ExportConfig {
 			colorScheme: choropleth.colorScheme,
 			min: choropleth.min,
 			max: choropleth.max,
-			colors: [...colors]
+			colors: [...colors],
+			tooltipTemplate: choropleth.tooltipTemplate
 		},
 		background: {
 			style: backgroundStyle

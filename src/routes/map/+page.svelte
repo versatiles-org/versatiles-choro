@@ -103,6 +103,7 @@
 			{inspectOverlay}
 			{choropleth}
 			choroplethLayerName={update_properties?.layer_name}
+			tooltipTemplate={choropleth?.tooltipTemplate}
 		></Map>
 	</div>
 </div>

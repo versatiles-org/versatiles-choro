@@ -6,7 +6,8 @@ export const ChoroplethParamsSchema = v.object({
 	field: v.string(),
 	colorScheme: v.picklist(['viridis', 'plasma', 'inferno', 'magma']),
 	min: v.number(),
-	max: v.number()
+	max: v.number(),
+	tooltipTemplate: v.optional(v.string())
 });
 
 export const BackgroundMapSchema = v.picklist([

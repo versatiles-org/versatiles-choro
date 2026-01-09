@@ -1,4 +1,5 @@
 import type { Map, MapLayerMouseEvent } from 'maplibre-gl';
+import { interpolateTemplate } from '$lib/choro/tooltip';
 
 interface PropertyEntry {
 	name: string;
@@ -20,12 +21,15 @@ export class Inspector {
 	mouseMoveHandler: ((e: MapLayerMouseEvent) => void) | null = null;
 	mouseLeaveHandler: ((e: MapLayerMouseEvent) => void) | null = null;
 	private hideTimeout: ReturnType<typeof setTimeout> | null = null;
+	tooltipTemplate: string | undefined;
+	tooltipContent;
 
 	constructor(map: Map) {
 		this.map = map;
 		this.canvas = map.getCanvas();
 		this.selectedProperties = $state<PropertyEntry[]>([]);
 		this.mousePosition = $state<MousePosition | null>(null);
+		this.tooltipContent = $state<string | null>(null);
 	}
 
 	detach() {
@@ -49,6 +53,7 @@ export class Inspector {
 		this.layerIds = [];
 		this.selectedProperties = [];
 		this.mousePosition = null;
+		this.tooltipContent = null;
 	}
 
 	async attach(layerIds: string[]) {
@@ -74,6 +79,7 @@ export class Inspector {
 					this.hideTimeout = null;
 					this.selectedProperties = [];
 					this.mousePosition = null;
+					this.tooltipContent = null;
 					this.canvas.style.cursor = '';
 					this.lastSelectedFeature = null;
 				}, 100);
@@ -95,6 +101,13 @@ export class Inspector {
 				this.selectedProperties = props;
 				this.canvas.style.cursor = 'pointer';
 				this.lastSelectedFeature = feature;
+
+				// Compute tooltip content if template is set
+				if (this.tooltipTemplate) {
+					this.tooltipContent = interpolateTemplate(this.tooltipTemplate, feature.properties);
+				} else {
+					this.tooltipContent = null;
+				}
 			}
 
 			// Update mouse position for hover panel

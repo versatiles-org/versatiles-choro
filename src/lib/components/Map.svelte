@@ -14,13 +14,15 @@
 		inspectOverlay = false,
 		overlay_source,
 		choropleth,
-		choroplethLayerName
+		choroplethLayerName,
+		tooltipTemplate
 	}: {
 		backgroundMap?: BackgroundMap;
 		inspectOverlay?: boolean;
 		overlay_source?: TileSource;
 		choropleth?: ChoroplethParams;
 		choroplethLayerName?: string;
+		tooltipTemplate?: string;
 	} = $props();
 
 	// --- State ---------------------------------------------------------------
@@ -52,6 +54,13 @@
 		inspector = null;
 		map?.remove();
 		map = null;
+	});
+
+	// Sync tooltipTemplate to inspector
+	$effect(() => {
+		if (inspector) {
+			inspector.tooltipTemplate = tooltipTemplate;
+		}
 	});
 
 	// Legitimate side effect: updates MapLibre map style when overlay or background changes
@@ -114,6 +123,15 @@
 		</table>
 	</div>
 {/if}
+{#if inspector?.tooltipContent && inspector?.mousePosition}
+	<div
+		class="tooltip"
+		style="left: {inspector.mousePosition.x + 15}px; top: {inspector.mousePosition.y + 15}px"
+	>
+		<!-- eslint-disable-next-line svelte/no-at-html-tags -- User-defined tooltip template requires HTML rendering -->
+		{@html inspector.tooltipContent}
+	</div>
+{/if}
 
 <style>
 	.map-container {
@@ -155,5 +173,18 @@
 	.inspector-panel .prop-value {
 		color: var(--color-text-primary);
 		word-break: break-word;
+	}
+
+	.tooltip {
+		position: absolute;
+		max-width: 300px;
+		background: var(--color-bg-primary);
+		border: 1px solid var(--color-border-light);
+		border-radius: var(--radius-sm);
+		box-shadow: var(--shadow-lg);
+		font-size: 12px;
+		padding: 0.5rem 0.75rem;
+		pointer-events: none;
+		z-index: 1000;
 	}
 </style>

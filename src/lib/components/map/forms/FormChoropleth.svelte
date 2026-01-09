@@ -21,6 +21,7 @@
 	let colorScheme: ColorSchemeName = $state('viridis');
 	let min: number = $state(0);
 	let max: number = $state(100);
+	let tooltipTemplate: string = $state('');
 
 	// Derive available numeric fields from the selected layer
 	let availableFields: string[] = $derived.by(() => {
@@ -48,7 +49,8 @@
 				field,
 				colorScheme,
 				min,
-				max
+				max,
+				tooltipTemplate: tooltipTemplate || undefined
 			};
 		} else {
 			params = undefined;
@@ -97,6 +99,17 @@
 					<input type="number" class="input-full" bind:value={max} step="any" />
 				</label>
 			</div>
+
+			<label>
+				Tooltip Template
+				<textarea
+					class="input-full tooltip-textarea"
+					bind:value={tooltipTemplate}
+					placeholder={'<b>{name}</b><br>Value: {value}'}
+					rows="3"
+				></textarea>
+				<span class="hint">Use {'{property}'} to insert feature values</span>
+			</label>
 		{/if}
 	{/if}
 </div>
@@ -123,5 +136,11 @@
 		display: grid;
 		grid-template-columns: 1fr 1fr;
 		gap: 0.5rem;
+	}
+
+	.tooltip-textarea {
+		font-family: monospace;
+		font-size: 0.875rem;
+		resize: vertical;
 	}
 </style>

@@ -13,6 +13,7 @@ import {
 } from './color-schemes';
 import { mergeStyles, getChoroplethStyle, getColorStops } from './style';
 import { createBackgroundStyle, type BackgroundMap } from './style-background';
+import { interpolateTemplate } from './tooltip';
 import type { TileJSONSpecificationVector } from '@versatiles/style';
 import type { StyleSpecification, Map as MaplibreMap, LngLatBoundsLike } from 'maplibre-gl';
 
@@ -32,6 +33,7 @@ export interface ExportConfig {
 		min: number;
 		max: number;
 		colors: string[];
+		tooltipTemplate?: string;
 	};
 	background: {
 		style: BackgroundMap;
@@ -121,7 +123,61 @@ export async function initMap(
 		map.fitBounds(bounds, { padding: 20 });
 	}
 
+	// Set up tooltip if template is configured
+	if (config.choropleth.tooltipTemplate) {
+		setupTooltip(map, config.overlay.layer, config.choropleth.tooltipTemplate);
+	}
+
 	return map;
+}
+
+/**
+ * Sets up a tooltip that follows the mouse cursor and displays interpolated template content.
+ */
+function setupTooltip(map: MaplibreMap, layerId: string, template: string): void {
+	// Create tooltip element
+	const tooltip = document.createElement('div');
+	tooltip.style.cssText = `
+		position: absolute;
+		max-width: 300px;
+		background: white;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+		font-size: 12px;
+		padding: 8px 12px;
+		pointer-events: none;
+		z-index: 1000;
+		display: none;
+	`;
+	document.body.appendChild(tooltip);
+
+	let hideTimeout: ReturnType<typeof setTimeout> | null = null;
+
+	map.on('mousemove', layerId, (e) => {
+		if (hideTimeout) {
+			clearTimeout(hideTimeout);
+			hideTimeout = null;
+		}
+
+		const feature = e.features?.[0];
+		if (feature) {
+			const content = interpolateTemplate(template, feature.properties as Record<string, unknown>);
+			tooltip.innerHTML = content;
+			tooltip.style.display = 'block';
+			tooltip.style.left = `${e.originalEvent.pageX + 15}px`;
+			tooltip.style.top = `${e.originalEvent.pageY + 15}px`;
+			map.getCanvas().style.cursor = 'pointer';
+		}
+	});
+
+	map.on('mouseleave', layerId, () => {
+		hideTimeout = setTimeout(() => {
+			tooltip.style.display = 'none';
+			map.getCanvas().style.cursor = '';
+			hideTimeout = null;
+		}, 100);
+	});
 }
 
 // Export all utilities for advanced usage
@@ -131,7 +187,8 @@ export {
 	mergeStyles,
 	getChoroplethStyle,
 	getColorStops,
-	createBackgroundStyle
+	createBackgroundStyle,
+	interpolateTemplate
 };
 
 export type {
