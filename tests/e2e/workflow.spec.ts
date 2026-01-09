@@ -1,9 +1,15 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Full Workflow', () => {
-	test('download test data and convert polygons', async ({ page }) => {
+	test('download test data, convert polygons, create choropleth map and export', async ({
+		page
+	}) => {
 		// Increase timeout for this longer test
-		test.setTimeout(120000);
+		test.setTimeout(300000);
+
+		// ============================================================
+		// PART 1: Download Test Data
+		// ============================================================
 
 		// Step 1: Go to frontpage
 		await page.goto('/');
@@ -20,6 +26,10 @@ test.describe('Full Workflow', () => {
 		await expect(page.getByRole('button', { name: /Downloaded Successfully/ })).toBeVisible({
 			timeout: 60000
 		});
+
+		// ============================================================
+		// PART 2: Convert Polygons to Vector Tiles
+		// ============================================================
 
 		// Step 5: Go back to frontpage
 		await page.goto('/');
@@ -46,7 +56,7 @@ test.describe('Full Workflow', () => {
 		await page.getByRole('button', { name: 'Save' }).click();
 
 		// Step 11: If a "Replace" button appears (file exists), click it
-		const replaceButton = page.getByRole('button', { name: 'Replace' });
+		let replaceButton = page.getByRole('button', { name: 'Replace' });
 		if (await replaceButton.isVisible({ timeout: 1000 }).catch(() => false)) {
 			await replaceButton.click();
 		}
@@ -60,39 +70,38 @@ test.describe('Full Workflow', () => {
 		await expect(
 			page.getByRole('heading', { name: 'Converting Polygons to Vector Tiles' })
 		).not.toBeVisible({ timeout: 60000 });
-	});
 
-	test('create choropleth map and export', async ({ page }) => {
-		// Increase timeout for this longer test
-		test.setTimeout(180000);
+		// ============================================================
+		// PART 3: Create Choropleth Map and Export
+		// ============================================================
 
-		// Step 1: Go to /map
+		// Step 13: Go to /map
 		await page.goto('/map');
 		await expect(page.getByRole('heading', { name: 'Vector Data' })).toBeVisible();
 
-		// Step 2: Click first "Select File" button (Vector Data section)
+		// Step 14: Click first "Select File" button (Vector Data section)
 		await page.locator('button:has-text("Select File")').first().click();
 
-		// Step 3: Navigate to test-data folder in the dialog
+		// Step 15: Navigate to test-data folder in the dialog
 		await expect(page.locator('dialog h3:has-text("Select File")').first()).toBeVisible();
 		await page.locator('dialog button:has-text("test-data")').first().click();
 
-		// Step 4: Select 5_gemeinden.versatiles
+		// Step 16: Select 5_gemeinden.versatiles
 		await page.locator('dialog button:has-text("5_gemeinden.versatiles")').first().click();
 
 		// Wait for dialog to close and tile source to load
 		await page.waitForTimeout(2000);
 
-		// Step 5: Enable "Add Data" in Numeric Data section - check the Active checkbox
+		// Step 17: Enable "Add Data" in Numeric Data section - check the Active checkbox
 		await page.locator('label:has-text("Active") input[type="checkbox"]').check();
 
-		// Step 6: Click "Select File" for data file in the Numeric Data section
+		// Step 18: Click "Select File" for data file in the Numeric Data section
 		await page
 			.getByRole('region', { name: 'Add Data' })
 			.getByRole('button', { name: 'Select Data File:' })
 			.click();
 
-		// Step 7: Navigate and select the TSV file
+		// Step 19: Navigate and select the TSV file
 		// Use the visible dialog (the one that's open)
 		const visibleDialog = page.locator('dialog:visible');
 		await expect(visibleDialog.locator('h3:has-text("Select File")')).toBeVisible();
@@ -106,60 +115,60 @@ test.describe('Full Workflow', () => {
 		// Wait for dialog to close and CSV fields to load
 		await page.waitForTimeout(2000);
 
-		// Step 8: Select Layer Name (required to properly bind the value)
+		// Step 20: Select Layer Name (required to properly bind the value)
 		await page.locator('label:has-text("Layer Name") select').selectOption('5_gemeinden');
 
-		// Step 9: Set ID Field (Tiles) to "AGS" - find by label text
+		// Step 21: Set ID Field (Tiles) to "AGS" - find by label text
 		await page.locator('label:has-text("ID Field (Tiles)") select').selectOption('AGS');
 
-		// Step 10: Set ID Field (Data) to "Schlüssel"
+		// Step 22: Set ID Field (Data) to "Schlüssel"
 		await page.locator('label:has-text("ID Field (Data)") select').selectOption('Schlüssel');
 
 		// Wait for Svelte reactivity to update the params and propagate to parent
 		await page.waitForTimeout(1000);
 
-		// Step 11: Enable Choropleth
+		// Step 23: Enable Choropleth
 		await page.locator('label:has-text("Enable Choropleth") input[type="checkbox"]').check();
 
-		// Step 12: Wait for choropleth form to show Value Field (means layer binding propagated)
+		// Step 24: Wait for choropleth form to show Value Field (means layer binding propagated)
 		await expect(page.locator('label:has-text("Value Field") select')).toBeVisible({
 			timeout: 10000
 		});
 
-		// Step 13: Set Value Field to "Lohnsteuer/EW"
+		// Step 25: Set Value Field to "Lohnsteuer/EW"
 		await page.locator('label:has-text("Value Field") select').selectOption('Lohnsteuer/EW');
 
-		// Step 14: Set Color Scheme to "inferno"
+		// Step 26: Set Color Scheme to "inferno"
 		await page.locator('label:has-text("Color Scheme") select').selectOption('inferno');
 
-		// Step 15: Set Min value to 30000
+		// Step 27: Set Min value to 30000
 		await page.locator('label:has-text("Min") input[type="number"]').fill('30000');
 
-		// Step 16: Set Max value to 50000
+		// Step 28: Set Max value to 50000
 		await page.locator('label:has-text("Max") input[type="number"]').fill('50000');
 
-		// Step 17: Wait for Export button to be enabled (canExport should be true now)
+		// Step 29: Wait for Export button to be enabled (canExport should be true now)
 		await expect(page.getByRole('button', { name: 'Export Map' })).toBeEnabled({ timeout: 10000 });
 
-		// Step 18: Click "Export Map" button
+		// Step 30: Click "Export Map" button
 		await page.getByRole('button', { name: 'Export Map' }).click();
 
-		// Step 19: FileSaver dialog should appear with default filename
+		// Step 31: FileSaver dialog should appear with default filename
 		await expect(page.getByRole('heading', { name: 'Export Choropleth Map' })).toBeVisible();
 
 		// The filename input should have "choropleth-export" as default
 		await expect(page.locator('input[type="text"]').first()).toHaveValue('choropleth-export');
 
-		// Step 20: Click Save
+		// Step 32: Click Save
 		await page.getByRole('button', { name: 'Save' }).click();
 
-		// Step 21: If a "Replace" button appears (folder exists), click it
-		const replaceButton = page.getByRole('button', { name: 'Replace' });
+		// Step 33: If a "Replace" button appears (folder exists), click it
+		replaceButton = page.getByRole('button', { name: 'Replace' });
 		if (await replaceButton.isVisible({ timeout: 1000 }).catch(() => false)) {
 			await replaceButton.click();
 		}
 
-		// Step 22: Wait for export progress dialog to appear and complete
+		// Step 34: Wait for export progress dialog to appear and complete
 		await expect(page.getByRole('heading', { name: 'Exporting Map' })).toBeVisible();
 
 		// Wait for export to complete (dialog disappears)
