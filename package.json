@@ -11,7 +11,7 @@
 		"build": "npm run build-svelte && npm run build-lib && npm run build-cli",
 		"check-svelte:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"check-svelte": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"check": "npm run lint && npm run check-svelte && npm run test && npm run build && npm run format:check",
+		"check": "npm run lint && npm run check-svelte && npm run test && npm run build && npm run test:e2e && npm run format:check",
 		"cli": "tsx ./src/cli.ts",
 		"dev": "mkdir -p data && DATA_PATH=data vite dev",
 		"format": "prettier --write .",
