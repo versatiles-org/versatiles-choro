@@ -5,7 +5,7 @@
 	import { overlayStyles } from './map/style';
 	import { Inspector } from './map/Inspector.svelte.ts';
 	import type { ChoroplethParams } from './map/color-schemes';
-	import maplibregl from 'maplibre-gl';
+	import * as maplibregl from 'maplibre-gl';
 	import type { LngLatBoundsLike, Map as MaplibreMap } from 'maplibre-gl';
 
 	// --- Props  --------------------------------------------------------------

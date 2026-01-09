@@ -1,4 +1,45 @@
 import { test, expect } from '@playwright/test';
+import { existsSync, rmSync, readdirSync, statSync } from 'fs';
+import { join } from 'path';
+
+// Data directory used by E2E tests (matches DATA_PATH=temp in playwright.config.ts)
+const DATA_DIR = join(process.cwd(), 'temp');
+
+// Helper to list files recursively in a directory
+function listFiles(dir: string, prefix = ''): string[] {
+	if (!existsSync(dir)) return [];
+	const entries = readdirSync(dir);
+	const files: string[] = [];
+	for (const entry of entries) {
+		const fullPath = join(dir, entry);
+		const relativePath = prefix ? `${prefix}/${entry}` : entry;
+		if (statSync(fullPath).isDirectory()) {
+			files.push(...listFiles(fullPath, relativePath));
+		} else {
+			files.push(relativePath);
+		}
+	}
+	return files.sort();
+}
+
+// Expected files after each step
+const EXPECTED_DOWNLOADED_FILES = [
+	'test-data/1_bundeslaender.geojson',
+	'test-data/2_regierungsbezirke.geojson',
+	'test-data/3_kreise.geojson',
+	'test-data/4_verwaltungsgemeinschaften.geojson',
+	'test-data/5_gemeinden.geojson',
+	'test-data/73111-01-01-5-Einkommen.tsv'
+];
+
+const EXPECTED_CONVERTED_FILE = 'test-data/5_gemeinden.versatiles';
+
+const EXPECTED_EXPORT_FILES = [
+	'choropleth-export/choro-lib.js',
+	'choropleth-export/config.json',
+	'choropleth-export/index.html',
+	'choropleth-export/overlay.versatiles'
+];
 
 test.describe('Full Workflow', () => {
 	test('download test data, convert polygons, create choropleth map and export', async ({
@@ -6,6 +47,18 @@ test.describe('Full Workflow', () => {
 	}) => {
 		// Increase timeout for this longer test
 		test.setTimeout(300000);
+
+		// ============================================================
+		// SETUP: Clean data directory to start fresh
+		// ============================================================
+
+		// Remove temp directory if it exists to ensure a clean slate
+		if (existsSync(DATA_DIR)) {
+			rmSync(DATA_DIR, { recursive: true, force: true });
+		}
+
+		// Verify we start with an empty data directory
+		expect(existsSync(DATA_DIR)).toBe(false);
 
 		// ============================================================
 		// PART 1: Download Test Data
@@ -26,6 +79,14 @@ test.describe('Full Workflow', () => {
 		await expect(page.getByRole('button', { name: /Downloaded Successfully/ })).toBeVisible({
 			timeout: 60000
 		});
+
+		// Verify: All expected files were downloaded
+		const filesAfterDownload = listFiles(DATA_DIR);
+		for (const expectedFile of EXPECTED_DOWNLOADED_FILES) {
+			expect(filesAfterDownload, `Expected file ${expectedFile} to exist after download`).toContain(
+				expectedFile
+			);
+		}
 
 		// ============================================================
 		// PART 2: Convert Polygons to Vector Tiles
@@ -70,6 +131,13 @@ test.describe('Full Workflow', () => {
 		await expect(
 			page.getByRole('heading', { name: 'Converting Polygons to Vector Tiles' })
 		).not.toBeVisible({ timeout: 60000 });
+
+		// Verify: Converted .versatiles file was created
+		const filesAfterConversion = listFiles(DATA_DIR);
+		expect(
+			filesAfterConversion,
+			`Expected file ${EXPECTED_CONVERTED_FILE} to exist after conversion`
+		).toContain(EXPECTED_CONVERTED_FILE);
 
 		// ============================================================
 		// PART 3: Create Choropleth Map and Export
@@ -175,5 +243,23 @@ test.describe('Full Workflow', () => {
 		await expect(page.getByRole('heading', { name: 'Exporting Map' })).not.toBeVisible({
 			timeout: 120000
 		});
+
+		// Verify: All expected export files were created
+		const filesAfterExport = listFiles(DATA_DIR);
+		for (const expectedFile of EXPECTED_EXPORT_FILES) {
+			expect(filesAfterExport, `Expected file ${expectedFile} to exist after export`).toContain(
+				expectedFile
+			);
+		}
+
+		// Final verification: List all files created during the workflow
+		const allExpectedFiles = [
+			...EXPECTED_DOWNLOADED_FILES,
+			EXPECTED_CONVERTED_FILE,
+			...EXPECTED_EXPORT_FILES
+		];
+		for (const expectedFile of allExpectedFiles) {
+			expect(filesAfterExport, `Final check: ${expectedFile} should exist`).toContain(expectedFile);
+		}
 	});
 });
