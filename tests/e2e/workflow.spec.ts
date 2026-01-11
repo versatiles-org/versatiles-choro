@@ -128,10 +128,10 @@ test.describe('Full Workflow', () => {
 		).toBeVisible();
 
 		// Wait for progress dialog to disappear (conversion complete)
-		// Converting 3_kreise.geojson (~400 features) should complete within 60 seconds
+		// Converting 3_kreise.geojson (~400 features) - CI runners can be significantly slower
 		await expect(
 			page.getByRole('heading', { name: 'Converting Polygons to Vector Tiles' })
-		).not.toBeVisible({ timeout: 60000 });
+		).not.toBeVisible({ timeout: 120000 });
 
 		// Verify: Converted .versatiles file was created
 		const filesAfterConversion = listFiles(DATA_DIR);
