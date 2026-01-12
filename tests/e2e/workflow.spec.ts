@@ -22,7 +22,7 @@ function listFiles(dir: string, prefix = ''): string[] {
 	return files.sort();
 }
 
-const SELECTED_SOURCE = '1_bundeslaender';
+const SOURCE_NAME = '5_gemeinden';
 
 // Expected files after each step
 const EXPECTED_DOWNLOADED_FILES = [
@@ -34,7 +34,7 @@ const EXPECTED_DOWNLOADED_FILES = [
 	'test-data/73111-01-01-5-Einkommen.tsv'
 ];
 
-const EXPECTED_CONVERTED_FILE = `test-data/${SELECTED_SOURCE}.versatiles`;
+const EXPECTED_CONVERTED_FILE = `test-data/${SOURCE_NAME}.versatiles`;
 
 const EXPECTED_EXPORT_FILES = [
 	'choropleth-export/choro-lib.js',
@@ -112,7 +112,7 @@ test.describe('Full Workflow', () => {
 		await page.getByRole('button', { name: 'test-data' }).click();
 
 		// Step 9: Click on source file
-		await page.getByRole('button', { name: `${SELECTED_SOURCE}.geojson` }).click();
+		await page.getByRole('button', { name: `${SOURCE_NAME}.geojson` }).click();
 
 		// Step 10: FileSaver popup should appear automatically, click "Save"
 		await expect(page.getByRole('heading', { name: 'Save Output File' })).toBeVisible();
@@ -157,7 +157,7 @@ test.describe('Full Workflow', () => {
 		await page.locator('dialog button:has-text("test-data")').first().click();
 
 		// Step 16: Select tile source .versatiles file
-		await page.locator(`dialog button:has-text("${SELECTED_SOURCE}.versatiles")`).first().click();
+		await page.locator(`dialog button:has-text("${SOURCE_NAME}.versatiles")`).first().click();
 
 		// Wait for dialog to close and tile source to load
 		await page.waitForTimeout(2000);
@@ -184,7 +184,7 @@ test.describe('Full Workflow', () => {
 		await page.waitForTimeout(2000);
 
 		// Step 20: Select Layer Name (required for choropleth)
-		await page.locator('label:has-text("Layer Name") select').selectOption(SELECTED_SOURCE);
+		await page.locator('label:has-text("Layer Name") select').selectOption(SOURCE_NAME);
 
 		// Step 21: Set ID Field (Tiles) to "AGS"
 		await page.locator('label:has-text("ID Field (Tiles)") select').selectOption('AGS');
