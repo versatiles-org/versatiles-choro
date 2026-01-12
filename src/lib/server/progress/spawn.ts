@@ -34,6 +34,9 @@ export class SpawnProgress extends Progress {
 				const stderr = this.stderrBuffer.join('\n').trim();
 				const error = new ProcessError(this.name, code, signal, stderr);
 				logError(error, 'SpawnProgress');
+				// Also log to stderr for CI visibility
+				console.error(`[SpawnProgress] ${this.name} failed:`, error.message);
+				if (stderr) console.error(`[SpawnProgress] stderr:`, stderr);
 				this.setMessage(error.message, true);
 				this.setComplete(); // Must complete even on error to close stream
 			}
@@ -41,7 +44,10 @@ export class SpawnProgress extends Progress {
 
 		this.childProcess.on('error', (err) => {
 			logError(err, `SpawnProgress:${this.name}`);
+			// Also log to stderr for CI visibility
+			console.error(`[SpawnProgress] ${this.name} process error:`, err.message);
 			this.setMessage(`${this.name} process error: ${err.message}`, true);
+			this.setComplete(); // Must complete on process error too
 		});
 
 		this.childProcess.stderr?.on('data', (data) => {
