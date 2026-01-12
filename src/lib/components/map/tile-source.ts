@@ -7,9 +7,11 @@ import type { ChoroplethParams } from './color-schemes';
 
 export class TileSource {
 	prefix: string;
+	id: string;
 	tileJson: TileJSONSpecificationVector | null = null;
-	constructor(prefix: string) {
+	constructor(prefix: string, id: string) {
 		this.prefix = prefix;
+		this.id = id;
 	}
 	async init(): Promise<void> {
 		const tileJson = (await (
@@ -46,12 +48,28 @@ export class TileSource {
 		style.layers = style.layers?.filter((layer) => layer.type !== 'background');
 		return style;
 	}
+
+	async stop(): Promise<void> {
+		try {
+			await fetch('/api/tiles/stop', {
+				body: JSON.stringify({ id: this.id }),
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' }
+			});
+		} catch (error) {
+			console.warn(`Failed to stop tile source ${this.id}:`, error);
+		}
+	}
 }
 
 export async function getTileSource(
-	init: v.InferInput<typeof TilesInitRequest>
+	init: v.InferInput<typeof TilesInitRequest>,
+	oldTileSource?: TileSource
 ): Promise<TileSource> {
-	const req = v.parse(TilesInitRequest, init);
+	const req = v.parse(TilesInitRequest, {
+		...init,
+		old_id: oldTileSource?.id
+	});
 	const res = await fetch('/api/tiles/init', {
 		body: JSON.stringify(req),
 		method: 'POST',
@@ -62,7 +80,7 @@ export async function getTileSource(
 	}
 	const data = v.parse(TilesInitResponse, await res.json());
 	const origin = window.location.origin;
-	const source = new TileSource(`${origin}/api/tiles/load?id=${data.id}&path=`);
+	const source = new TileSource(`${origin}/api/tiles/load?id=${data.id}&path=`, data.id);
 	await source.init();
 	return source;
 }

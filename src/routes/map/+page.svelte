@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onDestroy } from 'svelte';
 	import Map from '$lib/components/Map.svelte';
 	import type { InferOutput } from 'valibot';
 	import Frame from '$lib/components/SidebarFrame.svelte';
@@ -25,15 +26,44 @@
 	let inspectOverlay: boolean = $state(true);
 	let choropleth: ChoroplethParams | undefined = $state();
 
-	let overlay_source: TileSource | undefined = $derived(
-		from_container ? await getTileSource({ vpl: { from_container, update_properties } }) : undefined
-	);
+	// Track current tile sources for cleanup
+	let currentOverlaySource: TileSource | undefined;
+	let currentRawSource: TileSource | undefined;
 
-	let tilejson_raw: TileJSONSpecificationVector | undefined = $derived(
-		from_container
-			? ((await getTileSource({ vpl: { from_container } })).tileJson ?? undefined)
-			: undefined
-	);
+	let overlay_source: TileSource | undefined = $state();
+	let tilejson_raw: TileJSONSpecificationVector | undefined = $state();
+
+	// Create overlay source when params change, passing old source for cleanup
+	$effect(() => {
+		if (!from_container) {
+			overlay_source = undefined;
+			return;
+		}
+		const oldSource = currentOverlaySource;
+		getTileSource({ vpl: { from_container, update_properties } }, oldSource).then((newSource) => {
+			overlay_source = newSource;
+			currentOverlaySource = newSource;
+		});
+	});
+
+	// Create raw source when from_container changes, passing old source for cleanup
+	$effect(() => {
+		if (!from_container) {
+			tilejson_raw = undefined;
+			return;
+		}
+		const oldSource = currentRawSource;
+		getTileSource({ vpl: { from_container } }, oldSource).then((newSource) => {
+			tilejson_raw = newSource.tileJson ?? undefined;
+			currentRawSource = newSource;
+		});
+	});
+
+	// Clean up tile sources when navigating away
+	onDestroy(() => {
+		currentOverlaySource?.stop();
+		currentRawSource?.stop();
+	});
 
 	let tilejson_filtered: TileJSONSpecificationVector | undefined = $derived(
 		overlay_source?.tileJson ?? undefined
