@@ -112,7 +112,7 @@ jobs:
         run: npx playwright install --with-deps ${{ matrix.browser }}
 
       - name: Install tippecanoe
-        uses: michaelkreil/tippecanoe-action@main
+        run: brew install tippecanoe
 
       - name: Build application
         run: npm run build
