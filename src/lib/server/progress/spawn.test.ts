@@ -74,6 +74,22 @@ describe('SpawnProgress', () => {
 		expect(messages.some((m) => m.isError)).toBe(true);
 	});
 
+	it('completes (done() resolves) even when process exits with error', async () => {
+		const mockProcess = createMockProcess();
+		const messageFilter = vi.fn(() => ({}));
+
+		const progress = new SpawnProgress(mockProcess, 'test-process', messageFilter);
+
+		// Start waiting for done before the error
+		const donePromise = progress.done();
+
+		mockProcess.emit('close', 1, null);
+
+		// done() should resolve even on error (important for stream closing)
+		await expect(donePromise).resolves.toBeUndefined();
+		expect(progress.hasError()).toBe(true);
+	});
+
 	it('parses stdout lines with message filter', async () => {
 		const mockProcess = createMockProcess();
 		const messageFilter = vi.fn((line) => {

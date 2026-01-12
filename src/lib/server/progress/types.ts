@@ -31,6 +31,14 @@ export abstract class Progress {
 		if (this.onMessageCb) this.onMessageCb(message, this.isError);
 	}
 
+	hasError(): boolean {
+		return this.isError;
+	}
+
+	getLastMessage(): string {
+		return this.message;
+	}
+
 	setComplete() {
 		this.setProgress(100);
 		for (const cb of this.onCompleteCbs) {

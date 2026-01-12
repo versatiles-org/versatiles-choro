@@ -35,6 +35,7 @@ export class SpawnProgress extends Progress {
 				const error = new ProcessError(this.name, code, signal, stderr);
 				logError(error, 'SpawnProgress');
 				this.setMessage(error.message, true);
+				this.setComplete(); // Must complete even on error to close stream
 			}
 		});
 

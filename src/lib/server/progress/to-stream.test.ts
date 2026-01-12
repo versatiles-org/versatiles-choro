@@ -149,6 +149,15 @@ describe('progressToStream', () => {
 
 		const messageEvents = events.filter((e) => e.event === 'message');
 		expect(messageEvents.some((e) => e.message === 'Error occurred')).toBe(true);
+
+		// Should send 'error' event instead of 'done' when there's an error
+		const errorEvent = events.find((e) => e.event === 'error');
+		expect(errorEvent).toBeDefined();
+		expect(errorEvent.error).toBe('Error occurred');
+
+		// Should NOT have a 'done' event
+		const doneEvent = events.find((e) => e.event === 'done');
+		expect(doneEvent).toBeUndefined();
 	});
 
 	it('closes stream after done event', async () => {

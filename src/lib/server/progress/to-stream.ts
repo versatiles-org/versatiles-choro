@@ -24,7 +24,12 @@ export function progressToStream(progress: Progress, signal: AbortSignal): Respo
 			progress
 				.done()
 				.then(() => {
-					send({ event: 'done' });
+					// Check if progress completed with an error
+					if (progress.hasError()) {
+						send({ event: 'error', error: progress.getLastMessage() });
+					} else {
+						send({ event: 'done' });
+					}
 					finished = true;
 					try {
 						controller.close();
