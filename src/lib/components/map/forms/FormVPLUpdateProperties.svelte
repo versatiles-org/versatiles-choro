@@ -7,6 +7,7 @@
 	import type { TileJSONSpecificationVector } from '@versatiles/style';
 
 	let {
+		// eslint-disable-next-line no-useless-assignment
 		params = $bindable(),
 		tilejson
 	}: {

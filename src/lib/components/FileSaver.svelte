@@ -17,6 +17,7 @@
 	let {
 		initialDirectory,
 		showModal = $bindable(),
+		// eslint-disable-next-line no-useless-assignment
 		filepath = $bindable(),
 		defaultFilename = '',
 		defaultExtension = '',
