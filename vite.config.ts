@@ -13,6 +13,7 @@ export default defineConfig({
 		})
 	],
 	test: {
+		silent: true,
 		globals: true,
 		expect: { requireAssertions: true },
 		coverage: {
