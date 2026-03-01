@@ -1,3 +1,6 @@
+[![Code coverage](https://codecov.io/gh/versatiles-org/versatiles-choro/branch/main/graph/badge.svg)](https://codecov.io/gh/versatiles-org/versatiles-choro)
+[![CI status](https://img.shields.io/github/actions/workflow/status/versatiles-org/versatiles-choro/ci.yml)](https://github.com/versatiles-org/versatiles-choro/actions/workflows/ci.yml)
+
 # VersaTiles Choro
 
 > [!CAUTION]
