@@ -101,7 +101,8 @@ export async function addTileSource(vpl: v.InferOutput<typeof VPLParam>): Promis
 	} catch (error) {
 		loggers.tiles.error({ name, error }, 'Failed to add tile source');
 		throw new Error(
-			`Failed to create tile source: ${error instanceof Error ? error.message : 'Unknown error'}`
+			`Failed to create tile source: ${error instanceof Error ? error.message : 'Unknown error'}`,
+			{ cause: error }
 		);
 	}
 }
