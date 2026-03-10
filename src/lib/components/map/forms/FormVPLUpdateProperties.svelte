@@ -2,6 +2,7 @@
 	import type { VPLParamUpdateProperties } from '$lib/api/schemas';
 	import FileSelector from '$lib/components/FileSelector.svelte';
 	import Foldable from '$lib/components/SidebarFoldable.svelte';
+	import Hint from '$lib/components/Hint.svelte';
 	import type { FsFile } from '$lib/api/filesystem.svelte';
 	import type { InferOutput } from 'valibot';
 	import type { TileJSONSpecificationVector } from '@versatiles/style';
@@ -114,7 +115,9 @@
 		<p class="text-sm text-gray-500 italic">Inactive - no data will be added.</p>
 	{:else}
 		<label class:label-error={!selectedFile}>
-			Select Data File:<br />
+			Select Data File<Hint
+				text="Choose a CSV or TSV file with data to join to the vector tiles"
+			/>:<br />
 			{selectedFile ? selectedFile.getName() : ''}<br />
 			<button class="button button-secondary" onclick={() => (showModal = true)}>Select File</button
 			>
@@ -126,7 +129,9 @@
 		</label>
 		{#if selectedFile}
 			<label>
-				Field Separator
+				Field Separator<Hint
+					text="How columns are separated in the data file. Auto-detect works in most cases."
+				/>
 				<select class="input-full" bind:value={field_separator}>
 					<option value={undefined} selected>auto</option>
 					<option value=",">comma (,)</option>
@@ -135,7 +140,9 @@
 				</select>
 			</label>
 			<label>
-				Decimal Separator
+				Decimal Separator<Hint
+					text="Character used for decimal numbers (dot or comma). Auto-detect works in most cases."
+				/>
 				<select class="input-full" bind:value={decimal_separator}>
 					<option value={undefined} selected>auto</option>
 					<option value=".">dot (.)</option>
@@ -144,7 +151,7 @@
 			</label>
 			{#if layer_names.length > 0}
 				<label class:label-error={!layer_name}>
-					Layer Name
+					Layer Name<Hint text="The vector tile layer to join data to" />
 					<select class="input-full" bind:value={layer_name} disabled={layer_names.length === 1}>
 						{#each layer_names as name, index (name)}
 							<option value={name} selected={index === 0}>{name}</option>
@@ -153,7 +160,9 @@
 				</label>
 			{/if}
 			<label class:label-error={!id_field_tiles}>
-				ID Field (Tiles)
+				ID Field (Tiles)<Hint
+					text="The field in the vector tiles used to match features with data rows"
+				/>
 				{#if availableTileFields.length > 0}
 					<select class="input-full" bind:value={id_field_tiles}>
 						<option value="">-- Select field --</option>
@@ -166,7 +175,9 @@
 				{/if}
 			</label>
 			<label class:label-error={!id_field_data}>
-				ID Field (Data)
+				ID Field (Data)<Hint
+					text="The column in the data file used to match rows with tile features"
+				/>
 				{#if loadingFields}
 					<span class="text-sm text-gray-500 italic">Loading fields...</span>
 				{:else if fieldsError}
@@ -185,7 +196,9 @@
 			</label>
 			<label>
 				<input type="checkbox" bind:checked={remove_non_matching} />
-				Remove Non-Matching Feature
+				Remove Non-Matching Feature<Hint
+					text="Remove geometry features that have no matching row in the data file"
+				/>
 			</label>
 		{/if}
 	{/if}

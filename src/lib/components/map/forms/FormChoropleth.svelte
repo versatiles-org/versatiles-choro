@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { TileJSONSpecificationVector } from '@versatiles/style';
+	import Hint from '$lib/components/Hint.svelte';
 	import {
 		COLOR_SCHEME_NAMES,
 		type ColorSchemeName,
@@ -62,7 +63,7 @@
 <div class="choropleth-form">
 	<label>
 		<input type="checkbox" bind:checked={active} />
-		Enable Choropleth
+		Enable Choropleth<Hint text="Color map regions based on numeric data values" />
 	</label>
 
 	{#if active}
@@ -72,7 +73,7 @@
 			<p class="hint">No fields available for layer "{layerName}".</p>
 		{:else}
 			<label>
-				Value Field
+				Value Field<Hint text="The numeric data field to use for coloring regions" />
 				<select class="input-full" bind:value={field}>
 					<option value={undefined}>-- Select field --</option>
 					{#each availableFields as f (f)}
@@ -82,7 +83,7 @@
 			</label>
 
 			<label>
-				Color Scheme
+				Color Scheme<Hint text="The color gradient applied to map the data values" />
 				<select class="input-full" bind:value={colorScheme}>
 					{#each COLOR_SCHEME_NAMES as scheme (scheme)}
 						<option value={scheme}>{scheme}</option>
@@ -92,17 +93,19 @@
 
 			<div class="min-max-row">
 				<label>
-					Min
+					Min<Hint text="Minimum data value for the color scale" />
 					<input type="number" class="input-full" bind:value={min} step="any" />
 				</label>
 				<label>
-					Max
+					Max<Hint text="Maximum data value for the color scale" />
 					<input type="number" class="input-full" bind:value={max} step="any" />
 				</label>
 			</div>
 
 			<label>
-				Tooltip Template
+				Tooltip Template<Hint
+					text="HTML template for hover tooltips. Use {'{property}'} placeholders."
+				/>
 				<textarea
 					class="input-full tooltip-textarea"
 					bind:value={tooltipTemplate}

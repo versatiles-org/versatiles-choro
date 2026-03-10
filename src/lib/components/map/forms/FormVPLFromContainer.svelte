@@ -2,6 +2,7 @@
 	import type { VPLParamFromContainer } from '$lib/api/schemas';
 	import FileSelector from '$lib/components/FileSelector.svelte';
 	import Foldable from '$lib/components/SidebarFoldable.svelte';
+	import Hint from '$lib/components/Hint.svelte';
 	import type { FsFile } from '$lib/api/filesystem.svelte';
 	import type { InferOutput } from 'valibot';
 
@@ -26,7 +27,9 @@
 
 <Foldable title="Open Vector Tiles" open={true}>
 	<label>
-		Select Container File:<br />
+		Select Container File<Hint
+			text="Choose a .versatiles, .mbtiles, or .pmtiles file containing vector tile data"
+		/>:<br />
 		{selectedFile ? selectedFile.getName() : ''}<br />
 		<button class="button button-secondary" onclick={() => (showModal = true)}>Select File</button>
 		<FileSelector

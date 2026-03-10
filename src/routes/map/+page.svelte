@@ -8,6 +8,7 @@
 	import IconVector from '@lucide/svelte/icons/hammer';
 	import IconDesign from '@lucide/svelte/icons/paintbrush';
 	import IconExport from '@lucide/svelte/icons/download';
+	import Hint from '$lib/components/Hint.svelte';
 	import {
 		FormVPLFromContainer,
 		FormVPLUpdateProperties,
@@ -113,7 +114,7 @@
 			/>
 			<label class="checkbox-label">
 				<input type="checkbox" bind:checked={inspectOverlay} />
-				Inspector Mode
+				Inspector Mode<Hint text="Show feature properties on hover for debugging" />
 			</label>
 		</Frame>
 		<Frame title="Export" Icon={IconExport} borderBottom={false}>
