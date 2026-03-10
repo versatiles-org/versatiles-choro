@@ -23,5 +23,11 @@
 		flex-direction: column;
 		overflow-y: auto;
 		background-color: var(--color-bg-primary);
+		user-select: none;
+	}
+	.sidebar :global(input),
+	.sidebar :global(textarea),
+	.sidebar :global(select) {
+		user-select: text;
 	}
 </style>
