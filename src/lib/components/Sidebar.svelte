@@ -14,7 +14,7 @@
 
 <style>
 	.sidebar {
-		width: 300px;
+		width: 600px;
 		height: 100%;
 		padding: 1em;
 		border-right: 1px solid var(--color-border-light);
