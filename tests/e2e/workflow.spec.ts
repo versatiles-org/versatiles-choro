@@ -47,8 +47,7 @@ test.describe('Full Workflow', () => {
 	test('download test data, convert polygons, create choropleth map and export', async ({
 		page
 	}) => {
-		// Increase timeout for this longer test
-		test.setTimeout(300000);
+		test.setTimeout(60000);
 
 		// ============================================================
 		// SETUP: Clean data directory to start fresh
@@ -166,10 +165,7 @@ test.describe('Full Workflow', () => {
 		await page.locator('label:has-text("Active") input[type="checkbox"]').check();
 
 		// Step 18: Click "Select File" for data file in the Numeric Data section
-		await page
-			.getByRole('region', { name: 'Add Data' })
-			.getByRole('button', { name: 'Select Data File:' })
-			.click();
+		await page.locator('[aria-label="Add Data"] button:has-text("Select File")').click();
 
 		// Step 19: Navigate and select the TSV file
 		const visibleDialog = page.locator('dialog:visible');
