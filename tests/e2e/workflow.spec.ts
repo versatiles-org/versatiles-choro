@@ -183,8 +183,8 @@ test.describe('Full Workflow', () => {
 		// Wait for dialog to close and CSV fields to load
 		await page.waitForTimeout(2000);
 
-		// Step 20: Select Layer Name (required for choropleth)
-		await page.locator('label:has-text("Layer Name") select').selectOption(SOURCE_NAME);
+		// Step 20: Layer Name is auto-selected when only one layer exists
+		await expect(page.locator('label:has-text("Layer Name") select')).toHaveValue(SOURCE_NAME);
 
 		// Step 21: Set ID Field (Tiles) to "AGS"
 		await page.locator('label:has-text("ID Field (Tiles)") select').selectOption('AGS');
