@@ -21,9 +21,7 @@
 	let layer_name: string | undefined = $state();
 	let id_field_tiles: string | undefined = $state();
 	let id_field_data: string | undefined = $state();
-	let replace_properties: boolean | undefined = $state();
 	let remove_non_matching: boolean | undefined = $state();
-	let include_id: boolean | undefined = $state();
 	let field_separator: string | undefined = $state();
 	let decimal_separator: string | undefined = $state();
 
@@ -90,9 +88,7 @@
 				layer_name,
 				id_field_tiles,
 				id_field_data,
-				replace_properties,
 				remove_non_matching,
-				include_id,
 				field_separator,
 				decimal_separator
 			};
@@ -181,16 +177,8 @@
 				{/if}
 			</label>
 			<label>
-				<input type="checkbox" bind:checked={replace_properties} />
-				Replace Properties
-			</label>
-			<label>
 				<input type="checkbox" bind:checked={remove_non_matching} />
 				Remove Non-Matching Feature
-			</label>
-			<label>
-				<input type="checkbox" bind:checked={include_id} />
-				Include ID
 			</label>
 		{/if}
 	{/if}

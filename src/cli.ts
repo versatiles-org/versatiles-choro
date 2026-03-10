@@ -47,9 +47,7 @@ program
 				layer_name: String(layer_name),
 				id_field_tiles: String(id_field_tiles),
 				id_field_data: String(id_field_data),
-				replace_properties: true,
-				remove_non_matching: true,
-				include_id: true
+				remove_non_matching: true
 			}
 		};
 		convertTiles(vpl, resolve(cwd, String(output))).log();

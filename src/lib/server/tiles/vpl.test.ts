@@ -24,21 +24,19 @@ describe('buildVPLUpdateProperties', () => {
 			id_field_data: 'data_id'
 		});
 		expect(res).toBe(
-			'vector_update_properties data_source_path="data/data.csv" layer_name="mylayer" id_field_tiles="tile_id" id_field_data="data_id"'
+			'vector_update_properties data_source_path="data/data.csv" layer_name="mylayer" id_field_tiles="tile_id" id_field_data="data_id" include_id="true"'
 		);
 	});
-	it('includes replace_properties and include_id when true, omits remove_non_matching when false', () => {
+	it('always includes include_id="true" and never includes replace_properties', () => {
 		const res = buildVPLUpdateProperties({
 			data_source_path: 'data.csv',
 			layer_name: 'mylayer',
 			id_field_tiles: 'tile_id',
 			id_field_data: 'data_id',
-			replace_properties: true,
-			remove_non_matching: false,
-			include_id: true
+			remove_non_matching: false
 		});
-		expect(res).toContain('replace_properties="true"');
 		expect(res).toContain('include_id="true"');
+		expect(res).not.toContain('replace_properties');
 		expect(res).not.toContain('remove_non_matching');
 	});
 });
@@ -130,9 +128,7 @@ describe('buildVPL', () => {
 				layer_name: 'mylayer',
 				id_field_tiles: 'tile_id',
 				id_field_data: 'data_id',
-				replace_properties: true,
-				remove_non_matching: true,
-				include_id: true
+				remove_non_matching: true
 			},
 			filter_layers: {
 				layer_names: ['a', ' b '],
@@ -155,7 +151,7 @@ describe('buildVPL', () => {
 		} as v.InferOutput<typeof VPLParam>;
 		const expected = [
 			'from_container filename="data/input.versatiles"',
-			'   | vector_update_properties data_source_path="data/data.csv" layer_name="mylayer" id_field_tiles="tile_id" id_field_data="data_id" replace_properties="true" remove_non_matching="true" include_id="true"',
+			'   | vector_update_properties data_source_path="data/data.csv" layer_name="mylayer" id_field_tiles="tile_id" id_field_data="data_id" remove_non_matching="true" include_id="true"',
 			'   | vector_filter_layers filter="a,b" invert="true"',
 			'   | vector_filter_properties regex="^foo"',
 			'   | filter min_zoom="3" max_zoom="10" bounds="1,2,3,4"',

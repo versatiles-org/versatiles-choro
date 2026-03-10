@@ -41,9 +41,7 @@ describe('CLI', () => {
 				layer_name: 'regions',
 				id_field_tiles: 'id',
 				id_field_data: 'data_id',
-				replace_properties: true,
-				remove_non_matching: true,
-				include_id: true
+				remove_non_matching: true
 			}
 		};
 
@@ -52,9 +50,7 @@ describe('CLI', () => {
 		expect(vpl.update_properties.layer_name).toBe('regions');
 		expect(vpl.update_properties.id_field_tiles).toBe('id');
 		expect(vpl.update_properties.id_field_data).toBe('data_id');
-		expect(vpl.update_properties.replace_properties).toBe(true);
 		expect(vpl.update_properties.remove_non_matching).toBe(true);
-		expect(vpl.update_properties.include_id).toBe(true);
 	});
 
 	it('uses INIT_CWD when available', () => {
@@ -129,9 +125,7 @@ describe('CLI', () => {
 				layer_name: 'test-layer',
 				id_field_tiles: 'tile_id',
 				id_field_data: 'feature_id',
-				replace_properties: true,
-				remove_non_matching: true,
-				include_id: true
+				remove_non_matching: true
 			}
 		};
 
@@ -140,18 +134,6 @@ describe('CLI', () => {
 		expect(vpl.update_properties).toHaveProperty('layer_name');
 		expect(vpl.update_properties).toHaveProperty('id_field_tiles');
 		expect(vpl.update_properties).toHaveProperty('id_field_data');
-		expect(vpl.update_properties).toHaveProperty('replace_properties');
 		expect(vpl.update_properties).toHaveProperty('remove_non_matching');
-		expect(vpl.update_properties).toHaveProperty('include_id');
-	});
-
-	it('handles boolean VPL flags correctly', () => {
-		const replaceProperties = true;
-		const removeNonMatching = true;
-		const includeId = true;
-
-		expect(replaceProperties).toBe(true);
-		expect(removeNonMatching).toBe(true);
-		expect(includeId).toBe(true);
 	});
 });
