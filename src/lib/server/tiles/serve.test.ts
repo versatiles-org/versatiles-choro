@@ -61,8 +61,15 @@ describe('Tile Server Management', () => {
 	});
 
 	describe('getTileServerPort', () => {
-		it('returns the correct port', () => {
-			expect(getTileServerPort()).toBe(8080);
+		it('returns the actual server port after initialization', async () => {
+			mockTileServer.port = 54321;
+			const vpl = { from_container: { filename: 'test.versatiles' } };
+			await addTileSource(vpl);
+			expect(getTileServerPort()).toBe(54321);
+		});
+
+		it('throws if server is not initialized', () => {
+			expect(() => getTileServerPort()).toThrow('TileServer not initialized');
 		});
 	});
 
@@ -317,7 +324,10 @@ describe('Tile Server Management', () => {
 			await addTileSource(vpl);
 
 			expect(loggers.tiles.info).toHaveBeenCalledWith('Initializing TileServer');
-			expect(loggers.tiles.info).toHaveBeenCalledWith('TileServer started');
+			expect(loggers.tiles.info).toHaveBeenCalledWith(
+				{ port: mockTileServer.port },
+				'TileServer started'
+			);
 		});
 
 		it('logs server shutdown', async () => {

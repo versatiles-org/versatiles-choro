@@ -14,8 +14,6 @@ const tileSources = new Map<string, TileSource>();
 // Lazy initialization promise to ensure single initialization
 let initPromise: Promise<void> | null = null;
 
-const PORT = 8080;
-
 /**
  * Initialize the global TileServer (called once at app startup or lazily on first use)
  */
@@ -29,19 +27,13 @@ async function initializeTileServer(): Promise<void> {
 
 	globalServer = new TileServer({
 		ip: '127.0.0.1', // Localhost only for security
-		port: PORT,
+		port: 0, // Ephemeral port to avoid conflicts
 		minimalRecompression: true
 	});
 
 	await globalServer.start();
 
-	if (globalServer.port !== PORT) {
-		throw new Error(
-			`Failed to bind TileServer to port ${PORT}, got port ${globalServer.port} instead`
-		);
-	}
-
-	loggers.tiles.info('TileServer started');
+	loggers.tiles.info({ port: globalServer.port }, 'TileServer started');
 }
 
 /**
@@ -50,9 +42,13 @@ async function initializeTileServer(): Promise<void> {
 async function ensureInitialized(): Promise<void> {
 	if (globalServer) return;
 	if (!initPromise) {
-		initPromise = initializeTileServer();
-		await initPromise;
+		initPromise = initializeTileServer().catch((error) => {
+			// Reset so next call can retry
+			initPromise = null;
+			throw error;
+		});
 	}
+	await initPromise;
 }
 
 /**
@@ -139,7 +135,10 @@ export async function removeTileSource(name: string): Promise<boolean> {
  * Get the port of the global TileServer
  */
 export function getTileServerPort(): number {
-	return PORT;
+	if (!globalServer) {
+		throw new Error('TileServer not initialized. Call ensureInitialized() first.');
+	}
+	return globalServer.port;
 }
 
 /**
