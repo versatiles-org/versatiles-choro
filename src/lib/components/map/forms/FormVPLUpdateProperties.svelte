@@ -34,6 +34,13 @@
 		return tilejson?.vector_layers.map((layer) => layer.id) ?? [];
 	});
 
+	// Auto-select when there's only one layer
+	$effect(() => {
+		if (layer_names.length === 1) {
+			layer_name = layer_names[0];
+		}
+	});
+
 	// Derive tile field names from selected layer in tilejson
 	let availableTileFields: string[] = $derived.by(() => {
 		if (!tilejson || !layer_name) return [];
@@ -135,10 +142,10 @@
 					<option value=",">comma (,)</option>
 				</select>
 			</label>
-			{#if layer_names}
+			{#if layer_names.length > 0}
 				<label class:label-error={!layer_name}>
 					Layer Name
-					<select class="input-full" bind:value={layer_name}>
+					<select class="input-full" bind:value={layer_name} disabled={layer_names.length === 1}>
 						{#each layer_names as name, index (name)}
 							<option value={name} selected={index === 0}>{name}</option>
 						{/each}
