@@ -5,7 +5,7 @@ import { downloadTestData } from '$lib/server/download/test-data';
 import { convertTiles } from '$lib/server/convert/tiles';
 import type { VPLParam } from '$lib/api/schemas';
 import type { InferOutput } from 'valibot';
-import pjson from '../package.json' assert { type: 'json' };
+import pjson from '../package.json' with { type: 'json' };
 
 const program = new Command()
 	.name('versatiles-choro')
