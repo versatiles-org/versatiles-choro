@@ -152,11 +152,12 @@ test.describe('Full Workflow', () => {
 		await page.locator('button:has-text("Select File")').first().click();
 
 		// Step 15: Navigate to test-data folder in the dialog
-		await expect(page.locator('dialog h3:has-text("Select File")').first()).toBeVisible();
-		await page.locator('dialog button:has-text("test-data")').first().click();
+		const vectorDataDialog = page.locator('dialog:visible');
+		await expect(vectorDataDialog.locator('h3:has-text("Select File")')).toBeVisible();
+		await vectorDataDialog.locator('button:has-text("test-data")').click();
 
 		// Step 16: Select tile source .versatiles file
-		await page.locator(`dialog button:has-text("${SOURCE_NAME}.versatiles")`).first().click();
+		await vectorDataDialog.locator(`button:has-text("${SOURCE_NAME}.versatiles")`).click();
 
 		// Wait for dialog to close and tile source to load
 		await page.waitForTimeout(2000);
