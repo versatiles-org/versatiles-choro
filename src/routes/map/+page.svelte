@@ -12,9 +12,14 @@
 	import {
 		FormVPLFromContainer,
 		FormVPLUpdateProperties,
-		FormChoropleth
+		FormChoropleth,
+		FormMeta
 	} from '$lib/components/map/forms';
-	import type { VPLParamFromContainer, VPLParamUpdateProperties } from '$lib/api/schemas';
+	import type {
+		VPLParamFromContainer,
+		VPLParamUpdateProperties,
+		VPLParamMetaUpdate
+	} from '$lib/api/schemas';
 	import { getTileSource, TileSource } from '$lib/components/map/tile-source';
 	import type { TileJSONSpecificationVector } from '@versatiles/style';
 	import type { ChoroplethParams } from '$lib/components/map/color-schemes';
@@ -24,6 +29,7 @@
 
 	let from_container: InferOutput<typeof VPLParamFromContainer> | undefined = $state();
 	let update_properties: InferOutput<typeof VPLParamUpdateProperties> | undefined = $state();
+	let meta_update: InferOutput<typeof VPLParamMetaUpdate> | undefined = $state();
 	let inspectOverlay: boolean = $state(true);
 	let choropleth: ChoroplethParams | undefined = $state();
 
@@ -41,10 +47,12 @@
 			return;
 		}
 		const oldSource = currentOverlaySource;
-		getTileSource({ vpl: { from_container, update_properties } }, oldSource).then((newSource) => {
-			overlay_source = newSource;
-			currentOverlaySource = newSource;
-		});
+		getTileSource({ vpl: { from_container, update_properties, meta_update } }, oldSource).then(
+			(newSource) => {
+				overlay_source = newSource;
+				currentOverlaySource = newSource;
+			}
+		);
 	});
 
 	// Create raw source when from_container changes, passing old source for cleanup
@@ -83,7 +91,7 @@
 	let exportParams: InferOutput<typeof ExportRequest> | undefined = $derived(
 		exportPath && from_container && choropleth && update_properties?.layer_name && tilejson_filtered
 			? {
-					vpl: { from_container, update_properties },
+					vpl: { from_container, update_properties, meta_update },
 					choropleth,
 					layerName: update_properties.layer_name,
 					backgroundStyle: 'GrayBright',
@@ -116,6 +124,7 @@
 				<input type="checkbox" bind:checked={inspectOverlay} />
 				Inspector Mode<Hint text="Show feature properties on hover for debugging" />
 			</label>
+			<FormMeta bind:params={meta_update} tilejson={tilejson_raw} />
 		</Frame>
 		<Frame title="Export" Icon={IconExport} borderBottom={false}>
 			<button class="export-button" onclick={() => (showExportDialog = true)} disabled={!canExport}>
