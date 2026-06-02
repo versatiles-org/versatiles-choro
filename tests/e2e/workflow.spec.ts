@@ -222,7 +222,7 @@ test.describe('Full Workflow', () => {
 		await expect(page.getByRole('heading', { name: 'Export Choropleth Map' })).toBeVisible();
 
 		// The filename input should have "choropleth-export" as default
-		await expect(page.locator('input[type="text"]').first()).toHaveValue('choropleth-export');
+		await expect(page.locator('#filename')).toHaveValue('choropleth-export');
 
 		// Step 32: Click Save
 		await page.getByRole('button', { name: 'Save' }).click();
