@@ -27,7 +27,7 @@
 	overflow-x: auto;
 }
 
-.file-browser .breadcrumbs :global(.separator) {
+.file-browser .breadcrumbs .separator {
 	color: var(--color-icon-separator);
 	flex-shrink: 0;
 }
@@ -101,11 +101,11 @@
 	color: var(--color-link);
 }
 
-.file-browser .file-row.folder :global(svg) {
+.file-browser .file-row.folder svg {
 	color: var(--color-icon-folder);
 }
 
-.file-browser .file-row.file :global(svg) {
+.file-browser .file-row.file svg {
 	color: var(--color-icon-file);
 }
 
