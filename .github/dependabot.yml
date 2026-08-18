@@ -3,15 +3,21 @@ updates:
   - package-ecosystem: docker
     directory: /
     schedule: { interval: monthly }
-    groups: { docker: { patterns: ['*'] } }
+    groups:
+      docker: { patterns: ['*'] }
+      security: { applies-to: security-updates, patterns: ['*'] }
 
   - package-ecosystem: npm
     directory: /
     schedule: { interval: monthly }
-    groups: { npm: { patterns: ['*'] } }
+    groups:
+      npm: { patterns: ['*'] }
+      security: { applies-to: security-updates, patterns: ['*'] }
     versioning-strategy: increase-if-necessary
 
   - package-ecosystem: github-actions
     directory: /
     schedule: { interval: monthly }
-    groups: { github-action: { patterns: ['*'] } }
+    groups:
+      github-action: { patterns: ['*'] }
+      security: { applies-to: security-updates, patterns: ['*'] }
