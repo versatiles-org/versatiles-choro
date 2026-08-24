@@ -1,4 +1,4 @@
-import type { Map, MapLayerMouseEvent } from 'maplibre-gl';
+import type { Map, MapGeoJSONFeature, MapLayerMouseEvent, Point } from 'maplibre-gl';
 import { interpolateTemplate } from '$lib/choro/tooltip';
 
 interface PropertyEntry {
@@ -16,7 +16,7 @@ export class Inspector {
 	canvas: HTMLCanvasElement;
 	layerIds: string[] = [];
 	selectedProperties;
-	lastSelectedFeature: maplibregl.MapGeoJSONFeature | null = null;
+	lastSelectedFeature: MapGeoJSONFeature | null = null;
 	mousePosition;
 	mouseMoveHandler: ((e: MapLayerMouseEvent) => void) | null = null;
 	mouseLeaveHandler: ((e: MapLayerMouseEvent) => void) | null = null;
@@ -71,7 +71,7 @@ export class Inspector {
 		this.map.on('mouseleave', this.layerIds, this.mouseLeaveHandler);
 	}
 
-	private setFeature(feature?: maplibregl.MapGeoJSONFeature, point?: maplibregl.Point) {
+	private setFeature(feature?: MapGeoJSONFeature, point?: Point) {
 		if (!feature) {
 			// Delay hiding the panel to reduce flickering
 			if (this.lastSelectedFeature && this.hideTimeout === null) {
