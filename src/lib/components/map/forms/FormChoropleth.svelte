@@ -110,8 +110,7 @@
 					class="input-full tooltip-textarea"
 					bind:value={tooltipTemplate}
 					placeholder={'<b>{name}</b><br>Value: {value}'}
-					rows="3"
-				></textarea>
+					rows="3"></textarea>
 				<span class="hint">Use {'{property}'} to insert feature values</span>
 			</label>
 		{/if}
