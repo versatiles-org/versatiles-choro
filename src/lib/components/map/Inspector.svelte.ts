@@ -1,5 +1,5 @@
 import type { Map, MapGeoJSONFeature, MapLayerMouseEvent, Point } from 'maplibre-gl';
-import { interpolateTemplate } from '$lib/choro/tooltip';
+import { interpolateTemplate } from '#lib/choro/tooltip.js';
 
 interface PropertyEntry {
 	name: string;

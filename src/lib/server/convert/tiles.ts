@@ -1,4 +1,4 @@
-import type { VPLParam } from '$lib/api/schemas';
+import type { VPLParam } from '#lib/api/schemas/index.js';
 import { ConcatenatedProgress, SimpleProgress, type Progress } from '../progress';
 import { type InferOutput } from 'valibot';
 import { runVersaTilesConvert } from '../spawn/spawn';

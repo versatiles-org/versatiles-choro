@@ -381,7 +381,7 @@ src/
 
 ### Import Aliases
 
-- `$lib/` → `src/lib/`
-- `$lib/api/schemas` → Valibot schemas
-- `$lib/components/` → Svelte components
-- `$lib/server/` → Server-only code
+- `#lib/` → `src/lib/`
+- `#lib/api/schemas.js` → Valibot schemas
+- `#lib/components/` → Svelte components
+- `#lib/server/` → Server-only code

@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render } from '@testing-library/svelte';
 
 // Mock filesystem
-vi.mock('$lib/api/filesystem.svelte', () => {
+vi.mock('#lib/api/filesystem.svelte.js', () => {
 	class MockFsFile {
 		constructor(
 			private name: string,
@@ -59,20 +59,20 @@ describe('FileSelector', () => {
 	});
 
 	it('uses filesystem getRootDirectory', async () => {
-		const { getRootDirectory } = await import('$lib/api/filesystem.svelte');
+		const { getRootDirectory } = await import('#lib/api/filesystem.svelte.js');
 		const root = getRootDirectory();
 		expect(root.fullPath()).toBe('/home/user');
 	});
 
 	it('filesystem directory has children', async () => {
-		const { getRootDirectory } = await import('$lib/api/filesystem.svelte');
+		const { getRootDirectory } = await import('#lib/api/filesystem.svelte.js');
 		const root = getRootDirectory();
 		const children = await root.getChildren();
 		expect(children.length).toBeGreaterThan(0);
 	});
 
 	it('filesystem directory has parent navigation', async () => {
-		const { getRootDirectory, FsDirectory } = await import('$lib/api/filesystem.svelte');
+		const { getRootDirectory, FsDirectory } = await import('#lib/api/filesystem.svelte.js');
 		const root = getRootDirectory();
 		const children = await root.getChildren();
 		const subdir = children.find((c) => c.getName() === 'subdir');
@@ -82,7 +82,7 @@ describe('FileSelector', () => {
 	});
 
 	it('filesystem filters files correctly', async () => {
-		const { getRootDirectory } = await import('$lib/api/filesystem.svelte');
+		const { getRootDirectory } = await import('#lib/api/filesystem.svelte.js');
 		const root = getRootDirectory();
 		const children = await root.getChildren();
 		const files = children.filter((c) => c.getName().endsWith('.versatiles'));

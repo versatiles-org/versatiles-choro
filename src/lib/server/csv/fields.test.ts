@@ -2,7 +2,7 @@ import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { getCSVFieldNames } from './fields';
-import { FileSystemError } from '$lib/server/errors/errors';
+import { FileSystemError } from '#lib/server/errors/errors.js';
 
 describe('getCSVFieldNames', () => {
 	const TEST_DIR = join(process.cwd(), '.test-csv-files');

@@ -1,14 +1,13 @@
 import { AppError } from './errors.js';
 import { ValiError } from 'valibot';
 import type { RequestHandler } from '@sveltejs/kit';
-import { json } from '@sveltejs/kit';
 import { loggers } from '../logger/index.js';
 
 /**
  * Success response with optional status code
  */
 export function successResponse<T>(data: T, status = 200) {
-	return json(data, { status });
+	return Response.json(data, { status });
 }
 
 /**
@@ -16,7 +15,7 @@ export function successResponse<T>(data: T, status = 200) {
  */
 export function errorResponse(error: unknown, status = 500) {
 	const message = error instanceof Error ? error.message : String(error);
-	return json({ error: message }, { status });
+	return Response.json({ error: message }, { status });
 }
 
 /**
@@ -39,7 +38,7 @@ export function withErrorHandling<T extends RequestHandler>(handler: T): T {
 export function errorToResponse(error: unknown): Response {
 	// Handle Valibot validation errors
 	if (error instanceof ValiError) {
-		return json(
+		return Response.json(
 			{
 				error: 'Validation failed',
 				details: error.issues.map((issue) => ({
@@ -59,14 +58,14 @@ export function errorToResponse(error: unknown): Response {
 		if (error.cause) {
 			response.cause = String(error.cause);
 		}
-		return json(response, { status: error.statusCode });
+		return Response.json(response, { status: error.statusCode });
 	}
 
 	// Handle standard errors
 	if (error instanceof Error) {
 		// Don't expose internal error details in production
 		const isDevelopment = process.env.NODE_ENV !== 'production';
-		return json(
+		return Response.json(
 			{
 				error: isDevelopment ? error.message : 'Internal server error',
 				...(isDevelopment && error.stack && { stack: error.stack })
@@ -76,7 +75,7 @@ export function errorToResponse(error: unknown): Response {
 	}
 
 	// Handle unknown errors
-	return json(
+	return Response.json(
 		{
 			error: 'An unexpected error occurred'
 		},

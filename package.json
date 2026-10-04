@@ -30,6 +30,9 @@
 	"engines": {
 		"node": ">=24"
 	},
+	"imports": {
+		"#lib/*": "./src/lib/*"
+	},
 	"lint-staged": {
 		"*.{js,ts,svelte}": [
 			"eslint --fix",
@@ -38,9 +41,6 @@
 		"*.{json,md,css,html}": [
 			"prettier --write"
 		]
-	},
-	"overrides": {
-		"cookie": "^0.7.0"
 	},
 	"dependencies": {
 		"@sveltejs/kit": "^3.0.0",

@@ -1,9 +1,9 @@
 import { Command } from 'commander';
-import { convertPolygonsToVersatiles } from '$lib/server/convert/geometry';
+import { convertPolygonsToVersatiles } from '#lib/server/convert/geometry.js';
 import { resolve } from 'path';
-import { downloadTestData } from '$lib/server/download/test-data';
-import { convertTiles } from '$lib/server/convert/tiles';
-import type { VPLParam } from '$lib/api/schemas';
+import { downloadTestData } from '#lib/server/download/test-data.js';
+import { convertTiles } from '#lib/server/convert/tiles.js';
+import type { VPLParam } from '#lib/api/schemas/index.js';
 import type { InferOutput } from 'valibot';
 import pjson from '../package.json' with { type: 'json' };
 

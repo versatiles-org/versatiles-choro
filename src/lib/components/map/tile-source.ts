@@ -1,7 +1,7 @@
 import type { TileJSONSpecificationVector } from '@versatiles/style';
 import type { StyleSpecification } from 'maplibre-gl';
 import { getChoroplethStyle, getInspectorStyle } from './style';
-import { TilesInitRequest, TilesInitResponse } from '$lib/api/schemas';
+import { TilesInitRequest, TilesInitResponse } from '#lib/api/schemas/index.js';
 import * as v from 'valibot';
 import type { ChoroplethParams } from './color-schemes';
 

@@ -1,9 +1,9 @@
 <script lang="ts">
-	import favicon from '$lib/assets/favicon.svg';
+	import favicon from '#lib/assets/favicon.svg';
 	import { resolve } from '$app/paths';
-	import { page } from '$app/stores';
-	import '$lib/styles/utilities.css';
-	import '$lib/styles/global.css';
+	import { page } from '$app/state';
+	import '#lib/styles/utilities.css';
+	import '#lib/styles/global.css';
 
 	let { children } = $props();
 </script>
@@ -14,7 +14,7 @@
 
 <div class="app-container">
 	<nav>
-		{#if $page.url.pathname !== resolve('/')}
+		{#if page.url.pathname !== resolve('/')}
 			<a href={resolve('/')} data-sveltekit-reload>Home</a>
 		{/if}
 	</nav>

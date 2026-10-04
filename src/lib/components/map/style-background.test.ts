@@ -3,7 +3,7 @@ import { createBackgroundStyle, type BackgroundMap } from './style-background';
 
 // Mock @versatiles/style
 vi.mock('@versatiles/style', () => ({
-	colorful: vi.fn((options) => ({
+	osm: vi.fn((options) => ({
 		version: 8,
 		sources: { tiles: { type: 'vector' } },
 		layers: [
@@ -13,6 +13,7 @@ vi.mock('@versatiles/style', () => ({
 			{ id: 'building', type: 'fill' },
 			{ id: 'street-major', type: 'line' },
 			{ id: 'street-minor', type: 'line' },
+			{ id: 'aerialway', type: 'line' },
 			{ id: 'label-city', type: 'symbol' },
 			{ id: 'boundary-country', type: 'line' }
 		],
@@ -20,16 +21,28 @@ vi.mock('@versatiles/style', () => ({
 	}))
 }));
 
-import { colorful } from '@versatiles/style';
+import { osm } from '@versatiles/style';
+
+const base = {
+	theme: 'colorful',
+	text: { language: 'de' },
+	urls: {
+		base: 'https://tiles.versatiles.org',
+		osm: expect.objectContaining({
+			tiles: ['https://tiles.versatiles.org/tiles/osm/{z}/{x}/{y}'],
+			maxzoom: 14,
+			attribution: expect.stringContaining('OpenStreetMap')
+		})
+	},
+	projection: 'mercator',
+	sky: false
+};
 
 describe('createBackgroundStyle', () => {
 	it('creates colorful style', () => {
 		const style = createBackgroundStyle('Colorful');
 
-		expect(colorful).toHaveBeenCalledWith({
-			baseUrl: 'https://tiles.versatiles.org',
-			language: 'de'
-		});
+		expect(osm).toHaveBeenCalledWith(base);
 
 		expect(style.version).toBe(8);
 	});
@@ -37,30 +50,24 @@ describe('createBackgroundStyle', () => {
 	it('creates gray style with saturate -1', () => {
 		const style = createBackgroundStyle('Gray');
 
-		expect(colorful).toHaveBeenCalledWith({
-			baseUrl: 'https://tiles.versatiles.org',
-			language: 'de',
-			recolor: { saturate: -1 }
-		});
+		expect(osm).toHaveBeenCalledWith({ ...base, recolor: { saturate: -1 } });
 	});
 
 	it('creates gray bright style with white blend', () => {
 		const style = createBackgroundStyle('GrayBright');
 
-		expect(colorful).toHaveBeenCalledWith({
-			baseUrl: 'https://tiles.versatiles.org',
-			language: 'de',
-			recolor: { saturate: -1, blendColor: '#ffffff', blend: 0.5 }
+		expect(osm).toHaveBeenCalledWith({
+			...base,
+			recolor: { saturate: -1, blend: { color: '#ffffff', amount: 0.5 } }
 		});
 	});
 
 	it('creates gray dark style with black blend and inverted brightness', () => {
 		const style = createBackgroundStyle('GrayDark');
 
-		expect(colorful).toHaveBeenCalledWith({
-			baseUrl: 'https://tiles.versatiles.org',
-			language: 'de',
-			recolor: { saturate: -1, invertBrightness: true, blendColor: '#000000', blend: 0.5 }
+		expect(osm).toHaveBeenCalledWith({
+			...base,
+			recolor: { saturate: -1, invertBrightness: true, blend: { color: '#000000', amount: 0.5 } }
 		});
 	});
 
@@ -102,6 +109,13 @@ describe('createBackgroundStyle', () => {
 
 		const hasTransport = style.layers?.some((layer) => layer.id.startsWith('transport'));
 		expect(hasTransport).toBe(false);
+	});
+
+	it('filters out aerialway layers', () => {
+		const style = createBackgroundStyle('Colorful');
+
+		const hasAerialway = style.layers?.some((layer) => layer.id.startsWith('aerialway'));
+		expect(hasAerialway).toBe(false);
 	});
 
 	it('filters out symbol layers', () => {
@@ -156,9 +170,9 @@ describe('createBackgroundStyle', () => {
 	it('uses de language by default', () => {
 		createBackgroundStyle('Colorful');
 
-		expect(colorful).toHaveBeenCalledWith(
+		expect(osm).toHaveBeenCalledWith(
 			expect.objectContaining({
-				language: 'de'
+				text: { language: 'de' }
 			})
 		);
 	});
@@ -166,9 +180,9 @@ describe('createBackgroundStyle', () => {
 	it('uses versatiles.org base URL', () => {
 		createBackgroundStyle('Colorful');
 
-		expect(colorful).toHaveBeenCalledWith(
+		expect(osm).toHaveBeenCalledWith(
 			expect.objectContaining({
-				baseUrl: 'https://tiles.versatiles.org'
+				urls: expect.objectContaining({ base: 'https://tiles.versatiles.org' })
 			})
 		);
 	});

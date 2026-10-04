@@ -5,7 +5,7 @@
 import { vi } from 'vitest';
 
 // Mock filesystem remote functions
-vi.mock('$lib/api/filesystem.remote', () => ({
+vi.mock('#lib/api/filesystem.remote.js', () => ({
 	getChildren: vi.fn().mockResolvedValue([
 		{
 			name: 'test-directory',

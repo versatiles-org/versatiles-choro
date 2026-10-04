@@ -8,9 +8,9 @@ import {
 	buildVPLUpdateProperties
 } from './vpl';
 import * as v from 'valibot';
-import type { VPLParam } from '$lib/api/schemas';
+import type { VPLParam } from '#lib/api/schemas/index.js';
 
-vi.mock('$lib/server/filesystem/filesystem', () => ({
+vi.mock('#lib/server/filesystem/filesystem.js', () => ({
 	resolveDataPath: (path: string) => 'data/' + path,
 	resolveTempPath: (path: string) => 'temp/' + path
 }));

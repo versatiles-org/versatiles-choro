@@ -10,7 +10,7 @@ beforeEach(() => {
 });
 
 // Mock filesystem
-vi.mock('$lib/api/filesystem.svelte', () => {
+vi.mock('#lib/api/filesystem.svelte.js', () => {
 	class MockFsFile {
 		constructor(
 			private name: string,

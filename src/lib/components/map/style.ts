@@ -1,5 +1,5 @@
 /**
- * Re-export from $lib/choro for backwards compatibility
+ * Re-export from #lib/choro for backwards compatibility
  */
 export {
 	mergeStyles as overlayStyles,
@@ -7,4 +7,4 @@ export {
 	getInspectorStyle,
 	getChoroplethStyle,
 	getColorStops
-} from '$lib/choro/style';
+} from '#lib/choro/style.js';

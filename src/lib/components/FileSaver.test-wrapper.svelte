@@ -1,6 +1,6 @@
 <script lang="ts">
 	import FileSaver from './FileSaver.svelte';
-	import type { FsDirectory } from '$lib/api/filesystem.svelte';
+	import type { FsDirectory } from '#lib/api/filesystem.svelte.js';
 
 	let {
 		initialDirectory = undefined,

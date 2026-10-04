@@ -1,5 +1,5 @@
 /**
- * Re-export from $lib/choro for backwards compatibility
+ * Re-export from #lib/choro for backwards compatibility
  */
 export {
 	COLOR_SCHEMES,
@@ -10,4 +10,4 @@ export {
 	magma,
 	type ColorSchemeName,
 	type ChoroplethParams
-} from '$lib/choro/color-schemes';
+} from '#lib/choro/color-schemes.js';

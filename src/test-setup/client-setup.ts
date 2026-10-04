@@ -13,7 +13,7 @@ export const server = setupServer(...handlers);
 
 // Start server before all tests
 beforeAll(() => {
-	server.listen({ onUnhandledRequest: 'warn' });
+	server.listen({ onUnhandledFrame: 'warn' });
 });
 
 // Reset handlers after each test
@@ -66,7 +66,7 @@ const localStorageMock = {
 	length: 0,
 	key: vi.fn()
 };
-global.localStorage = localStorageMock as Storage;
+vi.stubGlobal('localStorage', localStorageMock as Storage);
 
 // Mock HTMLCanvasElement.getContext to prevent JSDOM warnings
 HTMLCanvasElement.prototype.getContext = vi.fn(() => null);

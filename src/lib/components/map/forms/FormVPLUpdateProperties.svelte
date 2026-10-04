@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { VPLParamUpdateProperties } from '$lib/api/schemas';
-	import FileSelector from '$lib/components/FileSelector.svelte';
-	import Foldable from '$lib/components/SidebarFoldable.svelte';
-	import Hint from '$lib/components/Hint.svelte';
-	import type { FsFile } from '$lib/api/filesystem.svelte';
+	import type { VPLParamUpdateProperties } from '#lib/api/schemas/index.js';
+	import FileSelector from '#lib/components/FileSelector.svelte';
+	import Foldable from '#lib/components/SidebarFoldable.svelte';
+	import Hint from '#lib/components/Hint.svelte';
+	import type { FsFile } from '#lib/api/filesystem.svelte.js';
 	import type { InferOutput } from 'valibot';
 	import type { TileJSONSpecificationVector } from '@versatiles/style';
 

@@ -5,10 +5,12 @@ import globals from 'globals';
 import js from '@eslint/js';
 import prettier from 'eslint-config-prettier';
 import svelte from 'eslint-plugin-svelte';
-import svelteConfig from './svelte.config.js';
 import ts from 'typescript-eslint';
 
 const gitignorePath = fileURLToPath(new URL('./.gitignore', import.meta.url));
+
+// Svelte options live in vite.config.ts (SvelteKit 3); mirror the compiler options for the parser
+const svelteConfig = { compilerOptions: { experimental: { async: true } } };
 
 // Shared configurations
 const commonGlobals = { ...globals.browser, ...globals.node };

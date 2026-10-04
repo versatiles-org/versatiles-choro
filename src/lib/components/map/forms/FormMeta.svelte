@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { InferOutput } from 'valibot';
-	import type { VPLParamMetaUpdate } from '$lib/api/schemas';
+	import type { VPLParamMetaUpdate } from '#lib/api/schemas/index.js';
 	import type { TileJSONSpecificationVector } from '@versatiles/style';
-	import Hint from '$lib/components/Hint.svelte';
+	import Hint from '#lib/components/Hint.svelte';
 
 	let {
 		// eslint-disable-next-line no-useless-assignment

@@ -1,21 +1,9 @@
 {
-	"extends": "./.svelte-kit/tsconfig.json",
+	"extends": "$app/tsconfig",
 	"compilerOptions": {
-		"noEmit": true,
-		"allowImportingTsExtensions": true,
-		"allowJs": true,
-		"checkJs": true,
-		"esModuleInterop": true,
-		"forceConsistentCasingInFileNames": true,
-		"resolveJsonModule": true,
-		"skipLibCheck": true,
 		"sourceMap": true,
-		"strict": true,
-		"moduleResolution": "bundler"
-	}
-	// Path aliases are handled by https://svelte.dev/docs/kit/configuration#alias
-	// except $lib which is handled by https://svelte.dev/docs/kit/configuration#files
-	//
-	// If you want a standalone tsconfig that doesn't extend SvelteKit's generated one,
-	// you can create tsconfig.rollup.json for rollup configs specifically.
+		"strict": true
+	},
+	"include": ["src", "tests", "vite.config.ts"],
+	"exclude": ["src/service-worker"]
 }

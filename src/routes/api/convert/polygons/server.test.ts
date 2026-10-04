@@ -1,26 +1,26 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { POST } from './+server';
 import type { RequestEvent } from '@sveltejs/kit';
-import { SimpleProgress } from '$lib/server/progress/simple';
+import { SimpleProgress } from '#lib/server/progress/simple.js';
 
 // Mock filesystem utilities
-vi.mock('$lib/server/filesystem/filesystem', () => ({
+vi.mock('#lib/server/filesystem/filesystem.js', () => ({
 	resolveDataPath: vi.fn((path: string) => `/resolved/${path}`)
 }));
 
 // Mock conversion module
-vi.mock('$lib/server/convert/geometry', () => ({
+vi.mock('#lib/server/convert/geometry.js', () => ({
 	convertPolygonsToVersatiles: vi.fn()
 }));
 
 // Mock progress to stream
-vi.mock('$lib/server/progress', () => ({
+vi.mock('#lib/server/progress/index.js', () => ({
 	progressToStream: vi.fn()
 }));
 
-import { resolveDataPath } from '$lib/server/filesystem/filesystem';
-import { convertPolygonsToVersatiles } from '$lib/server/convert/geometry';
-import { progressToStream } from '$lib/server/progress';
+import { resolveDataPath } from '#lib/server/filesystem/filesystem.js';
+import { convertPolygonsToVersatiles } from '#lib/server/convert/geometry.js';
+import { progressToStream } from '#lib/server/progress/index.js';
 
 describe('POST /api/convert/polygons', () => {
 	beforeEach(() => {

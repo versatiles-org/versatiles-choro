@@ -1,4 +1,4 @@
 /**
- * Re-export from $lib/choro for backwards compatibility
+ * Re-export from #lib/choro for backwards compatibility
  */
-export { createBackgroundStyle, type BackgroundMap } from '$lib/choro/style-background';
+export { createBackgroundStyle, type BackgroundMap } from '#lib/choro/style-background.js';

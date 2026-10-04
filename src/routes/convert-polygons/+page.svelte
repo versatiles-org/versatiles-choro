@@ -1,9 +1,9 @@
 <script lang="ts">
-	import PageContainer from '$lib/components/PageContainer.svelte';
-	import FileSelector from '$lib/components/FileSelector.svelte';
-	import FileSaver from '$lib/components/FileSaver.svelte';
-	import Progress from '$lib/components/Progress.svelte';
-	import type { FsFile } from '$lib/api/filesystem.svelte';
+	import PageContainer from '#lib/components/PageContainer.svelte';
+	import FileSelector from '#lib/components/FileSelector.svelte';
+	import FileSaver from '#lib/components/FileSaver.svelte';
+	import Progress from '#lib/components/Progress.svelte';
+	import type { FsFile } from '#lib/api/filesystem.svelte.js';
 
 	let showInputModal = $state(false);
 	let showOutputModal = $state(false);

@@ -7,8 +7,8 @@ import {
 	COLOR_SCHEMES,
 	type ChoroplethParams,
 	type ColorSchemeName
-} from '$lib/choro/color-schemes';
-import type { BackgroundMap } from '$lib/choro/style-background';
+} from '#lib/choro/color-schemes.js';
+import type { BackgroundMap } from '#lib/choro/style-background.js';
 
 /**
  * Export configuration structure for the choropleth map.

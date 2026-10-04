@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Component, Snippet } from 'svelte';
-	import { type IconProps } from '@lucide/svelte';
+	import type { Snippet } from 'svelte';
+	import type { LucideIcon } from '@lucide/svelte';
 
 	const {
 		children,
@@ -9,7 +9,7 @@
 		borderBottom = true
 	}: {
 		children?: Snippet;
-		Icon: Component<IconProps, object, ''>;
+		Icon: LucideIcon;
 		title: string;
 		borderBottom?: boolean;
 	} = $props();

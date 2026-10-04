@@ -1,9 +1,9 @@
 <script lang="ts">
 	import Dialog from './Dialog.svelte';
-	import { FsDirectory, FsFile, getRootDirectory } from '$lib/api/filesystem.svelte';
-	import { formatFileSize, formatDate } from '$lib/utils/format';
+	import { FsDirectory, FsFile, getRootDirectory } from '#lib/api/filesystem.svelte.js';
+	import { formatFileSize, formatDate } from '#lib/utils/format.js';
 	import { Folder, File, FileText, FileImage, FileCode, ChevronRight, House } from '@lucide/svelte';
-	import '$lib/styles/file-browser.css';
+	import '#lib/styles/file-browser.css';
 
 	let {
 		initialDirectory,

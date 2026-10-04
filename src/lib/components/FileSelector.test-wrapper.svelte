@@ -1,6 +1,6 @@
 <script lang="ts">
 	import FileSelector from './FileSelector.svelte';
-	import type { FsDirectory, FsFile } from '$lib/api/filesystem.svelte';
+	import type { FsDirectory, FsFile } from '#lib/api/filesystem.svelte.js';
 
 	let {
 		initialDirectory = undefined,

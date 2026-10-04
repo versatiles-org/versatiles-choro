@@ -1,31 +1,31 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte';
-	import Map from '$lib/components/Map.svelte';
+	import Map from '#lib/components/Map.svelte';
 	import type { InferOutput } from 'valibot';
-	import Frame from '$lib/components/SidebarFrame.svelte';
-	import Sidebar from '$lib/components/Sidebar.svelte';
+	import Frame from '#lib/components/SidebarFrame.svelte';
+	import Sidebar from '#lib/components/Sidebar.svelte';
 	import IconFile from '@lucide/svelte/icons/file';
 	import IconVector from '@lucide/svelte/icons/hammer';
 	import IconDesign from '@lucide/svelte/icons/paintbrush';
 	import IconExport from '@lucide/svelte/icons/download';
-	import Hint from '$lib/components/Hint.svelte';
+	import Hint from '#lib/components/Hint.svelte';
 	import {
 		FormVPLFromContainer,
 		FormVPLUpdateProperties,
 		FormChoropleth,
 		FormMeta
-	} from '$lib/components/map/forms';
+	} from '#lib/components/map/forms/index.js';
 	import type {
 		VPLParamFromContainer,
 		VPLParamUpdateProperties,
 		VPLParamMetaUpdate
-	} from '$lib/api/schemas';
-	import { getTileSource, TileSource } from '$lib/components/map/tile-source';
+	} from '#lib/api/schemas/index.js';
+	import { getTileSource, TileSource } from '#lib/components/map/tile-source.js';
 	import type { TileJSONSpecificationVector } from '@versatiles/style';
-	import type { ChoroplethParams } from '$lib/components/map/color-schemes';
-	import FileSaver from '$lib/components/FileSaver.svelte';
-	import Progress from '$lib/components/Progress.svelte';
-	import type { ExportRequest } from '$lib/api/schemas';
+	import type { ChoroplethParams } from '#lib/components/map/color-schemes.js';
+	import FileSaver from '#lib/components/FileSaver.svelte';
+	import Progress from '#lib/components/Progress.svelte';
+	import type { ExportRequest } from '#lib/api/schemas/index.js';
 
 	let from_container: InferOutput<typeof VPLParamFromContainer> | undefined = $state();
 	let update_properties: InferOutput<typeof VPLParamUpdateProperties> | undefined = $state();

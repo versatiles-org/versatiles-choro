@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { generateId } from '$lib/utils/id.js';
+	import { generateId } from '#lib/utils/id.js';
 
 	type CloseReason = 'backdrop' | 'escape' | 'action';
 

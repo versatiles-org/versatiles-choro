@@ -6,8 +6,8 @@ import type {
 	VPLParamFromContainer,
 	VPLParamMetaUpdate,
 	VPLParamUpdateProperties
-} from '$lib/api/schemas';
-import { resolveDataPath } from '$lib/server/filesystem/filesystem';
+} from '#lib/api/schemas/index.js';
+import { resolveDataPath } from '#lib/server/filesystem/filesystem.js';
 import * as v from 'valibot';
 
 export function buildVPL(vpl: v.InferOutput<typeof VPLParam>): string {

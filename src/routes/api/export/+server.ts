@@ -1,14 +1,18 @@
 import type { RequestHandler } from './$types';
 import * as v from 'valibot';
-import { ExportRequest } from '$lib/api/schemas';
-import { withErrorHandling } from '$lib/server/errors/handler.js';
-import { resolveDataPath } from '$lib/server/filesystem/filesystem';
-import { convertTiles } from '$lib/server/convert/tiles';
-import { generateConfig } from '$lib/export/generate-config';
-import { INDEX_HTML_TEMPLATE } from '$lib/export/templates';
+import { ExportRequest } from '#lib/api/schemas/index.js';
+import { withErrorHandling } from '#lib/server/errors/handler.js';
+import { resolveDataPath } from '#lib/server/filesystem/filesystem.js';
+import { convertTiles } from '#lib/server/convert/tiles.js';
+import { generateConfig } from '#lib/export/generate-config.js';
+import { INDEX_HTML_TEMPLATE } from '#lib/export/templates.js';
 import { mkdir, writeFile, copyFile, access } from 'fs/promises';
 import { join } from 'path';
-import { ConcatenatedProgress, SimpleProgress, progressToStream } from '$lib/server/progress';
+import {
+	ConcatenatedProgress,
+	SimpleProgress,
+	progressToStream
+} from '#lib/server/progress/index.js';
 
 export const POST: RequestHandler = withErrorHandling(async ({ request }) => {
 	const params = v.parse(ExportRequest, await request.json());

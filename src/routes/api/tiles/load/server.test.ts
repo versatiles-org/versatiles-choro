@@ -3,11 +3,11 @@ import { GET } from './+server';
 import type { RequestEvent } from '@sveltejs/kit';
 
 // Mock the serve module
-vi.mock('$lib/server/tiles/serve', () => ({
+vi.mock('#lib/server/tiles/serve.js', () => ({
 	getTileServerPort: vi.fn()
 }));
 
-import { getTileServerPort } from '$lib/server/tiles/serve';
+import { getTileServerPort } from '#lib/server/tiles/serve.js';
 
 // Store original fetch
 const originalFetch = global.fetch;

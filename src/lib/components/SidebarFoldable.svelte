@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { type Snippet } from 'svelte';
 	import { slide } from 'svelte/transition';
-	import { generateId } from '$lib/utils/id.js';
+	import { generateId } from '#lib/utils/id.js';
 
 	let {
 		title,

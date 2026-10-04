@@ -1,10 +1,21 @@
 import { defineConfig } from 'vitest/config';
+import adapter from '@sveltejs/adapter-node';
 import { sveltekit } from '@sveltejs/kit/vite';
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig({
 	plugins: [
-		sveltekit(),
+		sveltekit({
+			preprocess: vitePreprocess(),
+			adapter: adapter(),
+			compilerOptions: {
+				experimental: {
+					async: true
+				}
+			},
+			experimental: { remoteFunctions: true }
+		}),
 		visualizer({
 			filename: 'stats.html',
 			open: false,
@@ -71,22 +82,22 @@ export default defineConfig({
 		]
 	},
 	build: {
-		chunkSizeWarningLimit: 1500,
-		rollupOptions: {
-			output: {
-				manualChunks(id) {
-					// Only split node_modules packages
-					if (id.includes('node_modules')) {
-						// Separate vendor chunks for better caching
-						if (id.includes('svelte')) {
-							return 'vendor-svelte';
-						}
-						if (id.includes('@lucide/svelte')) {
-							return 'vendor-lucide';
-						}
-						// Isolate MapLibre (will be lazy loaded)
-						if (id.includes('maplibre-gl')) {
-							return 'vendor-maplibre';
+		chunkSizeWarningLimit: 1500
+	},
+	environments: {
+		// Vendor chunks only make sense for the browser; the server build is bundled by the adapter
+		client: {
+			build: {
+				rolldownOptions: {
+					output: {
+						// Separate vendor chunks for better caching (merged with SvelteKit's own groups)
+						codeSplitting: {
+							groups: [
+								{ name: 'vendor-lucide', test: /node_modules.*@lucide[\\/]svelte/, priority: 2 },
+								// Isolate MapLibre (will be lazy loaded)
+								{ name: 'vendor-maplibre', test: /node_modules.*maplibre-gl/, priority: 2 },
+								{ name: 'vendor-svelte', test: /node_modules[\\/]svelte[\\/]/, priority: 1 }
+							]
 						}
 					}
 				}

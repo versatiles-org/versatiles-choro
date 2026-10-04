@@ -1,5 +1,5 @@
 import { existsSync, readFileSync } from 'fs';
-import { FileSystemError } from '$lib/server/errors/errors';
+import { FileSystemError } from '#lib/server/errors/errors.js';
 
 /**
  * Extract field names from the header row of a CSV or TSV file.

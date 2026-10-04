@@ -1,9 +1,8 @@
 import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
-import { addTileSource, removeTileSource } from '$lib/server/tiles/serve';
+import { addTileSource, removeTileSource } from '#lib/server/tiles/serve.js';
 import * as v from 'valibot';
-import { TilesInitRequest } from '$lib/api/schemas';
-import { withErrorHandling } from '$lib/server/errors/handler.js';
+import { TilesInitRequest } from '#lib/api/schemas/index.js';
+import { withErrorHandling } from '#lib/server/errors/handler.js';
 
 // Track pending cleanup timeouts to cancel if new request comes in for same old_id
 const pendingCleanups = new Map<string, ReturnType<typeof setTimeout>>();
@@ -37,5 +36,5 @@ export const POST: RequestHandler = withErrorHandling(async ({ request }) => {
 		pendingCleanups.set(oldId, timeout);
 	}
 
-	return json({ id });
+	return Response.json({ id });
 });

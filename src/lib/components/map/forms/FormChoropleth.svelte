@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { TileJSONSpecificationVector } from '@versatiles/style';
-	import Hint from '$lib/components/Hint.svelte';
+	import Hint from '#lib/components/Hint.svelte';
 	import {
 		COLOR_SCHEME_NAMES,
 		type ColorSchemeName,

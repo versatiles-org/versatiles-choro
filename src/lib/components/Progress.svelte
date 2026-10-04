@@ -1,5 +1,5 @@
 <script lang="ts" generics="T extends ApiRoute">
-	import { ProgressStatus, type ApiRoute, type ApiRequestType } from '$lib/api/schemas';
+	import { ProgressStatus, type ApiRoute, type ApiRequestType } from '#lib/api/schemas/index.js';
 	import Dialog from './Dialog.svelte';
 	import * as v from 'valibot';
 

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { POST } from './+server';
 import type { RequestEvent } from '@sveltejs/kit';
-import { SimpleProgress } from '$lib/server/progress/simple';
+import { SimpleProgress } from '#lib/server/progress/simple.js';
 
 // Mock filesystem module
 vi.mock('fs/promises', () => ({
@@ -9,24 +9,24 @@ vi.mock('fs/promises', () => ({
 }));
 
 // Mock filesystem utilities
-vi.mock('$lib/server/filesystem/filesystem', () => ({
+vi.mock('#lib/server/filesystem/filesystem.js', () => ({
 	resolveDataPath: vi.fn((path: string) => `/resolved${path}`)
 }));
 
 // Mock download module
-vi.mock('$lib/server/download/test-data', () => ({
+vi.mock('#lib/server/download/test-data.js', () => ({
 	downloadTestData: vi.fn()
 }));
 
 // Mock progress to stream
-vi.mock('$lib/server/progress', () => ({
+vi.mock('#lib/server/progress/index.js', () => ({
 	progressToStream: vi.fn()
 }));
 
 import { mkdir } from 'fs/promises';
-import { resolveDataPath } from '$lib/server/filesystem/filesystem';
-import { downloadTestData } from '$lib/server/download/test-data';
-import { progressToStream } from '$lib/server/progress';
+import { resolveDataPath } from '#lib/server/filesystem/filesystem.js';
+import { downloadTestData } from '#lib/server/download/test-data.js';
+import { progressToStream } from '#lib/server/progress/index.js';
 
 describe('POST /api/download/test-data', () => {
 	beforeEach(() => {

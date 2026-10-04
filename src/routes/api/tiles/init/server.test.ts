@@ -3,14 +3,14 @@ import { POST } from './+server';
 import type { RequestEvent } from '@sveltejs/kit';
 
 // Mock the serve module
-vi.mock('$lib/server/tiles/serve', () => ({
+vi.mock('#lib/server/tiles/serve.js', () => ({
 	addTileSource: vi.fn()
 }));
 
 // Mock console.log to avoid test output clutter
 vi.spyOn(console, 'log').mockImplementation(() => {});
 
-import { addTileSource } from '$lib/server/tiles/serve';
+import { addTileSource } from '#lib/server/tiles/serve.js';
 
 describe('POST /api/tiles/init', () => {
 	beforeEach(() => {

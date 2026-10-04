@@ -3,18 +3,18 @@ import { POST } from './+server';
 import type { RequestEvent } from '@sveltejs/kit';
 
 // Mock the CSV fields module
-vi.mock('$lib/server/csv/fields', () => ({
+vi.mock('#lib/server/csv/fields.js', () => ({
 	getCSVFieldNames: vi.fn()
 }));
 
 // Mock the filesystem module
-vi.mock('$lib/server/filesystem/filesystem', () => ({
+vi.mock('#lib/server/filesystem/filesystem.js', () => ({
 	resolveDataPath: vi.fn()
 }));
 
-import { getCSVFieldNames } from '$lib/server/csv/fields';
-import { resolveDataPath } from '$lib/server/filesystem/filesystem';
-import { FileSystemError } from '$lib/server/errors/errors';
+import { getCSVFieldNames } from '#lib/server/csv/fields.js';
+import { resolveDataPath } from '#lib/server/filesystem/filesystem.js';
+import { FileSystemError } from '#lib/server/errors/errors.js';
 
 describe('POST /api/csv/fields', () => {
 	beforeEach(() => {

@@ -3,7 +3,7 @@ import { render } from '@testing-library/svelte';
 import { tick } from 'svelte';
 import MapWrapper from './Map.test-wrapper.svelte';
 import type { InferOutput } from 'valibot';
-import type { TilesInitRequest } from '$lib/api/schemas';
+import type { TilesInitRequest } from '#lib/api/schemas/index.js';
 import { getTileSource, TileSource } from './map/tile-source';
 
 // Mock maplibre-gl

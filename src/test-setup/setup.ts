@@ -32,16 +32,14 @@ vi.mock('$app/navigation', () => ({
 	replaceState: vi.fn()
 }));
 
-// Mock SvelteKit stores
-vi.mock('$app/stores', () => ({
+// Mock SvelteKit state
+vi.mock('$app/state', () => ({
 	page: {
-		subscribe: vi.fn()
+		url: new URL('http://localhost/')
 	},
-	navigating: {
-		subscribe: vi.fn()
-	},
+	navigating: {},
 	updated: {
-		subscribe: vi.fn(),
+		current: false,
 		check: vi.fn()
 	}
 }));

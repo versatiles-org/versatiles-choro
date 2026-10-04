@@ -1,8 +1,8 @@
-import { TilesLoadRequest } from '$lib/api/schemas';
-import { getTileServerPort } from '$lib/server/tiles/serve';
+import { TilesLoadRequest } from '#lib/api/schemas/index.js';
+import { getTileServerPort } from '#lib/server/tiles/serve.js';
 import type { RequestHandler } from './$types';
 import * as v from 'valibot';
-import { withErrorHandling } from '$lib/server/errors/handler.js';
+import { withErrorHandling } from '#lib/server/errors/handler.js';
 
 export const GET: RequestHandler = withErrorHandling(async ({ request }) => {
 	const params = new URL(request.url).searchParams;

@@ -3,15 +3,11 @@ import { overlayStyles, getInspectorStyle } from './style';
 import type { StyleSpecification } from 'maplibre-gl';
 import type { TileJSONSpecificationVector } from '@versatiles/style';
 
-// Mock @versatiles/style Color
+// Mock @versatiles/style randomColor
 vi.mock('@versatiles/style', () => ({
-	Color: {
-		HSV: {
-			randomColor: vi.fn((options) => ({
-				asString: () => `rgba(${options.seed?.length || 0}, 100, 150, 0.6)`
-			}))
-		}
-	}
+	randomColor: vi.fn((options) => ({
+		asString: () => `rgba(${options.seed?.length || 0}, 100, 150, 0.6)`
+	}))
 }));
 
 describe('overlayStyles', () => {

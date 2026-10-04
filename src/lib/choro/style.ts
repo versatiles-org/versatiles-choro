@@ -1,4 +1,4 @@
-import { Color, type TileJSONSpecificationVector, type VectorLayer } from '@versatiles/style';
+import { randomColor, type TileJSONSpecificationVector, type VectorLayer } from '@versatiles/style';
 import type {
 	CircleLayerSpecification,
 	DataDrivenPropertyValueSpecification,
@@ -50,7 +50,7 @@ export function getInspectorStyle(spec: TileJSONSpecificationVector): StyleSpeci
 			luminosity = 'light';
 		}
 
-		const color = Color.HSV.randomColor({
+		const color = randomColor({
 			hue,
 			luminosity,
 			saturation,
