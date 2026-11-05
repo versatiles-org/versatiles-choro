@@ -17,6 +17,7 @@
 		{#if page.url.pathname !== resolve('/')}
 			<a href={resolve('/')} data-sveltekit-reload>Home</a>
 		{/if}
+		<a class="support" href="https://versatiles.org/donate/">Please support VersaTiles</a>
 	</nav>
 	<main>
 		{@render children()}
@@ -47,6 +48,9 @@
 		align-items: center;
 		padding: 0 1rem;
 		box-sizing: border-box;
+	}
+	.support {
+		margin-left: auto;
 	}
 	main {
 		position: absolute;
