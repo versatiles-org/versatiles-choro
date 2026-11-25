@@ -95,32 +95,32 @@ Planned capabilities:
 - View statistics about tile size, data density, and field coverage
 - Export a ready‑to‑use `.versatiles` container with joined attributes
 
-This is **not implemented yet** in the current repository.
+The map page of the GUI does most of this: it loads a `.versatiles` container, joins a CSV to it by ID, shows the result with a feature inspector and exports it (see Step 3). The statistics view is not implemented yet.
 
 ---
 
-### Step 3. Frontend Configuration & Export (planned)
+### Step 3. Frontend Configuration & Export
 
 The long‑term goal is that the Docker container can open a `.versatiles` container and generate both:
 
 - a **live preview** (Svelte‑based editor), and  
 - a **static export bundle** that you can host on any web server.
 
-The export bundle is intended to look like this:
+The static export is implemented. It writes this bundle:
 
 ```text
 index.html
 config.json
-versatiles-choro.js
-data.versatiles
+choro-lib.js
+overlay.versatiles
 ```
 
 Where:
 
-- `versatiles-choro.js` is a reusable JavaScript library containing a `buildMap` function.
+- `choro-lib.js` is a reusable JavaScript library containing an `initMap` function. `npm run build-lib` builds it.
 - `config.json` contains all map logic: layers, colors, data fields, interactions, tooltips, etc.
-- `index.html` loads `versatiles-choro.js` and `config.json`, and calls `buildMap` to render the map.
-- `data.versatiles` contains the actual tiled data.
+- `index.html` loads `choro-lib.js` and `config.json`, and calls `initMap` to render the map.
+- `overlay.versatiles` contains the actual tiled data. `index.html` fetches its tiles from a VersaTiles server, `http://localhost:8080` unless you change `VERSATILES_URL`.
 
 The Svelte‑based IDE (planned):
 
