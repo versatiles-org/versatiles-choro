@@ -8,7 +8,6 @@
 	} from '../color-schemes';
 
 	let {
-		// eslint-disable-next-line no-useless-assignment
 		params = $bindable(),
 		tilejson,
 		layerName

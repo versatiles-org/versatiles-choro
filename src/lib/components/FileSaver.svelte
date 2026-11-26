@@ -17,7 +17,6 @@
 	let {
 		initialDirectory,
 		showModal = $bindable(),
-		// eslint-disable-next-line no-useless-assignment
 		filepath = $bindable(),
 		defaultFilename = '',
 		defaultExtension = '',
@@ -209,9 +208,9 @@
 					<p>A file with this name already exists. Do you want to replace it?</p>
 				</div>
 				<div class="warning-actions">
-					<button class="button button-secondary" onclick={() => (showOverwriteWarning = false)}
-						>Cancel</button
-					>
+					<button class="button button-secondary" onclick={() => (showOverwriteWarning = false)}>
+						Cancel
+					</button>
 					<button class="button button-danger" onclick={confirmOverwriteAction}>Replace</button>
 				</div>
 			</div>

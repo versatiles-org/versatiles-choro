@@ -6,7 +6,6 @@
 	import type { FsFile } from '#lib/api/filesystem.svelte.js';
 	import type { InferOutput } from 'valibot';
 
-	// eslint-disable-next-line no-useless-assignment
 	let { params = $bindable() }: { params: InferOutput<typeof VPLParamFromContainer> | undefined } =
 		$props();
 

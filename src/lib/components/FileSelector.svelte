@@ -8,7 +8,6 @@
 	let {
 		initialDirectory,
 		showModal = $bindable(),
-		// eslint-disable-next-line no-useless-assignment
 		file = $bindable(),
 		fileFilter,
 		title = 'Select File'

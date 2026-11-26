@@ -8,7 +8,6 @@
 	import type { TileJSONSpecificationVector } from '@versatiles/style';
 
 	let {
-		// eslint-disable-next-line no-useless-assignment
 		params = $bindable(),
 		tilejson
 	}: {
@@ -119,8 +118,9 @@
 				text="Choose a CSV or TSV file with data to join to the vector tiles"
 			/>:<br />
 			{selectedFile ? selectedFile.getName() : ''}<br />
-			<button class="button button-secondary" onclick={() => (showModal = true)}>Select File</button
-			>
+			<button class="button button-secondary" onclick={() => (showModal = true)}>
+				Select File
+			</button>
 			<FileSelector
 				bind:showModal
 				bind:file={selectedFile}

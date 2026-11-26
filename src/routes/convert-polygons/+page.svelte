@@ -41,8 +41,9 @@
 				<p><strong>Input file:</strong> {inputFile.fullPath()}</p>
 			</div>
 			<p>Select where to save the generated vector tiles (.versatiles file).</p>
-			<button class="button" onclick={() => (showOutputModal = true)}>Choose Output Location</button
-			>
+			<button class="button" onclick={() => (showOutputModal = true)}>
+				Choose Output Location
+			</button>
 		</div>
 		<FileSaver
 			bind:showModal={showOutputModal}

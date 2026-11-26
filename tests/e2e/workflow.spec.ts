@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Locator } from '@playwright/test';
 import { existsSync, rmSync, readdirSync, statSync } from 'fs';
 import { join } from 'path';
 
@@ -20,6 +20,14 @@ function listFiles(dir: string, prefix = ''): string[] {
 		}
 	}
 	return files.sort();
+}
+
+// Helper to wait briefly for an optional element; resolves to false if it doesn't appear
+function appearsWithin(locator: Locator, timeout: number): Promise<boolean> {
+	return locator
+		.waitFor({ state: 'visible', timeout })
+		.then(() => true)
+		.catch(() => false);
 }
 
 const SOURCE_NAME = '5_gemeinden';
@@ -119,7 +127,7 @@ test.describe('Full Workflow', () => {
 
 		// Step 11: If a "Replace" button appears (file exists), click it
 		let replaceButton = page.getByRole('button', { name: 'Replace' });
-		if (await replaceButton.isVisible({ timeout: 1000 }).catch(() => false)) {
+		if (await appearsWithin(replaceButton, 1000)) {
 			await replaceButton.click();
 		}
 
@@ -172,7 +180,7 @@ test.describe('Full Workflow', () => {
 		const visibleDialog = page.locator('dialog:visible');
 		await expect(visibleDialog.locator('h3:has-text("Select File")')).toBeVisible();
 		const testDataFolderButton = visibleDialog.locator('button.folder:has-text("test-data")');
-		if (await testDataFolderButton.isVisible({ timeout: 500 }).catch(() => false)) {
+		if (await appearsWithin(testDataFolderButton, 500)) {
 			await testDataFolderButton.click();
 		}
 		await visibleDialog.locator('button:has-text("73111-01-01-5-Einkommen.tsv")').click();
@@ -229,7 +237,7 @@ test.describe('Full Workflow', () => {
 
 		// Step 33: If a "Replace" button appears (folder exists), click it
 		replaceButton = page.getByRole('button', { name: 'Replace' });
-		if (await replaceButton.isVisible({ timeout: 1000 }).catch(() => false)) {
+		if (await appearsWithin(replaceButton, 1000)) {
 			await replaceButton.click();
 		}
 
