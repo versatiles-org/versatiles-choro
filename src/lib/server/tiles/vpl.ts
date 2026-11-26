@@ -52,7 +52,7 @@ export function buildVPLUpdateProperties(
 export function buildVPLFilterLayers(p: v.InferOutput<typeof VPLParamFilterLayers>): string | null {
 	const parts = [
 		'vector_filter_layers',
-		`filter="${p.layer_names.map((name) => name.trim()).join(',')}"`,
+		`filter=[${p.layer_names.map((name) => `"${name.trim()}"`).join(',')}]`,
 		p.invert ? `invert="${p.invert}"` : null
 	].filter(Boolean);
 	return parts.join(' ');
@@ -71,9 +71,9 @@ export function buildVPLFilterProperties(
 
 export function buildVPLFilter(p: v.InferOutput<typeof VPLParamFilter>): string | null {
 	const parts = [];
-	if (p.minZoom !== undefined) parts.push(`min_zoom="${p.minZoom}"`);
-	if (p.maxZoom !== undefined) parts.push(`max_zoom="${p.maxZoom}"`);
-	if (p.bounds !== undefined) parts.push(`bounds="${p.bounds.join(',')}"`);
+	if (p.minZoom !== undefined) parts.push(`level_min="${p.minZoom}"`);
+	if (p.maxZoom !== undefined) parts.push(`level_max="${p.maxZoom}"`);
+	if (p.bounds !== undefined) parts.push(`bbox=[${p.bounds.join(',')}]`);
 	return ['filter', ...parts].join(' ');
 }
 
