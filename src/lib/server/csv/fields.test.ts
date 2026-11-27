@@ -59,13 +59,22 @@ describe('getCSVFieldNames', () => {
 			expect(fields).toEqual(['Field with "quotes"', 'normal', 'another']);
 		});
 
-		it('should trim whitespace from field names', () => {
+		it('should keep whitespace in field names, as versatiles-rs does', () => {
 			const filePath = join(TEST_DIR, 'whitespace.csv');
-			writeFileSync(filePath, '  id  ,  name  ,  value  \n1,Alice,100');
+			writeFileSync(filePath, 'id, name\n1,Alice');
 
 			const fields = getCSVFieldNames(filePath);
 
-			expect(fields).toEqual(['id', 'name', 'value']);
+			expect(fields).toEqual(['id', ' name']);
+		});
+
+		it('should use the given field separator', () => {
+			const filePath = join(TEST_DIR, 'semicolon.csv');
+			writeFileSync(filePath, 'id;name;value\n1;Alice;1,5');
+
+			expect(getCSVFieldNames(filePath)).toEqual(['id;name;value']);
+			expect(getCSVFieldNames(filePath, ';')).toEqual(['id', 'name', 'value']);
+			expect(getCSVFieldNames(filePath, '\\t')).toEqual(['id;name;value']);
 		});
 
 		it('should filter out empty fields', () => {

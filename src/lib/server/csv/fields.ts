@@ -1,15 +1,19 @@
 import { existsSync, readFileSync } from 'fs';
 import { FileSystemError } from '#lib/server/errors/errors.js';
+import { getFieldSeparator } from './table';
 
 /**
  * Extract field names from the header row of a CSV or TSV file.
  * Only reads the first line for efficiency with large files.
  *
+ * Names are kept as they are, untrimmed, because versatiles-rs joins on the exact names.
+ *
  * @param filePath - Absolute path to the CSV/TSV file
- * @returns Array of field names (trimmed, non-empty)
+ * @param fieldSeparator - The `field_separator` VPL value; defaults to a tab for `.tsv` and a comma otherwise
+ * @returns Array of non-empty field names
  * @throws FileSystemError if file doesn't exist
  */
-export function getCSVFieldNames(filePath: string): string[] {
+export function getCSVFieldNames(filePath: string, fieldSeparator?: string): string[] {
 	// Validate file exists
 	if (!existsSync(filePath)) {
 		throw new FileSystemError(`File not found: ${filePath}`);
@@ -30,15 +34,15 @@ export function getCSVFieldNames(filePath: string): string[] {
 		headerLine = headerLine.slice(1);
 	}
 
-	// Detect delimiter based on file extension
-	const delimiter = filePath.endsWith('.tsv') ? '\t' : ',';
+	// Use the separator the tile pipeline will use
+	const delimiter = getFieldSeparator(filePath, fieldSeparator);
 
 	// Parse CSV/TSV header row
 	// Handle quoted fields: "Field Name",Another,Field
 	const fields = parseCSVLine(headerLine, delimiter);
 
-	// Trim whitespace and filter empty fields
-	return fields.map((f) => f.trim()).filter((f) => f.length > 0);
+	// Drop empty fields, and the carriage return of a Windows line ending
+	return fields.map((f) => f.replace(/\r$/, '')).filter((f) => f.length > 0);
 }
 
 /**

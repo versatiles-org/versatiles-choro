@@ -26,5 +26,6 @@ export const TilesStopRequest = v.object({
 });
 
 export const GetCSVFieldsRequest = v.object({
-	filePath: Path
+	filePath: Path,
+	fieldSeparator: v.optional(v.string())
 });

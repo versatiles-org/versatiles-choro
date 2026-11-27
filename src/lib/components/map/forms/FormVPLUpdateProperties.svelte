@@ -53,7 +53,7 @@
 		return Object.keys(selectedLayer.fields);
 	});
 
-	// Fetch CSV field names when file is selected
+	// Fetch CSV field names when the file or the field separator changes
 	$effect(() => {
 		if (selectedFile) {
 			loadingFields = true;
@@ -62,7 +62,7 @@
 			fetch('/api/csv/fields', {
 				method: 'POST',
 				headers: { 'content-type': 'application/json' },
-				body: JSON.stringify({ filePath: selectedFile.fullPath() })
+				body: JSON.stringify({ filePath: selectedFile.fullPath(), fieldSeparator: field_separator })
 			})
 				.then(async (res) => {
 					if (!res.ok) {
@@ -130,7 +130,7 @@
 		{#if selectedFile}
 			<label>
 				Field Separator<Hint
-					text="How columns are separated in the data file. Auto-detect works in most cases."
+					text="How columns are separated in the data file. Auto uses a tab for .tsv files and a comma for all others."
 				/>
 				<select class="input-full" bind:value={field_separator}>
 					<option value={undefined} selected>auto</option>
@@ -140,9 +140,7 @@
 				</select>
 			</label>
 			<label>
-				Decimal Separator<Hint
-					text="Character used for decimal numbers (dot or comma). Auto-detect works in most cases."
-				/>
+				Decimal Separator<Hint text="Character used for decimal numbers. Auto uses a dot." />
 				<select class="input-full" bind:value={decimal_separator}>
 					<option value={undefined} selected>auto</option>
 					<option value=".">dot (.)</option>

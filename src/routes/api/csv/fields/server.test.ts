@@ -48,7 +48,18 @@ describe('POST /api/csv/fields', () => {
 			const data = await response.json();
 			expect(data).toEqual({ fields: ['id', 'name', 'value'] });
 			expect(resolveDataPath).toHaveBeenCalledWith('/data/file.csv');
-			expect(getCSVFieldNames).toHaveBeenCalledWith('/absolute/path/to/file.csv');
+			expect(getCSVFieldNames).toHaveBeenCalledWith('/absolute/path/to/file.csv', undefined);
+		});
+
+		it('should pass the field separator on', async () => {
+			vi.mocked(resolveDataPath).mockReturnValue('/absolute/path/to/file.csv');
+			vi.mocked(getCSVFieldNames).mockReturnValue(['id', 'name']);
+
+			const mockEvent = createMockEvent({ filePath: '/data/file.csv', fieldSeparator: ';' });
+			const response = await POST(mockEvent);
+
+			expect(response.status).toBe(200);
+			expect(getCSVFieldNames).toHaveBeenCalledWith('/absolute/path/to/file.csv', ';');
 		});
 
 		it('should return field names for valid TSV file', async () => {
@@ -172,7 +183,7 @@ describe('POST /api/csv/fields', () => {
 			const mockEvent = createMockEvent({ filePath: '/data/file.csv' });
 			await POST(mockEvent);
 
-			expect(getCSVFieldNames).toHaveBeenCalledWith(absolutePath);
+			expect(getCSVFieldNames).toHaveBeenCalledWith(absolutePath, undefined);
 		});
 	});
 });

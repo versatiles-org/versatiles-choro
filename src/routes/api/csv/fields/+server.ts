@@ -7,13 +7,13 @@ import { withErrorHandling } from '#lib/server/errors/handler.js';
 
 export const POST: RequestHandler = withErrorHandling(async ({ request }) => {
 	// Parse and validate request
-	const { filePath } = v.parse(GetCSVFieldsRequest, await request.json());
+	const { filePath, fieldSeparator } = v.parse(GetCSVFieldsRequest, await request.json());
 
 	// Resolve path securely (prevents directory traversal)
 	const absolutePath = resolveDataPath(filePath);
 
 	// Get field names from CSV/TSV file
-	const fields = getCSVFieldNames(absolutePath);
+	const fields = getCSVFieldNames(absolutePath, fieldSeparator);
 
 	// Return JSON response
 	return Response.json({ fields });
