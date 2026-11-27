@@ -29,7 +29,7 @@ const base = {
 	urls: {
 		base: 'https://tiles.versatiles.org',
 		osm: expect.objectContaining({
-			tiles: ['https://tiles.versatiles.org/tiles/osm/{z}/{x}/{y}'],
+			tiles: ['https://tiles.versatiles.org/tiles/osm-vector/{z}/{x}/{y}'],
 			maxzoom: 14,
 			attribution: expect.stringContaining('OpenStreetMap')
 		})

@@ -3,7 +3,7 @@ import type { StyleSpecification } from 'maplibre-gl';
 
 export type BackgroundMap = 'Colorful' | 'Gray' | 'GrayBright' | 'GrayDark' | 'None';
 
-// Mirrors the attribution of https://tiles.versatiles.org/tiles/osm/tiles.json
+// Mirrors the attribution of https://tiles.versatiles.org/tiles/osm-vector/tiles.json
 const ATTRIBUTION =
 	'<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a> · <a href="http://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> <a href="https://esa-worldcover.org/en/data-access">ESA WorldCover 2021</a>';
 
@@ -19,7 +19,7 @@ export function createBackgroundStyle(
 			// Inline the source, so the style stays synchronous and the tile URLs absolute
 			osm: {
 				tilejson: '3.0.0',
-				tiles: [`${baseUrl}/tiles/osm/{z}/{x}/{y}`],
+				tiles: [`${baseUrl}/tiles/osm-vector/{z}/{x}/{y}`],
 				vector_layers: [],
 				minzoom: 0,
 				maxzoom: 14,
