@@ -208,7 +208,12 @@ test.describe('Full Workflow', () => {
 			timeout: 10000
 		});
 
-		// Step 25: Set Value Field to a TSV column, since an export can only use those
+		// Step 25: Only TSV columns are offered, not geometry fields such as AGS
+		await expect(
+			page.locator('label:has-text("Value Field") select option', { hasText: /^AGS$/ })
+		).toHaveCount(0);
+
+		// Set Value Field to a TSV column
 		await page.locator('label:has-text("Value Field") select').selectOption('Lohnsteuer/EW');
 
 		// Step 26: Set Color Scheme to "inferno"

@@ -23,3 +23,10 @@ export function interpolateTemplate(template: string, properties: Record<string,
 		return String(value);
 	});
 }
+
+/**
+ * Returns the template's placeholder names, each once, such as `name` for `{name}`.
+ */
+export function getTemplateFields(template: string): string[] {
+	return [...new Set([...template.matchAll(/\{([^}]+)\}/g)].map((match) => match[1]))];
+}

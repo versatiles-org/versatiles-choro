@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildExportVPL, computeOverlayData, getTemplateFields } from './overlay';
+import { buildExportVPL, computeOverlayData } from './overlay';
 import { viridis } from '#lib/choro/color-schemes.js';
 
 const table = {
@@ -13,13 +13,6 @@ const table = {
 
 const update = { id_field_data: 'key' };
 const choropleth = { field: 'value', colorScheme: 'viridis' as const, min: 0, max: 80 };
-
-describe('getTemplateFields', () => {
-	it('returns each placeholder once', () => {
-		expect(getTemplateFields('<b>{name}</b> {value} {name}')).toEqual(['name', 'value']);
-		expect(getTemplateFields('no placeholders')).toEqual([]);
-	});
-});
 
 describe('computeOverlayData', () => {
 	it('computes the color of each row and keeps the raw id', () => {

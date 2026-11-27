@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { TileJSONSpecificationVector } from '@versatiles/style';
 	import Hint from '#lib/components/Hint.svelte';
+	import { getTemplateFields } from '#lib/choro/tooltip.js';
 	import {
 		COLOR_SCHEME_NAMES,
 		type ColorSchemeName,
@@ -10,11 +11,14 @@
 	let {
 		params = $bindable(),
 		tilejson,
-		layerName
+		layerName,
+		dataFields = []
 	}: {
 		params: ChoroplethParams | undefined;
 		tilejson: TileJSONSpecificationVector | undefined;
 		layerName: string | undefined;
+		/** Columns of the joined data file. An export can only use these. */
+		dataFields?: string[];
 	} = $props();
 
 	let active = $state(false);
@@ -24,7 +28,8 @@
 	let max: number = $state(100);
 	let tooltipTemplate: string = $state('');
 
-	// Derive available numeric fields from the selected layer
+	// Offer the fields of the selected layer that come from the data file: the export
+	// computes colors and tooltips from the data file, so it can't use geometry fields.
 	let availableFields: string[] = $derived.by(() => {
 		if (!tilejson || !layerName) return [];
 
@@ -32,8 +37,13 @@
 		if (!selectedLayer) return [];
 
 		// Return all field names - in practice, user should select numeric fields
-		return Object.keys(selectedLayer.fields);
+		return Object.keys(selectedLayer.fields).filter((name) => dataFields.includes(name));
 	});
+
+	// Placeholders the export can't fill, because they aren't columns of the data file
+	let unknownPlaceholders: string[] = $derived(
+		getTemplateFields(tooltipTemplate).filter((name) => !availableFields.includes(name))
+	);
 
 	// Reset field when layer changes
 	$effect(() => {
@@ -69,10 +79,10 @@
 		{#if !layerName}
 			<p class="hint">Select a layer in "Numeric Data" first.</p>
 		{:else if availableFields.length === 0}
-			<p class="hint">No fields available for layer "{layerName}".</p>
+			<p class="hint">No columns of the data file found in layer "{layerName}".</p>
 		{:else}
 			<label>
-				Value Field<Hint text="The numeric data field to use for coloring regions" />
+				Value Field<Hint text="The numeric column of the data file to use for coloring regions" />
 				<select class="input-full" bind:value={field}>
 					<option value={undefined}>-- Select field --</option>
 					{#each availableFields as f (f)}
@@ -110,7 +120,18 @@
 					bind:value={tooltipTemplate}
 					placeholder={'<b>{name}</b><br>Value: {value}'}
 					rows="3"></textarea>
-				<span class="hint">Use {'{property}'} to insert feature values</span>
+				<span class="hint">
+					Use {'{column}'} to insert a value. Columns: {availableFields
+						.map((name) => `{${name}}`)
+						.join(', ')}
+				</span>
+				{#if unknownPlaceholders.length > 0}
+					<span class="error">
+						Not a column of the data file, so the export can't fill it: {unknownPlaceholders
+							.map((name) => `{${name}}`)
+							.join(', ')}
+					</span>
+				{/if}
 			</label>
 		{/if}
 	{/if}
@@ -132,6 +153,12 @@
 		color: var(--color-text-secondary);
 		font-style: italic;
 		margin: 0;
+	}
+
+	.error {
+		display: block;
+		font-size: 0.875rem;
+		color: var(--color-danger-600);
 	}
 
 	.min-max-row {

@@ -9,9 +9,12 @@
 
 	let {
 		params = $bindable(),
+		dataFields = $bindable([]),
 		tilejson
 	}: {
 		params: InferOutput<typeof VPLParamUpdateProperties> | undefined;
+		/** Output: the columns of the selected data file, or none while inactive */
+		dataFields?: string[];
 		tilejson: TileJSONSpecificationVector | undefined;
 	} = $props();
 
@@ -85,6 +88,11 @@
 			fieldsError = undefined;
 			id_field_data = undefined;
 		}
+	});
+
+	// Bindable output: the data file's columns, which are all an export can use
+	$effect(() => {
+		dataFields = active ? availableFields : [];
 	});
 
 	// Bindable output pattern: aggregate internal form state into params for parent

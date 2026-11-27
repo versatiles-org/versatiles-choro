@@ -12,7 +12,7 @@ import type { InferOutput } from 'valibot';
 import type { VPLParam, VPLParamUpdateProperties } from '#lib/api/schemas/index.js';
 import { getColorForValue, type ChoroplethParams } from '#lib/choro/color-schemes.js';
 import { COLOR_PROPERTY, EXPORTED_PROPERTIES, TOOLTIP_PROPERTY } from '#lib/choro/export-config.js';
-import { interpolateTemplate } from '#lib/choro/tooltip.js';
+import { getTemplateFields, interpolateTemplate } from '#lib/choro/tooltip.js';
 import {
 	formatCSV,
 	getFieldSeparator,
@@ -27,13 +27,6 @@ type UpdateProperties = InferOutput<typeof VPLParamUpdateProperties>;
 
 /** File name of the computed data file, written into the export directory while exporting. */
 export const OVERLAY_DATA_FILENAME = '.overlay-data.csv';
-
-/**
- * Returns the template's placeholder names, such as `name` for `{name}`.
- */
-export function getTemplateFields(template: string): string[] {
-	return [...new Set([...template.matchAll(/\{([^}]+)\}/g)].map((match) => match[1]))];
-}
 
 /**
  * Computes the exported properties for every row of the data file.

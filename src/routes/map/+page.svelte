@@ -32,6 +32,7 @@
 	let meta_update: InferOutput<typeof VPLParamMetaUpdate> | undefined = $state();
 	let inspectOverlay: boolean = $state(true);
 	let choropleth: ChoroplethParams | undefined = $state();
+	let dataFields: string[] = $state([]);
 
 	// Track current tile sources for cleanup
 	let currentOverlaySource: TileSource | undefined;
@@ -112,13 +113,18 @@
 			<FormVPLFromContainer bind:params={from_container} />
 		</Frame>
 		<Frame title="Numeric Data" Icon={IconVector}>
-			<FormVPLUpdateProperties bind:params={update_properties} tilejson={tilejson_raw} />
+			<FormVPLUpdateProperties
+				bind:params={update_properties}
+				bind:dataFields
+				tilejson={tilejson_raw}
+			/>
 		</Frame>
 		<Frame title="Design" Icon={IconDesign}>
 			<FormChoropleth
 				bind:params={choropleth}
 				tilejson={tilejson_filtered}
 				layerName={update_properties?.layer_name}
+				{dataFields}
 			/>
 			<label class="checkbox-label">
 				<input type="checkbox" bind:checked={inspectOverlay} />
