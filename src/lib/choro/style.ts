@@ -8,6 +8,7 @@ import type {
 	VectorSourceSpecification
 } from 'maplibre-gl';
 import { COLOR_SCHEMES, type ChoroplethParams } from './color-schemes';
+import { COLOR_PROPERTY } from './export-config';
 
 export function mergeStyles(
 	style1: StyleSpecification,
@@ -107,6 +108,16 @@ export function getInspectorStyle(spec: TileJSONSpecificationVector): StyleSpeci
 	};
 }
 
+const CHOROPLETH_SOURCE = 'vectorSource';
+
+/**
+ * ID of the fill layer that `getChoroplethStyle` and `getExportedChoroplethStyle` create
+ * for a source layer. Tooltips attach to it.
+ */
+export function getChoroplethLayerId(layerName: string): string {
+	return `${CHOROPLETH_SOURCE}-${layerName}-choropleth`;
+}
+
 /**
  * Creates a choropleth style for a specific layer with data-driven fill colors.
  */
@@ -115,7 +126,6 @@ export function getChoroplethStyle(
 	layerName: string,
 	choropleth: ChoroplethParams
 ): StyleSpecification {
-	const sourceName = 'vectorSource';
 	const colors = COLOR_SCHEMES[choropleth.colorScheme];
 
 	// Build interpolation stops from color scheme
@@ -135,11 +145,37 @@ export function getChoroplethStyle(
 		...colorStops
 	];
 
+	return buildChoroplethStyle(spec, layerName, fillColor);
+}
+
+/**
+ * Creates the choropleth style of an exported map, which reads each feature's color from
+ * `color_0` instead of computing it.
+ */
+export function getExportedChoroplethStyle(
+	spec: TileJSONSpecificationVector,
+	layerName: string
+): StyleSpecification {
+	// A feature without a color is drawn black, as the preview draws a missing value.
+	const fillColor: DataDrivenPropertyValueSpecification<string> = [
+		'to-color',
+		['get', COLOR_PROPERTY],
+		'#000000'
+	];
+	return buildChoroplethStyle(spec, layerName, fillColor);
+}
+
+function buildChoroplethStyle(
+	spec: TileJSONSpecificationVector,
+	layerName: string,
+	fillColor: DataDrivenPropertyValueSpecification<string>
+): StyleSpecification {
+	const sourceName = CHOROPLETH_SOURCE;
 	const layers: (FillLayerSpecification | LineLayerSpecification)[] = [];
 
 	// Add choropleth fill layer for the target layer
 	layers.push({
-		id: `${sourceName}-${layerName}-choropleth`,
+		id: getChoroplethLayerId(layerName),
 		'source-layer': layerName,
 		source: sourceName,
 		type: 'fill',

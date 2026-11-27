@@ -11,58 +11,36 @@ import {
 	type ChoroplethParams,
 	type ColorSchemeName
 } from './color-schemes';
-import { mergeStyles, getChoroplethStyle, getColorStops } from './style';
+import {
+	mergeStyles,
+	getChoroplethStyle,
+	getChoroplethLayerId,
+	getColorStops,
+	getExportedChoroplethStyle
+} from './style';
 import { createBackgroundStyle, type BackgroundMap } from './style-background';
 import { interpolateTemplate } from './tooltip';
+import { COLOR_PROPERTY, TOOLTIP_PROPERTY, type ExportConfig } from './export-config';
 import type { TileJSONSpecificationVector } from '@versatiles/style';
 import type { StyleSpecification, Map as MaplibreMap, LngLatBoundsLike } from 'maplibre-gl';
 
 /**
- * Export configuration structure for the choropleth map.
- */
-export interface ExportConfig {
-	version: '1.0';
-	overlay: {
-		source: string;
-		layer: string;
-		tilejson: TileJSONSpecificationVector;
-	};
-	choropleth: {
-		field: string;
-		colorScheme: ColorSchemeName;
-		min: number;
-		max: number;
-		colors: string[];
-		tooltipTemplate?: string;
-	};
-	background: {
-		style: BackgroundMap;
-	};
-	bounds?: [number, number, number, number];
-}
-
-/**
  * Creates a complete MapLibre style for a choropleth map from export configuration.
  */
-export function createStyleFromConfig(config: ExportConfig): StyleSpecification {
-	// Create background style
+export function createStyleFromConfig(
+	config: ExportConfig,
+	versatilesTileUrl: string = '{versatiles_url}'
+): StyleSpecification {
 	const backgroundStyle = createBackgroundStyle(config.background.style);
 
-	// Create overlay style from tilejson
+	// Point the overlay tiles at the VersaTiles server that serves the export
 	const overlayTilejson: TileJSONSpecificationVector = {
 		...config.overlay.tilejson,
-		// Override tiles to point to local file via versatiles server
-		tiles: [`{versatiles_url}/${config.overlay.source}/{z}/{x}/{y}`]
+		tiles: [`${versatilesTileUrl}/${config.overlay.source}/{z}/{x}/{y}`]
 	};
 
-	const overlayStyle = getChoroplethStyle(overlayTilejson, config.overlay.layer, {
-		field: config.choropleth.field,
-		colorScheme: config.choropleth.colorScheme,
-		min: config.choropleth.min,
-		max: config.choropleth.max
-	});
+	const overlayStyle = getExportedChoroplethStyle(overlayTilejson, config.overlay.layer);
 
-	// Merge styles
 	return mergeStyles(backgroundStyle, overlayStyle);
 }
 
@@ -86,24 +64,7 @@ export async function initMap(
 	}
 	const config: ExportConfig = await response.json();
 
-	// Create background style
-	const backgroundStyle = createBackgroundStyle(config.background.style);
-
-	// Create overlay tilejson with correct tile URL
-	const overlayTilejson: TileJSONSpecificationVector = {
-		...config.overlay.tilejson,
-		tiles: [`${versatilesTileUrl}/${config.overlay.source}/{z}/{x}/{y}`]
-	};
-
-	const overlayStyle = getChoroplethStyle(overlayTilejson, config.overlay.layer, {
-		field: config.choropleth.field,
-		colorScheme: config.choropleth.colorScheme,
-		min: config.choropleth.min,
-		max: config.choropleth.max
-	});
-
-	// Merge styles
-	const style = mergeStyles(backgroundStyle, overlayStyle);
+	const style = createStyleFromConfig(config, versatilesTileUrl);
 
 	// Access maplibregl from global scope (loaded via CDN)
 	const maplibregl = (window as unknown as { maplibregl: typeof import('maplibre-gl') }).maplibregl;
@@ -123,18 +84,17 @@ export async function initMap(
 		map.fitBounds(bounds, { padding: 20 });
 	}
 
-	// Set up tooltip if template is configured
-	if (config.choropleth.tooltipTemplate) {
-		setupTooltip(map, config.overlay.layer, config.choropleth.tooltipTemplate);
+	if (config.tooltip) {
+		setupTooltip(map, getChoroplethLayerId(config.overlay.layer));
 	}
 
 	return map;
 }
 
 /**
- * Sets up a tooltip that follows the mouse cursor and displays interpolated template content.
+ * Sets up a tooltip that follows the mouse cursor and shows each feature's `tooltip_text`.
  */
-function setupTooltip(map: MaplibreMap, layerId: string, template: string): void {
+function setupTooltip(map: MaplibreMap, layerId: string): void {
 	// Create tooltip element
 	const tooltip = document.createElement('div');
 	tooltip.style.cssText = `
@@ -154,27 +114,33 @@ function setupTooltip(map: MaplibreMap, layerId: string, template: string): void
 
 	let hideTimeout: ReturnType<typeof setTimeout> | null = null;
 
+	function hide() {
+		tooltip.style.display = 'none';
+		map.getCanvas().style.cursor = '';
+	}
+
 	map.on('mousemove', layerId, (e) => {
 		if (hideTimeout) {
 			clearTimeout(hideTimeout);
 			hideTimeout = null;
 		}
 
-		const feature = e.features?.[0];
-		if (feature) {
-			const content = interpolateTemplate(template, feature.properties as Record<string, unknown>);
-			tooltip.innerHTML = content;
-			tooltip.style.display = 'block';
-			tooltip.style.left = `${e.originalEvent.pageX + 15}px`;
-			tooltip.style.top = `${e.originalEvent.pageY + 15}px`;
-			map.getCanvas().style.cursor = 'pointer';
+		const content = e.features?.[0]?.properties?.[TOOLTIP_PROPERTY];
+		if (content === undefined || content === null || content === '') {
+			hide();
+			return;
 		}
+
+		tooltip.innerHTML = String(content);
+		tooltip.style.display = 'block';
+		tooltip.style.left = `${e.originalEvent.pageX + 15}px`;
+		tooltip.style.top = `${e.originalEvent.pageY + 15}px`;
+		map.getCanvas().style.cursor = 'pointer';
 	});
 
 	map.on('mouseleave', layerId, () => {
 		hideTimeout = setTimeout(() => {
-			tooltip.style.display = 'none';
-			map.getCanvas().style.cursor = '';
+			hide();
 			hideTimeout = null;
 		}, 100);
 	});
@@ -184,8 +150,12 @@ function setupTooltip(map: MaplibreMap, layerId: string, template: string): void
 export {
 	COLOR_SCHEMES,
 	COLOR_SCHEME_NAMES,
+	COLOR_PROPERTY,
+	TOOLTIP_PROPERTY,
 	mergeStyles,
 	getChoroplethStyle,
+	getChoroplethLayerId,
+	getExportedChoroplethStyle,
 	getColorStops,
 	createBackgroundStyle,
 	interpolateTemplate
@@ -195,6 +165,7 @@ export type {
 	ChoroplethParams,
 	ColorSchemeName,
 	BackgroundMap,
+	ExportConfig,
 	TileJSONSpecificationVector,
 	StyleSpecification
 };

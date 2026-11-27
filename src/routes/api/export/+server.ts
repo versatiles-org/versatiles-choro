@@ -2,8 +2,15 @@ import type { RequestHandler } from './$types';
 import * as v from 'valibot';
 import { ExportRequest } from '#lib/api/schemas/index.js';
 import { withErrorHandling } from '#lib/server/errors/handler.js';
+import { ValidationError } from '#lib/server/errors/errors.js';
 import { resolveDataPath } from '#lib/server/filesystem/filesystem.js';
 import { convertTiles } from '#lib/server/convert/tiles.js';
+import { safeDelete } from '#lib/server/convert/utils.js';
+import {
+	OVERLAY_DATA_FILENAME,
+	buildExportVPL,
+	writeOverlayData
+} from '#lib/server/export/overlay.js';
 import { generateConfig } from '#lib/export/generate-config.js';
 import { INDEX_HTML_TEMPLATE } from '#lib/export/templates.js';
 import { mkdir, writeFile, copyFile, access } from 'fs/promises';
@@ -19,6 +26,8 @@ export const POST: RequestHandler = withErrorHandling(async ({ request }) => {
 
 	// Resolve output path (within data directory)
 	const outputDir = resolveDataPath(params.outputPath);
+	const update = params.vpl.update_properties;
+	if (!update) throw new ValidationError('An export needs a data file joined to the geometry');
 
 	// Create progress that handles all export steps
 	const exportProgress = new ConcatenatedProgress([
@@ -28,10 +37,26 @@ export const POST: RequestHandler = withErrorHandling(async ({ request }) => {
 				await mkdir(outputDir, { recursive: true });
 			}, 'Creating output directory'),
 
-		// 2. Export overlay.versatiles using convertTiles (main work)
-		() => convertTiles(params.vpl, join(outputDir, 'overlay.versatiles')),
+		// 2. Compute each feature's color and tooltip from the data file
+		() =>
+			new SimpleProgress(
+				() => writeOverlayData(update, params.choropleth, outputDir),
+				'Computing colors and tooltips'
+			),
 
-		// 3. Generate and write config.json
+		// 3. Export overlay.versatiles with only the computed properties (main work)
+		() =>
+			convertTiles(
+				buildExportVPL(params.vpl, params.outputPath),
+				join(outputDir, 'overlay.versatiles')
+			),
+		() =>
+			new SimpleProgress(
+				() => safeDelete(join(outputDir, OVERLAY_DATA_FILENAME)),
+				'Cleaning up computed data'
+			),
+
+		// 4. Generate and write config.json
 		() =>
 			new SimpleProgress(async () => {
 				const config = generateConfig({
@@ -44,7 +69,7 @@ export const POST: RequestHandler = withErrorHandling(async ({ request }) => {
 				await writeFile(join(outputDir, 'config.json'), JSON.stringify(config, null, 2));
 			}, 'Writing config.json'),
 
-		// 4. Copy choro-lib.js from build output
+		// 5. Copy choro-lib.js from build output
 		() =>
 			new SimpleProgress(async () => {
 				const choroLibSource = join(process.cwd(), 'build-lib', 'choro-lib.js');
@@ -58,7 +83,7 @@ export const POST: RequestHandler = withErrorHandling(async ({ request }) => {
 				}
 			}, 'Copying choro-lib.js'),
 
-		// 5. Write index.html from embedded template
+		// 6. Write index.html from embedded template
 		() =>
 			new SimpleProgress(async () => {
 				await writeFile(join(outputDir, 'index.html'), INDEX_HTML_TEMPLATE);

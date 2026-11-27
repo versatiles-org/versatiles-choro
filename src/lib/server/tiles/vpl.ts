@@ -63,7 +63,8 @@ export function buildVPLFilterProperties(
 ): string | null {
 	const parts = [
 		'vector_filter_properties',
-		`regex="${p.regex}"`,
+		// Double-quoted VPL values treat `\` as an escape, so a regex's backslashes are doubled
+		`regex="${p.regex.replaceAll('\\', '\\\\').replaceAll('"', '\\"')}"`,
 		p.invert ? `invert="${p.invert}"` : null
 	].filter(Boolean);
 	return parts.join(' ');

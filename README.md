@@ -118,9 +118,16 @@ overlay.versatiles
 Where:
 
 - `choro-lib.js` is a reusable JavaScript library containing an `initMap` function. `npm run build-lib` builds it.
-- `config.json` contains all map logic: layers, colors, data fields, interactions, tooltips, etc.
+- `config.json` describes the map: the overlay layer, the background, whether there are tooltips, and how the colors were computed (field, color scheme, min and max).
 - `index.html` loads `choro-lib.js` and `config.json`, and calls `initMap` to render the map.
-- `overlay.versatiles` contains the actual tiled data. `index.html` fetches its tiles from a VersaTiles server, `http://localhost:8080` unless you change `VERSATILES_URL`.
+- `overlay.versatiles` contains the geometry. `index.html` fetches its tiles from a VersaTiles server, `http://localhost:8080` unless you change `VERSATILES_URL`.
+
+The overlay carries no raw data. The export computes each feature's values from the joined data file and keeps only these properties:
+
+- `color_0`: the fill color, as `#rrggbb`. A feature without a value has none and is drawn black.
+- `tooltip_text`: the tooltip HTML, if a tooltip template is set.
+
+Because the values are computed from the data file, the value field and the tooltip placeholders have to be columns of that file. Fields of the geometry can't be used in an export.
 
 The Svelte‑based IDE (planned):
 

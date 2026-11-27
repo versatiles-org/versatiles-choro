@@ -3,36 +3,11 @@
  */
 
 import type { TileJSONSpecificationVector } from '@versatiles/style';
-import {
-	COLOR_SCHEMES,
-	type ChoroplethParams,
-	type ColorSchemeName
-} from '#lib/choro/color-schemes.js';
+import { COLOR_SCHEMES, type ChoroplethParams } from '#lib/choro/color-schemes.js';
+import { COLOR_PROPERTY, TOOLTIP_PROPERTY, type ExportConfig } from '#lib/choro/export-config.js';
 import type { BackgroundMap } from '#lib/choro/style-background.js';
 
-/**
- * Export configuration structure for the choropleth map.
- */
-export interface ExportConfig {
-	version: '1.0';
-	overlay: {
-		source: string;
-		layer: string;
-		tilejson: TileJSONSpecificationVector;
-	};
-	choropleth: {
-		field: string;
-		colorScheme: ColorSchemeName;
-		min: number;
-		max: number;
-		colors: string[];
-		tooltipTemplate?: string;
-	};
-	background: {
-		style: BackgroundMap;
-	};
-	bounds?: [number, number, number, number];
-}
+export type { ExportConfig } from '#lib/choro/export-config.js';
 
 /**
  * Parameters for generating export configuration.
@@ -55,18 +30,23 @@ export interface GenerateConfigParams {
  */
 export function generateConfig(params: GenerateConfigParams): ExportConfig {
 	const { overlaySourceFile, layerName, tilejson, choropleth, backgroundStyle } = params;
+	const tooltip = Boolean(choropleth.tooltipTemplate);
 
-	// Get the colors array from the color scheme
-	const colors = COLOR_SCHEMES[choropleth.colorScheme];
+	// The exported overlay keeps only the computed properties, so list only those.
+	const fields: Record<string, 'String'> = { [COLOR_PROPERTY]: 'String' };
+	if (tooltip) fields[TOOLTIP_PROPERTY] = 'String';
 
-	// Clean up tilejson for export - remove the tiles URL since it will be set at runtime
 	const exportTilejson: TileJSONSpecificationVector = {
 		...tilejson,
-		tiles: [] // Will be set by the viewer based on the VersaTiles server URL
+		tiles: [], // Will be set by the viewer based on the VersaTiles server URL
+		vector_layers: tilejson.vector_layers.map((layer) => ({
+			...layer,
+			fields: layer.id === layerName ? { ...fields } : {}
+		}))
 	};
 
 	const config: ExportConfig = {
-		version: '1.0',
+		version: '2.0',
 		overlay: {
 			source: overlaySourceFile,
 			layer: layerName,
@@ -77,9 +57,9 @@ export function generateConfig(params: GenerateConfigParams): ExportConfig {
 			colorScheme: choropleth.colorScheme,
 			min: choropleth.min,
 			max: choropleth.max,
-			colors: [...colors],
-			tooltipTemplate: choropleth.tooltipTemplate
+			colors: [...COLOR_SCHEMES[choropleth.colorScheme]]
 		},
+		tooltip,
 		background: {
 			style: backgroundStyle
 		}

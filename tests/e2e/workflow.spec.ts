@@ -1,5 +1,5 @@
 import { test, expect, type Locator } from '@playwright/test';
-import { existsSync, rmSync, readdirSync, statSync } from 'fs';
+import { existsSync, rmSync, readdirSync, readFileSync, statSync } from 'fs';
 import { join } from 'path';
 
 // Data directory used by E2E tests (matches DATA_PATH=temp in playwright.config.ts)
@@ -208,8 +208,8 @@ test.describe('Full Workflow', () => {
 			timeout: 10000
 		});
 
-		// Step 25: Set Value Field to first available field from the TSV
-		await page.locator('label:has-text("Value Field") select').selectOption({ index: 1 });
+		// Step 25: Set Value Field to a TSV column, since an export can only use those
+		await page.locator('label:has-text("Value Field") select').selectOption('Lohnsteuer/EW');
 
 		// Step 26: Set Color Scheme to "inferno"
 		await page.locator('label:has-text("Color Scheme") select').selectOption('inferno');
@@ -219,6 +219,11 @@ test.describe('Full Workflow', () => {
 
 		// Step 28: Set Max value to 100
 		await page.locator('label:has-text("Max") input[type="number"]').fill('100');
+
+		// Step 28b: Set a tooltip template from TSV columns
+		await page
+			.locator('label:has-text("Tooltip Template") textarea')
+			.fill('<b>{Name}</b>: {Lohnsteuer/EW}');
 
 		// Step 29: Wait for Export button to be enabled (canExport should be true now)
 		await expect(page.getByRole('button', { name: 'Export Map' })).toBeEnabled({ timeout: 10000 });
@@ -256,6 +261,19 @@ test.describe('Full Workflow', () => {
 				expectedFile
 			);
 		}
+
+		// Verify: the computed data file was removed, and config.json describes the export
+		expect(filesAfterExport).not.toContain('choropleth-export/.overlay-data.csv');
+		const config = JSON.parse(
+			readFileSync(join(DATA_DIR, 'choropleth-export/config.json'), 'utf-8')
+		);
+		expect(config.version).toBe('2.0');
+		expect(config.tooltip).toBe(true);
+		expect(config.choropleth.field).toBe('Lohnsteuer/EW');
+		expect(config.overlay.tilejson.vector_layers[0].fields).toEqual({
+			color_0: 'String',
+			tooltip_text: 'String'
+		});
 
 		// Final verification: List all files created during the workflow
 		const allExpectedFiles = [

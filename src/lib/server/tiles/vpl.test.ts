@@ -73,6 +73,10 @@ describe('buildVPLFilterProperties', () => {
 		});
 		expect(res).toBe('vector_filter_properties regex="^foo" invert="true"');
 	});
+	it('escapes backslashes and quotes for the double-quoted VPL value', () => {
+		const res = buildVPLFilterProperties({ regex: '^a\\.b/"c"$' });
+		expect(res).toBe('vector_filter_properties regex="^a\\\\.b/\\"c\\"$"');
+	});
 });
 
 describe('buildVPLFilter', () => {

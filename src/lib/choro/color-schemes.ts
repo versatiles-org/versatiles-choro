@@ -73,3 +73,44 @@ export interface ChoroplethParams {
 	max: number;
 	tooltipTemplate?: string;
 }
+
+/**
+ * Returns the color for a value, as MapLibre's `['interpolate', ['linear'], …]` draws it
+ * in the preview: linear in RGB between evenly spaced stops from `min` to `max`, clamped
+ * at both ends.
+ *
+ * @returns A `#rrggbb` color, or `undefined` if the value is not a finite number.
+ */
+export function getColorForValue(
+	choropleth: Pick<ChoroplethParams, 'colorScheme' | 'min' | 'max'>,
+	value: unknown
+): string | undefined {
+	if (typeof value !== 'number' || !Number.isFinite(value)) return undefined;
+
+	const colors = COLOR_SCHEMES[choropleth.colorScheme];
+	const range = choropleth.max - choropleth.min;
+	let t = range > 0 ? (value - choropleth.min) / range : value < choropleth.min ? 0 : 1;
+	t = Math.min(1, Math.max(0, t));
+
+	const position = t * (colors.length - 1);
+	const index = Math.min(Math.floor(position), colors.length - 2);
+	const fraction = position - index;
+
+	const from = parseHexColor(colors[index]);
+	const to = parseHexColor(colors[index + 1]);
+	return (
+		'#' +
+		from
+			.map((channel, i) => Math.round(channel + (to[i] - channel) * fraction))
+			.map((channel) => channel.toString(16).padStart(2, '0'))
+			.join('')
+	);
+}
+
+function parseHexColor(color: string): [number, number, number] {
+	return [1, 3, 5].map((offset) => parseInt(color.slice(offset, offset + 2), 16)) as [
+		number,
+		number,
+		number
+	];
+}
